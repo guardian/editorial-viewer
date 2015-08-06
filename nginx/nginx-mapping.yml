@@ -1,0 +1,4 @@
+name: preview
+mappings:
+  - prefix: preview
+    port: 9000
