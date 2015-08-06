@@ -1,0 +1,10 @@
+app:
+  build: .
+  environment:
+    VIRTUAL_HOST: preview.local.dev-gutools.co.uk
+  command: sbt ~run
+  volumes:
+    - .:/opt/app
+    - ~/.sbt:/root/.sbt
+    - ~/.npm:/root/.npm
+    - ~/.ivy2:/root/.ivy2
