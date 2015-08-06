@@ -1,4 +1,4 @@
-package controllers
+package com.gu.preview.controllers
 
 import play.api._
 import play.api.mvc._

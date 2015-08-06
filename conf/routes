@@ -3,8 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET     /management/healthcheck     controllers.Management.healthcheck
+GET     /                           com.gu.preview.controllers.Application.index
+GET     /management/healthcheck     com.gu.preview.controllers.Management.healthcheck
 
 
 # Map static resources from the /public folder to the /assets URL path
