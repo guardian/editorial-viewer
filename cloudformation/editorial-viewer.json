@@ -1,0 +1,374 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "editorial-viewer",
+  "Parameters": {
+    "KeyName": {
+      "Description": "The EC2 Key Pair to allow SSH access to the instance",
+      "Type": "String",
+      "Default": "composer-team"
+    },
+    "Stage": {
+      "Description": "Environment name",
+      "Type": "String",
+      "AllowedValues": [
+        "PROD",
+        "CODE",
+        "QA",
+        "RELEASE",
+        "TEST"
+      ]
+    },
+    "VpcId": {
+      "Description": "ID of the VPC onto which to launch the application eg. vpc-1234abcd",
+      "Type": "AWS::EC2::VPC::Id",
+      "Default": "vpc-381fa95d"
+    },
+    "PublicVpcSubnets": {
+      "Description": "Subnets to use in VPC for public internet-facing ELB eg. subnet-abcd1234",
+      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "subnet-c3620fa6,subnet-2b37bd5c,subnet-3667c86f"
+    },
+    "PrivateVpcSubnets": {
+      "Description": "Subnets to use in VPC for private EC2 instances eg. subnet-abcd1234",
+      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "subnet-c2620fa7,subnet-2a37bd5d,subnet-2967c870"
+    },
+    "GuardianIP": {
+      "Description": "Ip range for the office",
+      "Type": "String",
+      "Default": "77.91.248.0/21"
+    }
+  },
+  "Mappings": {
+    "SSLCertificateId": {
+      "Environment": {
+        "CODE": "arn:aws:iam::743583969668:server-certificate/sites.code.dev-gutools.co.uk-exp2023-08-15",
+        "PROD": "arn:aws:iam::743583969668:server-certificate/sites.gutools.co.uk-exp2015-10-20"
+      }
+    },
+      "EnvironmentMap": {
+          "CODE": {
+            "lowercase": "code",
+            "desiredCapacity": 1,
+            "maxSize": 2
+          },
+          "RELEASE": {
+            "lowercase": "release",
+            "desiredCapacity": 1,
+            "maxSize": 2
+          },
+          "QA": {
+            "lowercase": "qa",
+            "desiredCapacity": 1,
+            "maxSize": 2
+          },
+          "TEST": {
+            "lowercase": "test",
+            "desiredCapacity": 1,
+            "maxSize": 2
+          },
+          "CODE": {
+            "lowercase": "code",
+            "desiredCapacity": 1,
+            "maxSize": 2
+          },
+          "PROD": {
+            "lowercase": "prod",
+            "desiredCapacity": 2,
+            "maxSize": 4
+          }
+      }
+  },
+  "Resources": {
+    "ViewerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": ["ec2.amazonaws.com"]
+              },
+              "Action": ["sts:AssumeRole"]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "ViewerDescribeEC2Policy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerDescribeEC2Policy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": ["EC2:Describe*"],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "ViewerGetDistributablesPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerGetDistributablesPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::composer-dist/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "ViewerCloudwatchPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerCloudwatchPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["cloudwatch:*"],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "ViewerInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "SSHSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Allow SSH access from the office",
+        "VpcId": {"Ref": "VpcId"},
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "10.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "PingSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Allow pinging of the instance",
+        "VpcId": {"Ref": "VpcId"},
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "icmp",
+            "FromPort": "8",
+            "ToPort": "-1",
+            "CidrIp": "10.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "AppServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "application servers",
+        "VpcId": {"Ref": "VpcId"},
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 9000,
+            "ToPort": 9000,
+            "CidrIp": "10.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 9000,
+            "ToPort": 9000,
+            "SourceSecurityGroupId": {"Ref": "LoadBalancerSecurityGroup"}
+          }
+        ]
+      }
+    },
+    "LoadBalancerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "load balancer",
+        "VpcId": {"Ref": "VpcId"},
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "ViewerLoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "LoadBalancerSecurityGroup",
+              "GroupId"
+            ]
+          }
+        ],
+        "CrossZone": true,
+        "Subnets": {"Ref": "PublicVpcSubnets"},
+        "Listeners": [
+          {
+            "LoadBalancerPort": "443",
+            "InstancePort": "9000",
+            "Protocol": "HTTPS",
+            "SSLCertificateId": {
+              "Fn::FindInMap": [
+                "SSLCertificateId",
+                "Environment",
+                {"Ref": "Stage"}
+              ]
+            }
+          }
+        ],
+        "HealthCheck": {
+          "Target": "HTTP:9000/management/healthcheck",
+          "HealthyThreshold": "2",
+          "UnhealthyThreshold": "2",
+          "Interval": "10",
+          "Timeout": "5"
+        },
+        "Tags": [
+          {
+            "Key": "Stage",
+            "Value": {
+              "Ref": "Stage"
+            }
+          },
+          {
+            "Key": "Stack",
+            "Value": "flexible"
+          },
+          {
+            "Key": "App",
+            "Value": "preview"
+          }
+        ]
+      }
+    },
+    "AutoscalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AvailabilityZones": {"Fn::GetAZs": ""},
+        "VPCZoneIdentifier": {"Ref": "PrivateVpcSubnets"},
+        "LaunchConfigurationName": {"Ref": "ViewerLaunchConfig"},
+        "MinSize": { "Fn::FindInMap" : [ "EnvironmentMap", { "Ref" : "Stage" }, "desiredCapacity"]},
+        "MaxSize": { "Fn::FindInMap" : [ "EnvironmentMap", { "Ref" : "Stage" }, "maxSize"]},
+        "DesiredCapacity": { "Fn::FindInMap" : [ "EnvironmentMap", { "Ref" : "Stage" }, "desiredCapacity"]},
+        "HealthCheckType": "ELB",
+        "HealthCheckGracePeriod": 900,
+        "LoadBalancerNames": [{"Ref": "ViewerLoadBalancer"}],
+        "Tags": [
+          {
+            "Key": "Stage",
+            "Value": {
+              "Ref": "Stage"
+            },
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "Stack",
+            "Value": "flexible",
+            "PropagateAtLaunch": "true"
+          },
+          {
+            "Key": "App",
+            "Value": "preview",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "ViewerLaunchConfig": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata": {
+        "AWS::CloudFormation::Authentication": {
+          "distributionAuthentication": {
+            "type": "S3",
+            "roleName": {"Ref": "ViewerRole"},
+            "buckets": ["composer-dist"]
+          }
+        },
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "users": {
+              "viewer": {
+                "homeDir": "/home/viewer"
+              }
+            },
+            "files": {
+              "/home/viewer/viewer.tgz": {
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "https://s3-eu-west-1.amazonaws.com/composer-dist/flexible/",
+                      {"Ref": "Stage"},
+                      "/viewer/viewer.tgz"
+                    ]
+                  ]
+                },
+                "authentication": "distributionAuthentication"
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "KeyName": {"Ref": "KeyName"},
+        "ImageId": "ami-6a9bcb1d",
+        "SecurityGroups": [
+          {"Ref": "AppServerSecurityGroup"},
+          {"Ref": "SSHSecurityGroup"},
+          {"Ref": "PingSecurityGroup"}
+        ],
+        "InstanceType": "t2.micro",
+        "IamInstanceProfile": {"Ref": "ViewerInstanceProfile"},
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/usr/bin/env bash -ev\n",
+                "apt-get -y update\n",
+
+                "cfn-init -s ",
+                {"Ref": "AWS::StackId"},
+                " -r ViewerLaunchConfig ",
+                "  --region ",
+                {"Ref": "AWS::Region"},
+                " || error_exit 'Failed to run cfn-init'\n",
+
+                "/opt/features/native-packager/install.sh -b composer-dist\n"
+              ]
+            ]
+          }
+        }
+      }
+    }
+  }
+}
