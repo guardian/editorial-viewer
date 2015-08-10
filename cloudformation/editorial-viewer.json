@@ -312,30 +312,6 @@
             "roleName": {"Ref": "ViewerRole"},
             "buckets": ["composer-dist"]
           }
-        },
-        "AWS::CloudFormation::Init": {
-          "config": {
-            "users": {
-              "viewer": {
-                "homeDir": "/home/viewer"
-              }
-            },
-            "files": {
-              "/home/viewer/viewer.tgz": {
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "https://s3-eu-west-1.amazonaws.com/composer-dist/flexible/",
-                      {"Ref": "Stage"},
-                      "/viewer/viewer.tgz"
-                    ]
-                  ]
-                },
-                "authentication": "distributionAuthentication"
-              }
-            }
-          }
         }
       },
       "Properties": {
@@ -353,17 +329,9 @@
             "Fn::Join": [
               "",
               [
-                "#!/usr/bin/env bash -ev\n",
-                "apt-get -y update\n",
+                "#!/bin/bash -ev\n",
 
-                "cfn-init -s ",
-                {"Ref": "AWS::StackId"},
-                " -r ViewerLaunchConfig ",
-                "  --region ",
-                {"Ref": "AWS::Region"},
-                " || error_exit 'Failed to run cfn-init'\n",
-
-                "/opt/features/native-packager/install.sh -b composer-dist\n"
+                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
               ]
             ]
           }
