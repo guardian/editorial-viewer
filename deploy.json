@@ -1,0 +1,38 @@
+{
+  "defaultStacks": ["flexible"],
+  "packages": {
+    "viewer" : {
+      "type": "autoscaling",
+      "data": {
+        "bucket": "composer-dist",
+        "publicReadAcl": false
+      }
+    },
+    "viewer-cloudformation" : {
+      "type": "cloud-formation",
+      "fileName": "cloudformation",
+      "data": {
+        "templatePath": "editorial-viewer.json",
+        "cloudFormationStackName": "EditorialViewer",
+        "prependStackToCloudFormationStackName": false
+      }
+    }
+  },
+  "recipes": {
+    "default": {
+      "depends": ["viewer-cloudformation", "artifactUploadOnly", "deployOnly"]
+    },
+
+    "deployOnly": {
+      "actionsBeforeApp": ["viewer.deploy"]
+    },
+
+    "artifactUploadOnly": {
+      "actionsBeforeApp": ["viewer.uploadArtifacts"]
+    },
+
+    "viewer-cloudformation": {
+      "actions": ["viewer-cloudformation.updateStack"]
+    }
+  }
+}
