@@ -265,7 +265,7 @@
           },
           {
             "Key": "App",
-            "Value": "preview"
+            "Value": "viewer"
           }
         ]
       }
