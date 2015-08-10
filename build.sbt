@@ -1,4 +1,4 @@
-name := """editorial-preview"""
+name := """editorial-viewer"""
 
 version := "0.1-SNAPSHOT"
 
