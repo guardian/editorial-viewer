@@ -19,3 +19,7 @@ packageName in Universal := normalizedName.value
 
 riffRaffPackageType := (packageZipTarball in config("universal")).value
 
+riffRaffArtifactResources ++= Seq(
+  baseDirectory.value / "cloudformation" / "editorial-viewer.json" ->
+    "packages/cloudformation/editorial-viewer.json"
+)
