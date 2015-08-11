@@ -1,7 +1,7 @@
 app:
   build: .
   environment:
-    VIRTUAL_HOST: preview.local.dev-gutools.co.uk
+    VIRTUAL_HOST: viewer.local.dev-gutools.co.uk
   command: sbt ~run
   volumes:
     - .:/opt/app

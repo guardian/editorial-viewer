@@ -1,4 +1,4 @@
-name: preview
+name: viewer
 mappings:
-  - prefix: preview
+  - prefix: viewer
     port: 9000
