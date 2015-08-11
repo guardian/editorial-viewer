@@ -1,1 +1,0 @@
-module.exports = require("npm:config-chain@1.1.9/index");
