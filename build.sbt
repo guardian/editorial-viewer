@@ -10,6 +10,8 @@ scalaVersion := "2.11.6"
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
+libraryDependencies ++= Seq("com.amazonaws" % "aws-java-sdk" % "1.10.10")
+
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 routesGenerator := InjectedRoutesGenerator
