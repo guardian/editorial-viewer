@@ -11,6 +11,14 @@ class Application extends Controller {
     Ok(html.index("Your new application is ready."))
   }
 
+  def previewViewer = (path: String) => {
+    viewer("preview", path)
+  }
+
+  def liveViewer = (path: String) => {
+    viewer("live", path)
+  }
+
   def viewer(target: String, path: String) = Action {
     val viewerDomain = target match {
       case "preview" => Configuration.previewHost

@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "/components/icons",
+    "template": "app/templates/icons.html"
+  },
+  {
+    "slug": "/components/boxes",
+    "template": "app/templates/box.html"
+  },
+  {
+    "slug": "/components/buttons",
+    "template": "app/templates/btn.html"
+  },
+  {
+    "slug": "/components/grid",
+    "template": "app/templates/grid.html"
+  },
+  {
+    "slug": "/components/status",
+    "template": "app/templates/status.html"
+  },
+  {
+    "slug": "/components/dropdowns",
+    "template": "app/templates/dropdown.html"
+  },
+  {
+    "slug": "/components/page-label",
+    "template": "app/templates/page-label.html"
+  },
+  {
+    "slug": "/components/index-list",
+    "template": "app/templates/index-list.html"
+  },
+  {
+    "slug": "/components/loading-bars",
+    "template": "app/templates/loading-bars.html"
+  },
+  {
+    "slug": "/components/modal",
+    "template": "app/templates/modal.html"
+  },
+  {
+    "slug": "/components/accordion",
+    "template": "app/templates/accordion.html"
+  }
+]

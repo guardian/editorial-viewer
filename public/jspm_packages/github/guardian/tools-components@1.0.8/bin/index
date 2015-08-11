@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+require('babel/register');
+var program = require('commander');
+var pkgInfo = require('../package.json');
+var colors  = require('colors');
+var capitalizeFirstChar = require('capitalize-first-char');
+
+var generateMixin         = require('./lib/generate-mixin');
+var generateSassComponent = require('./lib/generate-sass-component');
+var genrateDirective      = require('./lib/generate-directive');
+var generateBootstrap     = require('./lib/generate-bootstrap')
+
+//init CLI options
+
+//custom commands
+var commandType = process.argv.slice(2, 3)[0];
+var componentType = process.argv.slice(3, 4)[0];
+
+program
+  .version(pkgInfo.version)
+  .option('-m, --mixin-name [mixin-name]', 'Mixin name')
+  .option('-c, --component-name [component-name]', 'Component name')
+  .parse(process.argv);
+
+if (commandType === 'new') {
+  //generate a new sass mixin
+  if (componentType === 'mixin') {
+    generateMixin(program.mixinName, program.componentName);
+  }
+  //generate a new sass component
+  else if (componentType === 'sass') {
+    var mixinName = program.mixinName ? program.mixinName : program.componentName;
+    generateMixin(mixinName, program.componentName);
+    generateSassComponent(program.componentName, mixinName);
+  }
+  //generates a new directive
+  else if (componentType === 'directive') {
+    genrateDirective(program.componentName);
+  }
+  //genrate a new component
+  else if (componentType === 'component') {
+    generateMixin(program.componentName, program.componentName);
+    generateSassComponent(program.componentName, program.componentName);
+    genrateDirective(program.componentName);
+    generateBootstrap(program.componentName);
+  }
+  else {
+    console.log('You must specify a valid component type'.red);
+  }
+} else {
+  console.log('You must use the "new" keyword when generating a component, please see readme for details'.red);
+}
+

@@ -1,0 +1,17 @@
+.accordion {
+  width: 100%;
+  overflow: hidden; }
+
+.accordion__track {
+  display: block;
+  -webkit-transition: -webkit-transform .2s ease-in-out;
+          transition: transform .2s ease-in-out; }
+  .accordion__track:before, .accordion__track:after {
+    content: " ";
+    display: table; }
+  .accordion__track:after {
+    clear: both; }
+
+gu-accordion-child {
+  display: block;
+  float: left; }

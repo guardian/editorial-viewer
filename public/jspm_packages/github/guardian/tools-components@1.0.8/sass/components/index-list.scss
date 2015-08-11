@@ -1,0 +1,15 @@
+@import "mixins/index-list/index-list.scss";
+@import "mixins/index-list/index-list__item.scss";
+@import "mixins/index-list/index-list__item__index.scss";
+
+.index-list {
+  @include index-list;
+}
+
+.index-list__item {
+  @include index-list__item;
+}
+
+.index-list__item__index {
+  @include index-list__item__index;
+}

@@ -1,0 +1,8 @@
+{
+  "browser": true,
+  "devel": true,
+  "esnext": true,
+  "indent": 2,
+  "node": true,
+  "newcap": false
+}

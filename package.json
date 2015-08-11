@@ -1,0 +1,27 @@
+{
+  "name": "editorial-viewer",
+  "version": "1.0.0",
+  "description": "Mobile first preview of Guardian content.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guardian/editorial-viewer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guardian/editorial-viewer/issues"
+  },
+  "homepage": "https://github.com/guardian/editorial-viewer#readme",
+  "jspm": {
+    "directories": {
+      "baseURL": "public"
+    },
+    "dependencies": {
+      "composer-components": "github:guardian/tools-components@^1.0.8"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+
+@mixin accordion() {
+  width: 100%;
+  overflow: hidden;
+}

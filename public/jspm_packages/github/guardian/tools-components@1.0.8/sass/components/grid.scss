@@ -1,0 +1,16 @@
+@import 'mixins/grid/column.scss';
+@import 'mixins/grid/row.scss';
+
+.row{
+  @include row();
+  [variant=reverse] {
+    flex-direction: row-reverse;
+  }
+}
+
+@for $i from 1 through $num-of-columns {
+  .col-#{$i}{
+    box-sizing: border-box;
+    @include column($i);
+  }
+}

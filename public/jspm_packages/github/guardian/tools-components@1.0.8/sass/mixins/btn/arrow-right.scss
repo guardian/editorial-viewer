@@ -1,0 +1,46 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+@import "mixins/btn/btn.scss";
+
+$skew-amount: 30deg;
+
+//flexible arrows using skew.
+@mixin _arrow-bg($background-color, $skew, $top: 0) {
+  content: ' ';
+  display: inline-block;
+  position: absolute;
+  top: $top;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: -1;
+  background: $background-color;
+  transform: skewX($skew);
+  transition: background-color .2s ease-in-out;
+}
+
+@mixin btn-arrow-right($background-color: $color-500-grey) {
+  @include btn($background-color);
+  background: none;
+  border: none;
+  position: relative;
+  z-index: 5;
+  &:focus {
+    outline: 0;
+  }
+  &:hover, &.active {
+    //cancel default button backgrounds
+    background: none;
+    &:after, &:before {
+      //set the background colors on the sudo elements
+      background: darken($background-color, 8%);
+    }
+  }
+  &:after {
+    @include _arrow-bg($background-color, $skew-amount);
+  }
+  &:before {
+    @include _arrow-bg($background-color, -$skew-amount, 50%);
+  }
+}

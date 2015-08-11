@@ -3,8 +3,23 @@
 <html lang="en">
     <head>
         <title>@title</title>
+        <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
     </head>
     <body>
         @content
+
+        <script src="/assets/jspm_packages/system.js"></script>
+        <script src="/assets/config.js"></script>
+
+        <script>
+          System.baseURL = '/assets';
+          System
+            .import('javascript/main')
+            .catch(function(err){
+              console.error(err);
+            })
+        </script>
+
+
     </body>
 </html>

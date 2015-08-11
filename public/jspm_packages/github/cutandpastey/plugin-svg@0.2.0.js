@@ -1,0 +1,1 @@
+module.exports = require("github:cutandpastey/plugin-svg@0.2.0/image");

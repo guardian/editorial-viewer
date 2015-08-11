@@ -1,0 +1,8 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+
+@mixin index-list() {
+  //your code goes here
+  padding-left: 0;
+}

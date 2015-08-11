@@ -1,0 +1,8 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+
+@mixin page-label__content() {
+  width: 100%;
+  height: 100%;
+}

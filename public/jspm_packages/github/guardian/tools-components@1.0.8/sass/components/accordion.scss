@@ -1,0 +1,17 @@
+@import "mixins/accordion/accordion.scss";
+@import "mixins/accordion/accordion__track.scss";
+@import "mixins/utils/clearfix";
+
+.accordion {
+  @include accordion;
+}
+
+.accordion__track {
+  @include accordion__track;
+  @include clearfix;;
+}
+
+gu-accordion-child {
+  display: block;
+  float: left;
+}

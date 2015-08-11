@@ -1,0 +1,22 @@
+@import "mixins/dropdown/dropdown.scss";
+@import "mixins/dropdown/dropdown__item.scss";
+@import "mixins/dropdown/dropdown__trigger.scss";
+@import "mixins/utils/clearfix.scss";
+@import "mixins/utils/pull-right.scss";
+
+.dropdown {
+  @include dropdown();
+}
+
+.dropdown__item {
+  @include dropdown__item();
+}
+
+.dropdown__trigger {
+  @include dropdown__trigger();
+  @include clearfix();
+}
+
+.dropdown__trigger__icon {
+  @include pull-right();
+}

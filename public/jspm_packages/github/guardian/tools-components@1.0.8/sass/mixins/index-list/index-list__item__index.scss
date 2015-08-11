@@ -1,0 +1,15 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+
+@mixin index-list__item__index() {
+  box-sizing: border-box;
+  flex-basis: 46px;
+  max-width: 46px;
+  padding: 5px;
+  padding-top: 10px;
+  text-align: center;
+
+  border-right: 2px solid $color-400-grey;
+
+}

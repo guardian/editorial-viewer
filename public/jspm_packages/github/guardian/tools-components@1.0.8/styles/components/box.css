@@ -1,0 +1,33 @@
+.box--primary {
+  box-sizing: border-box;
+  display: block;
+  padding: 10px;
+  background-color: white; }
+  .box--primary[size=large] {
+    padding: 7px 15px; }
+
+.box--secondary {
+  box-sizing: border-box;
+  display: block;
+  padding: 10px;
+  background-color: #F1F1F1; }
+  .box--secondary[size=large] {
+    padding: 7px 15px; }
+
+.box--tertiary {
+  box-sizing: border-box;
+  display: block;
+  padding: 10px;
+  background-color: #dee2e3; }
+  .box--tertiary[skin=header] {
+    border-right: 1px solid #BDBDBD; }
+  .box--tertiary[size=large] {
+    padding: 7px 15px; }
+
+.box--quaternary {
+  box-sizing: border-box;
+  display: block;
+  padding: 10px;
+  background-color: #898984; }
+  .box--quaternary[size=large] {
+    padding: 7px 15px; }

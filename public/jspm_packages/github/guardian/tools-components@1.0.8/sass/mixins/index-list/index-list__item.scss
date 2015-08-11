@@ -1,0 +1,22 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+
+@mixin index-list__item {
+  display: flex;
+  flex-direction: row;
+  &[variant=primary] {
+    background: $box-primary-bg;
+    transition: background-color .2s ease-in-out;
+  }
+  &[variant=secondary] {
+    background: $box-secondary-bg;
+  }
+  &[variant=tertiary] {
+    background: $box-tertiary-bg;
+  }
+  &[variant=quaternary] {
+    background: $box-quaternary-bg;
+    color: white;
+  }
+}

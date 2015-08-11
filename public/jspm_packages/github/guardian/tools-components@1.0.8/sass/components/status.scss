@@ -1,0 +1,28 @@
+@import "mixins/text/headings.scss";
+@import "mixins/status/status.scss";
+
+.status--draft {
+  @include h3();
+  @include status("draft");
+}
+
+.status--default {
+  @include h3();
+  @include status("default");
+}
+
+.status--error {
+  @include h3();
+  @include status("error");
+}
+
+.status--complete {
+  @include h3();
+  @include status("complete");
+}
+
+.status--active {
+  @include h3();
+  @include status("active");
+}
+

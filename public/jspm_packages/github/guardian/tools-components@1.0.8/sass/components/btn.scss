@@ -1,0 +1,56 @@
+@import "palette.scss";
+@import "mixins/btn/btn.scss";
+@import "mixins/btn/arrow-right.scss";
+
+//button variants
+.btn {
+  @include btn;
+}
+
+.btn--light {
+  @include btn($color-400-grey);
+}
+
+.btn--active {
+  @include btn($btn-active-bg-color);
+}
+
+.btn--danger {
+  @include btn($danger-color);
+}
+
+.btn--mortal-danger {
+  @include btn($mortal-danger-color);
+}
+
+//button sizes
+.btn--small {
+  @include btn-size("small");
+}
+
+.btn--large {
+  @include btn-size("large");
+}
+
+.btn--very-large {
+  @include btn-size("very-large");
+}
+
+.btn--arrow-right {
+  @include btn-arrow-right;
+}
+
+.btn--arrow-right.btn--small {
+  @include btn-arrow-right;
+  @include btn-size("small");
+}
+
+.btn--arrow-right.btn--large {
+  @include btn-arrow-right;
+  @include btn-size("large");
+}
+
+.btn--arrow-right.btn--very-large {
+  @include btn-arrow-right;
+  @include btn-size("very-large");
+}

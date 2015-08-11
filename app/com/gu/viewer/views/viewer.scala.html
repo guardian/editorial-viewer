@@ -1,4 +1,18 @@
 @(viewerUrl: String)
 
-<h1>Viewer</h1>
-<iframe src="@viewerUrl"></iframe>
+@main("Viewer") {
+
+    <header>TEST</header>
+    <ul class="viewer-orientation">
+        <li class="viewer-orientation__button is-selected">Portrait</li>
+        <li class="viewer-orientation__button">Landscape</li>
+    </ul>
+    <div class="columns">
+        <div class="column--main">
+            <iframe data-viewerName="primary" class="viewer" src="@viewerUrl"></iframe>
+        </div>
+        <div class="column--secondary">
+            <iframe data-viewerName="secondary" class="viewer" src="@viewerUrl"></iframe>
+        </div>
+    </div>
+}

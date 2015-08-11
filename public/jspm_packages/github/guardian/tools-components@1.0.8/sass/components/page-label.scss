@@ -1,0 +1,15 @@
+@import "mixins/page-label/page-label.scss";
+@import "mixins/page-label/page-label__content.scss";
+@import "mixins/page-label/page-label__hover.scss";
+
+.page-label {
+  @include page-label();
+}
+
+.page-label__content {
+  @include page-label__content();
+}
+
+.page-label__hover {
+  @include page-label__hover();
+}

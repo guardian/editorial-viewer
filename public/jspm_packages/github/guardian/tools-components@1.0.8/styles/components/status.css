@@ -1,0 +1,59 @@
+.status--draft {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 25px;
+  text-align: center;
+  background-color: #ffbc01; }
+  .status--draft[skin=light] {
+    color: white; }
+
+.status--default {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 25px;
+  text-align: center;
+  background-color: #DCDCDC; }
+  .status--default[skin=light] {
+    color: white; }
+
+.status--error {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 25px;
+  text-align: center;
+  background-color: #ed5935; }
+  .status--error[skin=light] {
+    color: white; }
+
+.status--complete {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 25px;
+  text-align: center;
+  background-color: #46af38; }
+  .status--complete[skin=light] {
+    color: white; }
+
+.status--active {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 25px;
+  text-align: center;
+  background-color: #00ADEE; }
+  .status--active[skin=light] {
+    color: white; }

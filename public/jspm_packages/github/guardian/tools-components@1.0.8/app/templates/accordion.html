@@ -1,0 +1,27 @@
+<gu-row>
+  <gu-column span="12">
+    <app-demo>
+      <h2>Accordion</h2>
+      <app-demo-code>
+
+        <gu-row>
+          <gu-column span="6">
+            <gu-accordion>
+              <gu-accordion-child when="{{ current === 1 }}">1</gu-accordion-child>
+              <gu-accordion-child when="{{ current === 2 }}">2</gu-accordion-child>
+              <gu-accordion-child when="{{ current === 3 }}">3</gu-accordion-child>
+            </gu-accordion>
+          </gu-column>
+        </gu-row>
+        <gu-row>
+          <gu-column span="12">
+            <gu-btn ng-click="current = 1">1</gu-btn>
+            <gu-btn ng-click="current = 2">2</gu-btn>
+            <gu-btn ng-click="current = 3">3</gu-btn>
+          </gu-column>
+        </gu-row>
+
+      </app-demo-code>
+    </app-demo>
+  </gu-column>
+</gu-row>

@@ -1,0 +1,24 @@
+.dropdown.closed .dropdown__item {
+  display: none; }
+
+.dropdown__item {
+  margin-bottom: 5px; }
+
+.dropdown__trigger {
+  margin-bottom: 5px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
+  .dropdown__trigger object {
+    width: 15px; }
+  .dropdown__trigger:hover {
+    cursor: pointer; }
+  .dropdown__trigger:before, .dropdown__trigger:after {
+    content: " ";
+    display: table; }
+  .dropdown__trigger:after {
+    clear: both; }
+
+.dropdown__trigger__icon {
+  float: right; }

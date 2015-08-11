@@ -1,0 +1,39 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "skins/header.scss";
+
+$_large-box-padding-horix : $large-spacing-unit;
+$_large-box-padding-vert  : 7px;
+
+@mixin box($type) {
+
+  box-sizing  : border-box;
+  display     : block;
+  padding     : $base-spacing-unit;
+
+  @if $type == 'primary' {
+    background-color: $box-primary-bg;
+  }
+  @else if $type == 'secondary' {
+    background-color: $box-secondary-bg;
+  }
+  @else if $type == 'tertiary' {
+    background-color: $box-tertiary-bg;
+
+    &[skin=header] {
+      border-right: 1px solid $_header-row-border-color;
+
+      &:last-child {
+       // border-right: none;
+      }
+
+    }
+  }
+  @else if $type == 'quaternary' {
+    background-color: $box-quaternary-bg;
+  }
+
+  &[size=large] {
+    padding: $_large-box-padding-vert $_large-box-padding-horix;
+  }
+}

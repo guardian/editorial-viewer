@@ -1,0 +1,82 @@
+@import "palette.scss";
+@import "dimensions.scss";
+@import "typography.scss";
+
+//dimensions
+$button-padding-vert: $base-spacing-unit + 1px;
+$button-padding-horiz: $large-spacing-unit;
+
+$button-color: white;
+
+@mixin btn($button-bg: $color-500-grey) {
+  //variables
+  $button-hover-bg: darken($button-bg, 8%);
+  $button-active-bg: darken($button-bg, 16%);
+  //TODO (jp-18-3-15) need to check this is the right transform
+  $button-disabled-bg: lighten($color-400-grey, 16%);
+  $button-disabled-color: lighten($color-400-grey, 32%);
+
+
+  //resets (for <button></button> elements
+  background: none;
+  border: none;
+  //resets for <a></a> elements
+  &, &:hover, &:focus, &:active {
+    color: $button-color;
+    text-decoration: none;
+  }
+
+  //rules
+  box-sizing: border-box;
+  @include btn-size("normal");
+
+  background-color: $button-bg;
+
+  $font-size: $base-font-size;
+  line-height: 1;
+  color: $button-color;
+  text-align: center;
+  user-select: none;
+
+  &:focus {
+    outline: 1px solid white;
+    outline-offset: -2px;
+  }
+  &:hover {
+    background-color: $button-hover-bg;
+    cursor: pointer;
+  }
+  &:active {
+    background-color: $button-active-bg;
+  }
+
+  //disabled states
+  &[disabled] {
+    // eg --> .btn[disabled]:hover ...etc
+    &, &:hover, &:active, &:focus {
+      background-color: $button-disabled-bg;
+      color: $button-disabled-color;
+      border: none;
+    }
+  }
+}
+
+
+//button sizes
+@mixin btn-size($button-size: "normal"){
+  @if $button-size == "normal" {
+    padding: $button-padding-vert $button-padding-horiz;
+  }
+
+  @else if $button-size == "small" {
+    padding: ($button-padding-vert / 2) $base-spacing-unit;
+  }
+
+  @else if $button-size == "large" {
+    padding: $large-spacing-unit;
+  }
+
+  @else if $button-size == "very-large" {
+    padding: $very-large-spacing-unit;
+  }
+}
