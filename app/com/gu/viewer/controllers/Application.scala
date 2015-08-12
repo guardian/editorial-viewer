@@ -24,7 +24,7 @@ class Application extends Controller {
       case "preview" => Configuration.previewHost
       case _ => Configuration.liveHost
     }
-    val viewerUrl = s"https://$viewerDomain/$path"
+    val viewerUrl = s"$viewerDomain/$path"
 
     Ok(html.viewer(viewerUrl))
   }
