@@ -24,5 +24,8 @@
       "angular": "github:angular/bower-angular@^1.4.3",
       "composer-components": "github:guardian/tools-components@^1.0.8"
     }
+  },
+  "dependencies": {
+    "jspm": "^0.15.7"
   }
 }
