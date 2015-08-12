@@ -1,6 +1,7 @@
 logs
 target
 jspm_packages
+node_modules
 /.idea
 /.idea_modules
 /.classpath
