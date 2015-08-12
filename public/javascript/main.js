@@ -1,9 +1,24 @@
 
-var viewers = require('javascript/components/viewer');
-var orientationButtons = require('javascript/components/orientationButtons');
+var resizeCtrl = require('javascript/controllers/resize');
+var modeCtrl = require('javascript/controllers/viewerMode');
+
+var viewers = require('javascript/components/viewers/viewers');
 var toolbar = require('javascript/components/toolbar');
 
-//Apply initial config
-orientationButtons.init();
+//Initialize Controllers
+resizeCtrl.init({
+    onUpdate: function() {
+        viewers.render();
+    }
+});
+modeCtrl.init({
+    onUpdate: function() {
+        viewers.render();
+    }
+});
+
+//Initialize Components
 toolbar.init(document.getElementById('toolbar'));
-viewers.updateViewer('primary', 'mobile-portrait');
+viewers.init();
+
+

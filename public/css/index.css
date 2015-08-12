@@ -2,9 +2,14 @@
     margin: 0;
     padding: 0;
 }
+.viewers {
+    text-align: center;
+}
 
 .viewer {
-    margin: 0 auto;
+
+    margin: 20px;
+    vertical-align: top;
 
     border-radius: 20px;
     border-style: solid;
@@ -22,9 +27,16 @@
 .viewer.is-desktop {
     position: fixed;
     top: 40px;
+    left: 0;
+
     width:100%;
     min-width: 800px;
     height: calc(100% - 40px);
+
+    margin: 0;
+    border-width: 0;
+    border-radius: 0;
+
 }
 
 .viewer-orientation {

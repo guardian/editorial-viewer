@@ -1,13 +1,11 @@
 
-var viewer = require('./viewer');
-var orientationButtons = require('javascript/components/orientationButtons');
+var modeCtrl = require('javascript/controllers/viewerMode');
+var viewers = require('javascript/components/viewers/viewers');
 
 var menuitems = {
     mobile: true,
     desktop: true
 };
-
-var activeitem = 'mobile';
 
 var toolbarEl;
 
@@ -19,7 +17,7 @@ function renderMenuItem(itemName) {
     el.addEventListener('click', handleClick);
     el.classList.add('tool-bar__button');
 
-    if (activeitem === itemName) {
+    if (itemName === modeCtrl.getMode()) {
         el.classList.add('is-selected');
     }
 
@@ -44,16 +42,7 @@ function renderMenu() {
 
 function handleClick(e) {
     var mode = e.target.dataset.switchmode;
-    activeitem = mode;
-
-    if (mode === 'desktop') {
-        viewer.updateViewer('primary', 'desktop');
-        orientationButtons.hide();
-    } else {
-        viewer.updateViewer('primary', 'mobile-portrait');
-        orientationButtons.show();
-    }
-
+    modeCtrl.updateMode(mode);
     renderMenu();
 }
 
@@ -70,5 +59,6 @@ function enableDesktop() {
 
 module.exports = {
     init: init,
-    enableDesktop: enableDesktop
+    enableDesktop: enableDesktop,
+    render: renderMenu
 };

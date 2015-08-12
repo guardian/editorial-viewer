@@ -7,15 +7,11 @@
         </ul>
     </header>
     <ul class="viewer-orientation">
-        <li class="viewer-orientation__button is-selected" data-switchPrimaryViewer="mobile-portrait">P</li>
-        <li class="viewer-orientation__button" data-switchPrimaryViewer="mobile-landscape">L</li>
+        <li class="viewer-orientation__button is-selected" data-switchPrimaryViewer="portrait">P</li>
+        <li class="viewer-orientation__button" data-switchPrimaryViewer="landscape">L</li>
     </ul>
-    <div class="columns">
-        <div class="column--main">
-            <iframe data-viewerName="primary" class="viewer" src="@viewerUrl"></iframe>
-        </div>
-        <div class="column--secondary">
-            <iframe data-viewerName="secondary" class="viewer" src="@viewerUrl"></iframe>
-        </div>
+    <div class="viewers">
+        <iframe data-viewerName="primary" class="viewer" src="@viewerUrl"></iframe>
+        <iframe data-viewerName="secondary" class="viewer" src="@viewerUrl"></iframe>
     </div>
 }
