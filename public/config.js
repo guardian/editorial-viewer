@@ -10,6 +10,7 @@ System.config({
 
 System.config({
   "map": {
+    "angular": "github:angular/bower-angular@1.4.3",
     "composer-components": "github:guardian/tools-components@1.0.8",
     "github:angular/bower-angular-route@1.4.3": {
       "angular": "github:angular/bower-angular@1.4.3"

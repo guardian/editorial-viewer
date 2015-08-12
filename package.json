@@ -21,6 +21,7 @@
       "baseURL": "public"
     },
     "dependencies": {
+      "angular": "github:angular/bower-angular@^1.4.3",
       "composer-components": "github:guardian/tools-components@^1.0.8"
     }
   }

@@ -2,10 +2,13 @@
 
 @main("Viewer") {
 
-    <header>TEST</header>
+    <header>
+        <ul class="tool-bar" id="toolbar">
+        </ul>
+    </header>
     <ul class="viewer-orientation">
-        <li class="viewer-orientation__button is-selected">Portrait</li>
-        <li class="viewer-orientation__button">Landscape</li>
+        <li class="viewer-orientation__button is-selected" data-switchPrimaryViewer="mobile-portrait">P</li>
+        <li class="viewer-orientation__button" data-switchPrimaryViewer="mobile-landscape">L</li>
     </ul>
     <div class="columns">
         <div class="column--main">

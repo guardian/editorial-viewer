@@ -1,3 +1,7 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 
 .viewer {
     margin: 0 auto;
@@ -13,6 +17,14 @@
 
 .viewer.is-mobile-landscape {
     border-width: 20px 60px 30px 30px;
+}
+
+.viewer.is-desktop {
+    position: fixed;
+    top: 40px;
+    width:100%;
+    min-width: 800px;
+    height: calc(100% - 40px);
 }
 
 .viewer-orientation {
@@ -37,3 +49,21 @@
     border-top: 3px solid #00a8ed;
 }
 
+.tool-bar__button {
+    display: inline-block;
+
+    cursor: pointer;
+    padding: 10px 20px;
+
+    background-color: #F0F0F0;
+
+    border-top: 3px solid #F0F0F0;
+
+    list-style: none;
+    text-transform: capitalize;
+}
+
+.tool-bar__button.is-selected {
+    color: #00a8ed;
+    border-top: 3px solid #00a8ed;
+}
