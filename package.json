@@ -4,7 +4,9 @@
   "description": "Mobile first preview of Guardian content.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install",
+    "postinstall": "jspm install -y"
   },
   "repository": {
     "type": "git",
