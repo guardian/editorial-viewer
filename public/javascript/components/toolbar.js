@@ -3,60 +3,38 @@ var modeCtrl = require('javascript/controllers/viewerMode');
 var viewers = require('javascript/components/viewers/viewers');
 var analyticsCtrl = require('javascript/controllers/analytics');
 
-var toolbarEl;
+var toolbarBtns = document.querySelectorAll('[data-switchmode]');
 
-function renderMenuItem(itemName) {
-    var el = document.createElement('li');
-
-    el.setAttribute('data-switchmode', itemName);
-    el.innerHTML = itemName;
-    el.addEventListener('click', handleClick);
-    el.classList.add('tool-bar__button');
-
-    if (itemName === modeCtrl.getMode()) {
-        el.classList.add('is-selected');
+function init() {
+    for (var i = 0; i < toolbarBtns.length; ++i) {
+        toolbarBtns[i].addEventListener('click', handleClick);
     }
-
-    return el;
-}
-
-function renderMenu() {
-    if (!toolbarEl) {
-        console.log("Can't render without el");
-        return;
-    }
-
-    toolbarEl.innerHTML = '';
-    toolbarEl.appendChild(renderMenuItem('mobile'));
-    if (modeCtrl.isDesktopActive()) {
-        toolbarEl.appendChild(renderMenuItem('desktop'));
-    }
-
 }
 
 function handleClick(e) {
     var mode = e.target.dataset.switchmode;
 
-    if (mode === "desktop") {
+    if (mode === 'desktop') {
         analyticsCtrl.recordDesktopViewed();
     }
     modeCtrl.updateMode(mode);
-    renderMenu();
+    updateActiveStates(mode);
 }
 
-function init(el) {
-    toolbarEl = el;
-    renderMenu();
+function updateActiveStates(mode) {
+    for (var i = 0; i < toolbarBtns.length; ++i) {
+        toolbarBtns[i].classList.remove('is-selected');
+    }
+
+    var activeEl = document.querySelector('[data-switchmode="' + mode + '"]');
+    activeEl && activeEl.classList.add('is-selected');
 }
 
 function enableDesktop() {
     menuitems.desktop = true;
-
-    renderMenu();
 }
 
 module.exports = {
-    init: init,
+    init:          init,
     enableDesktop: enableDesktop,
-    render: renderMenu
 };

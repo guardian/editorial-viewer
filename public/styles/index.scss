@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+.content {
+    position: relative;
+}
+
+@import './variables/_palette';
+@import './variables/_typography';
+
+@import './components/_viewer';
+@import './components/_topbar';
+@import './components/_orientation';
+
+
+html {
+    font-size: 10px;
+}
+body {
+    @extend %f-data;
+    @extend %fs-data-4;
+}
