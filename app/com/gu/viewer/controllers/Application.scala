@@ -12,21 +12,21 @@ class Application extends Controller {
   }
 
   def previewViewer = (path: String) => {
-    viewer("preview", path)
+    viewer("preview", path, "preview")
   }
 
   def liveViewer = (path: String) => {
-    viewer("live", path)
+    viewer("live", path, "live")
   }
 
-  def viewer(target: String, path: String) = Action {
+  def viewer(target: String, path: String, previewEnv: String) = Action {
     val viewerDomain = target match {
       case "preview" => Configuration.previewHost
       case _ => Configuration.liveHost
     }
     val viewerUrl = s"$viewerDomain/$path"
 
-    Ok(html.viewer(viewerUrl))
+    Ok(html.viewer(viewerUrl, previewEnv))
   }
 
 }
