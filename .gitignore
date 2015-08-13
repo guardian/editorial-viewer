@@ -3,6 +3,7 @@ target
 jspm_packages
 node_modules
 *.log
+public/styles/index.css
 /.idea
 /.idea_modules
 /.classpath

@@ -2,59 +2,59 @@ var isEnabled = false;
 
 function init() {
     if (!window.mixpanel) {
-        console.log("No mixpanel detected");
+        console.log('No mixpanel detected');
     }
 
     isEnabled = true;
-    //Generate session parameter?
-    //Get user info?
+    //TODO Generate session parameter?
+    //TODO Get user info?
 }
 
 function recordPageOpen() {
-    if(!isEnabled) {
+    if (!isEnabled) {
         return;
     }
 
-    mixpanel.track("previewOpened");
+    window.mixpanel.track('previewOpened');
 }
 
 function recordScrollStart() {
-    if(!isEnabled) {
+    if (!isEnabled) {
         return;
     }
 
-    mixpanel.track("scrollStart");
+    window.mixpanel.track('scrollStart');
 }
 
 function recordOrientationChange() {
-    if(!isEnabled) {
+    if (!isEnabled) {
         return;
     }
 
-    mixpanel.track("orientationSwitched")
+    window.mixpanel.track('orientationSwitched');
 }
 
 function recordDesktopEnabled() {
-    if(!isEnabled) {
+    if (!isEnabled) {
         return;
     }
 
-    mixpanel.track("desktopEnabled")
+    window.mixpanel.track('desktopEnabled');
 }
 
 function recordDesktopViewed() {
-    if(!isEnabled) {
+    if (!isEnabled) {
         return;
     }
 
-    mixpanel.track("desktopViewed")
+    window.mixpanel.track('desktopViewed');
 }
 
 module.exports = {
-    init: init,
-    recordPageOpen: recordPageOpen,
-    recordScrollStart: recordScrollStart,
+    init:                    init,
+    recordPageOpen:          recordPageOpen,
+    recordScrollStart:       recordScrollStart,
     recordOrientationChange: recordOrientationChange,
-    recordDesktopEnabled: recordDesktopEnabled,
-    recordDesktopViewed: recordDesktopViewed
-}
+    recordDesktopEnabled:    recordDesktopEnabled,
+    recordDesktopViewed:     recordDesktopViewed
+};
