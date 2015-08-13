@@ -1,4 +1,4 @@
-@(viewerUrl: String)
+@(viewerUrl: String, previewEnv: String)
 
 @main("Viewer") {
     <header class="top-toolbar">
@@ -14,10 +14,7 @@
         <div class="top-toolbar__view-toolbar">
             <ul class="tool-bar">
                 <li class="top-toolbar__container">
-                    <div class="top-toolbar__status--preview">preview</div>
-                </li>
-                <li class="top-toolbar__container">
-                    <div class="top-toolbar__status--live">live</div>
+                    <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
                 </li>
                 <li class="top-toolbar__container">
                     <div class="top-toolbar__label">Mobile web</div>
@@ -26,7 +23,9 @@
                         <div class="viewer-orientation__button" data-switchmode="mobile-landscape">L</div>
                     </div>
                 </li>
-                <li class="top-toolbar__button--mobilecheck" data-enabledesktop="true">Mobile Preview Checked</li>
+                @if(previewEnv == "preview") {
+                    <li class="top-toolbar__button--mobilecheck" data-enabledesktop="true">Mobile Preview Checked</li>
+                }
                 <li data-switchmode="desktop" class="top-toolbar__button">Desktop</li>
             </ul>
         </div>
