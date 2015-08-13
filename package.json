@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
+    "sass": "node-sass ./public/styles/index.scss -o ./public/styles/",
+    "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
     "postinstall": "jspm install -y"
   },
   "repository": {
@@ -30,6 +32,8 @@
     }
   },
   "dependencies": {
-    "jspm": "^0.15.7"
+    "eslint": "^1.1.0",
+    "jspm": "^0.15.7",
+    "node-sass": "^3.2.0"
   }
 }

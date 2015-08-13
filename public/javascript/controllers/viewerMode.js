@@ -1,4 +1,5 @@
 var cookieHelper = require('javascript/helper/cookie');
+var analyticsCtrl = require('javascript/controllers/analytics');
 
 var defaultMode = 'mobile';
 var desktopEnabled;
@@ -51,6 +52,7 @@ function enableDesktop() {
 
     desktopEnabled = true;
     cookieHelper.set('desktopEnabled', true);
+    analyticsCtrl.recordDesktopEnabled();
 
     if (onUpdateFn) {
         onUpdateFn();
