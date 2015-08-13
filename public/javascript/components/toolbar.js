@@ -1,11 +1,7 @@
 
 var modeCtrl = require('javascript/controllers/viewerMode');
 var viewers = require('javascript/components/viewers/viewers');
-
-var menuitems = {
-    mobile: true,
-    desktop: true
-};
+var analyticsCtrl = require('javascript/controllers/analytics');
 
 var toolbarEl;
 
@@ -31,17 +27,19 @@ function renderMenu() {
     }
 
     toolbarEl.innerHTML = '';
+    toolbarEl.appendChild(renderMenuItem('mobile'));
+    if (modeCtrl.isDesktopActive()) {
+        toolbarEl.appendChild(renderMenuItem('desktop'));
+    }
 
-    Object.keys(menuitems).forEach(function(menuItem) {
-        if (!menuitems[menuItem]) {
-            return;
-        }
-        toolbarEl.appendChild(renderMenuItem(menuItem));
-    })
 }
 
 function handleClick(e) {
     var mode = e.target.dataset.switchmode;
+
+    if (mode === "desktop") {
+        analyticsCtrl.recordDesktopViewed();
+    }
     modeCtrl.updateMode(mode);
     renderMenu();
 }
