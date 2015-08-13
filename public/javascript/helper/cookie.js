@@ -12,7 +12,7 @@ module.exports = {
     },
     get: function (n) {
         var match = n + "=", c = '', ca = document.cookie.split(';'), i;
-        for (i = 0; i < ca.length, c=ca[i]; i++) {
+        for (var i = 0; i < ca.length, c=ca[i]; i++) {
             if (c.indexOf(match) === 0) {
                 return c.substring(match.length, c.length);
             }

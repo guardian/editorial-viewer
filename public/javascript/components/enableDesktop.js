@@ -3,10 +3,10 @@ var modeCtrl = require('javascript/controllers/viewerMode');
 
 
 function init() {
-    for (i = 0; i < enableBtns.length; ++i) {
+    for (var i = 0; i < enableBtns.length; ++i) {
         enableBtns[i].addEventListener('click' , function(e){
             modeCtrl.enableDesktop();
-        })
+        });
     }
 }
 

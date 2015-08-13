@@ -1,18 +1,41 @@
 @(viewerUrl: String)
 
 @main("Viewer") {
+    <header class="top-toolbar">
+        <div class="top-toolbar__title">
+            <div class="top-toolbar__letter">
+                <span class="top-toolbar__letter-text">C</span>
+            </div>
+            <h1 class="top-toolbar__page-title">
+                <span class="top-toolbar__page-title-text">Viewer</span>
+            </h1>
+        </div>
 
-    <header>
-        <ul class="tool-bar" id="toolbar">
-        </ul>
+        <div class="top-toolbar__view-toolbar">
+            <ul class="tool-bar">
+                <li class="top-toolbar__container">
+                    <div class="top-toolbar__status--preview">preview</div>
+                </li>
+                <li class="top-toolbar__container">
+                    <div class="top-toolbar__status--live">live</div>
+                </li>
+                <li class="top-toolbar__container">
+                    <div class="top-toolbar__label">Mobile web</div>
+                    <div class="viewer-orientation">
+                        <div class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait">P</div>
+                        <div class="viewer-orientation__button" data-switchmode="mobile-landscape">L</div>
+                    </div>
+                </li>
+                <li class="top-toolbar__button--mobilecheck" data-enabledesktop="true">Mobile Preview Checked</li>
+                <li data-switchmode="desktop" class="top-toolbar__button">Desktop</li>
+            </ul>
+        </div>
     </header>
-    <ul class="viewer-orientation">
-        <li class="viewer-orientation__button is-selected" data-switchPrimaryViewer="portrait">P</li>
-        <li class="viewer-orientation__button" data-switchPrimaryViewer="landscape">L</li>
-    </ul>
-    <div class="viewers">
-        <iframe data-viewerName="primary" class="viewer" src="@viewerUrl"></iframe>
-        <iframe data-viewerName="secondary" class="viewer" src="@viewerUrl"></iframe>
+    <div class="content">
+
+        <div class="viewers">
+            <iframe data-viewerName="primary" class="viewer" src="@viewerUrl"></iframe>
+            <iframe data-viewerName="secondary" class="viewer" src="@viewerUrl"></iframe>
+        </div>
     </div>
-    <div data-enableDesktop="true">Enable Desktop</div>
 }

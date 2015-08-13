@@ -12,16 +12,14 @@ var enableDesktop = require('javascript/components/enableDesktop');
 modeCtrl.init({
     onUpdate: function() {
         viewers.render();
-        toolbar.render();
     }
 });
 
 //Initialize Components
-toolbar.init(document.getElementById('toolbar'));
+toolbar.init();
 viewers.init();
 analyticsCtrl.init();
 enableDesktop.init();
-
 
 //Track Inital View
 analyticsCtrl.recordPageOpen();

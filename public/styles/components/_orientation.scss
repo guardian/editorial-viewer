@@ -1,0 +1,20 @@
+.viewer-orientation {
+    display: inline-block;
+    padding: 4px;
+}
+
+.viewer-orientation__button {
+    display: inline-block;
+
+    cursor: pointer;
+    padding: 10px 20px;
+
+    background-color: #F0F0F0;
+
+    border-top: 3px solid #F0F0F0;
+}
+
+.viewer-orientation__button.is-selected {
+    color: #00a8ed;
+    border-top: 3px solid #00a8ed;
+}

@@ -1,10 +1,9 @@
 var cookieHelper = require('javascript/helper/cookie');
 var analyticsCtrl = require('javascript/controllers/analytics');
 
-var defaultMode = 'mobile';
+var defaultMode = 'mobile-portrait';
 var desktopEnabled;
 
-var singleViewerOrientation = 'portrait';
 var activeMode;
 
 var onUpdateFn;
@@ -27,18 +26,6 @@ function updateMode(mode) {
     if (onUpdateFn) {
         onUpdateFn();
     }
-}
-
-function setSingleViewerOrientation(value) {
-    singleViewerOrientation = value;
-
-    if (onUpdateFn) {
-        onUpdateFn();
-    }
-}
-
-function getSingleViewerOrientation(value) {
-    return singleViewerOrientation;
 }
 
 function isDesktopActive() {
@@ -67,8 +54,6 @@ module.exports = {
     init: init,
     updateMode: updateMode,
     getMode: getMode,
-    setSingleViewerOrientation: setSingleViewerOrientation,
-    getSingleViewerOrientation: getSingleViewerOrientation,
     isDesktopActive: isDesktopActive,
     enableDesktop: enableDesktop
 };

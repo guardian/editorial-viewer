@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
-    "sass": "node-sass ./public/styles/index.scss -o ./public/styles/",
+    "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
     "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
     "postinstall": "jspm install -y"
   },
@@ -24,7 +24,8 @@
     "directories": {
       "baseURL": "public"
     },
-    "dependencies": {},
+    "dependencies": {
+    },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",
       "babel-runtime": "npm:babel-runtime@^5.1.13",

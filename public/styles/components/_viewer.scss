@@ -1,0 +1,36 @@
+.viewers {
+    text-align: center;
+}
+
+.viewer {
+
+    margin: 20px;
+    vertical-align: top;
+
+    border-radius: 20px;
+    border-style: solid;
+    border-color: #F0F0F0;
+}
+
+.viewer.is-mobile-portrait {
+    border-width: 30px 20px 60px 20px;
+}
+
+.viewer.is-mobile-landscape {
+    border-width: 20px 60px 30px 30px;
+}
+
+.viewer.is-desktop {
+    position: fixed;
+    top: 51px;
+    left: 0;
+
+    width:100%;
+    min-width: 800px;
+    height: calc(100% - 51px);
+
+    margin: 0;
+    border-width: 0;
+    border-radius: 0;
+
+}

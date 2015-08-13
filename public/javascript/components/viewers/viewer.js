@@ -38,7 +38,7 @@ function applyConfig() {
 
     var viewerEls = document.querySelectorAll("[data-viewerName]");
 
-    for (i = 0; i < viewerEls.length; ++i) {
+    for (var i = 0; i < viewerEls.length; ++i) {
         var viewerEl = viewerEls[i];
         var viewportName = viewers[viewerEl.dataset.viewername];
         applyViewerStyle(viewerEl, viewportName)
@@ -54,4 +54,3 @@ function updateViewer(viewerName, viewport) {
 module.exports = {
     updateViewer: updateViewer
 }
-

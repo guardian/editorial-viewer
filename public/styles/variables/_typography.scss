@@ -1,0 +1,72 @@
+$fonts-base-path: "/assets/fonts/";
+
+@mixin gu-font-face($family, $filebase, $font-weight: 400, $font-style: normal) {
+  $file-path: $fonts-base-path + $family + "/" + $filebase;
+
+  @font-face {
+    font-family: $family;
+    src: url("#{$file-path}.eot"); // IE9 Compat Modes
+    src: url("#{$file-path}.eot?#iefix") format("embedded-opentype"), // IE6-IE8
+         url('#{$file-path}.woff2') format("woff2"), // Very Modern Browsers
+         url("#{$file-path}.woff") format("woff"), // Modern Browsers
+         url("#{$file-path}.ttf") format("truetype"), // Safari, Android, iOS
+         url("#{$file-path}.svg#GuardianAgateSans1Web") format("svg"); // Legacy iOS
+
+    font-weight: $font-weight;
+    font-style: $font-style;
+    font-stretch: normal;
+  }
+}
+
+
+// GuardianAgateSans1Web
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-Regular");
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-RegularItalic", 400, italic);
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-Bold", 700);
+@include gu-font-face("GuardianAgateSans1Web", "GuardianAgateSans1Web-BoldItalic", 700, italic);
+
+// GuardianTitlepieceWeb
+@include gu-font-face("GuardianTitlepieceWeb", "GuardianTitlepieceWeb-Regular");
+
+@mixin font-size($size, $line-height) {
+    font-size: 0px + $size;
+    font-size: 0rem + $size / 10;
+    line-height: 0px + $line-height;
+    line-height: 0rem + $line-height / 10;
+}
+
+%f-title {
+    font-family: "GuardianTitlepieceWeb", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+%f-data {
+    font-family: "GuardianAgateSans1Web", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+// Partials for font-sizes
+// fs = font scale
+%fs-data-1 {
+    @include font-size(11, 14);
+}
+
+%fs-data-2 {
+    @include font-size(12, 14);
+}
+
+%fs-data-3 {
+    @include font-size(13, 16);
+}
+
+%fs-data-4 {
+    @include font-size(14, 18);
+}
+
+%fs-data-5 {
+    @include font-size(16, 20);
+}
+
+%fs-data-6 {
+    @include font-size(18, 22);
+}
