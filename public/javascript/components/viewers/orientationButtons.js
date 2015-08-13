@@ -1,5 +1,6 @@
 var switchEls = document.querySelectorAll('[data-switchPrimaryViewer]');
 var modeCtrl = require('javascript/controllers/viewerMode');
+var analyticsCtrl = require('javascript/controllers/analytics');
 
 function resetButtonStyles() {
     var buttonEls = document.querySelectorAll('[data-switchPrimaryViewer]');
@@ -14,6 +15,7 @@ function init() {
 
     for (i = 0; i < switchEls.length; ++i) {
         switchEls[i].addEventListener('click' , function(e){
+            analyticsCtrl.recordOrientationChange();
             resetButtonStyles();
             modeCtrl.setSingleViewerOrientation(e.target.dataset.switchprimaryviewer);
             e.target.classList.add('is-selected');
@@ -38,8 +40,3 @@ module.exports =  {
     hide: hide,
     show: show
 }
-
-
-
-
-

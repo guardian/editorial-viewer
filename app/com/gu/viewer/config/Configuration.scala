@@ -22,5 +22,6 @@ object Configuration {
 
   val previewHost = getConfigString(s"previewHost.$stage")
   val liveHost = getConfigString(s"liveHost.$stage")
+  val mixpanel = getConfigString(s"mixpanel.$stage")
 
 }
