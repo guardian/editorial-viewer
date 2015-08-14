@@ -27,7 +27,7 @@ var modes = {
 };
 
 function init(options) {
-    if (cookieUtil.get('desktopEnabled')) {
+    if (cookieUtil.get('desktopEnabled') === true) {
         desktopEnabled = true;
     }
 
@@ -38,7 +38,7 @@ function init(options) {
 }
 
 function bindClicks() {
-    buttonUtil.bindClickToAttributeName('enabledesktop', enableDesktop);
+    buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
 }
 
@@ -70,22 +70,27 @@ function updateMode(newMode) {
 
 function updateDesktopVisbility() {
     if (desktopEnabled) {
+        buttonUtil.addClassToAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'display', 'inline-block');
-        buttonUtil.styleWithAttributeNameAndValue('enabledesktop', 'true', 'display', 'none');
+        buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'opacity', '1');
 
     } else {
+        buttonUtil.removeClassFromAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'display', 'none');
-        buttonUtil.styleWithAttributeNameAndValue('enabledesktop', 'true', 'display', 'inline-block');
+        buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'opacity', '0');
+
     }
 }
 
-function enableDesktop() {
+function toggleDesktop() {
     if (desktopEnabled) {
-        return;
+        desktopEnabled = false;
+        cookieUtil.set('desktopEnabled', false);
+    } else {
+        desktopEnabled = true;
+        cookieUtil.set('desktopEnabled', true);
+        analyticsCtrl.recordDesktopEnabled();
     }
-    desktopEnabled = true;
-    cookieUtil.set('desktopEnabled', true);
-    analyticsCtrl.recordDesktopEnabled();
 
     updateViews();
 }

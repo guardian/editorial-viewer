@@ -12,6 +12,11 @@
     background-color: #F0F0F0;
 
     border-top: 3px solid #F0F0F0;
+
+    &:hover {
+        border-top: 3px solid #d0d0d0;
+        background-color: #d0d0d0;
+    }
 }
 
 .viewer-orientation__button.is-selected {

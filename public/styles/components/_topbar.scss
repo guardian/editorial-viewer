@@ -87,19 +87,24 @@ $topbar-letterwidth: 20px;
         display: inline-block;
         position: relative;
 
-
         padding-top: 16px;
         padding-bottom: 16px;
-        padding-left: 12px;
+        padding-left: 15px;
         padding-right: 15px;
 
         border-top: 3px solid $c-bluegrey;
         border-right: 1px solid $c-grey-400;
 
-
         list-style: none;
 
         cursor: pointer;
+
+
+
+        &:hover {
+            border-top: 3px solid #d0d0d0;
+            background-color: #d0d0d0;
+        }
 
         &.is-selected {
             border-top: 3px solid #00a8ed;
@@ -119,6 +124,8 @@ $topbar-letterwidth: 20px;
     }
 
     &__label {
+        @extend %fs-data-3;
+
         display: inline-block;
         padding-left: 15px;
         padding-right: 10px;
@@ -139,7 +146,8 @@ $topbar-letterwidth: 20px;
 .top-toolbar__icon--desktop {
     @extend %icon__desktop;
 
-    height: 13px;
+    height: 17px;
+    margin-right: 7px;
 }
 
 .top-toolbar__icon--mobile-portrait {
@@ -155,5 +163,20 @@ $topbar-letterwidth: 20px;
 
     .is-selected & {
         @extend %icon__mobile-landscape--selected;
+    }
+}
+
+.top-toolbar__icon--checkbox {
+    @extend %icon__checkbox;
+
+    height: 18px;
+    position: relative;
+    top: -2px;
+    margin-right: 7px;
+
+    .is-checked & {
+        @extend %icon__checkbox--checked;
+
+        height: 18px;
     }
 }
