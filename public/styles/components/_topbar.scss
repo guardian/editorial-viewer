@@ -96,7 +96,6 @@ $topbar-letterwidth: 20px;
         cursor: pointer;
 
         &.is-selected {
-            color: #00a8ed;
             border-top: 3px solid #00a8ed;
         }
     }
@@ -128,5 +127,27 @@ $topbar-letterwidth: 20px;
         @extend %top-toolbar__status;
         background-color: $c-green;
         color: $c-white;
+    }
+}
+
+.top-toolbar__icon--desktop {
+    @extend %icon__desktop;
+
+    height: 13px;
+}
+
+.top-toolbar__icon--mobile-portrait {
+    @extend %icon__mobile-portrait;
+
+    .is-selected & {
+        @extend %icon__mobile-portrait--selected;
+    }
+}
+
+.top-toolbar__icon--mobile-landscape {
+    @extend %icon__mobile-landscape;
+
+    .is-selected & {
+        @extend %icon__mobile-landscape--selected;
     }
 }
