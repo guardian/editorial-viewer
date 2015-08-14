@@ -55,6 +55,14 @@ function updateMode(newMode) {
         analyticsCtrl.recordOrientationChange();
     }
 
+    if ((oldMode !== newMode) && modes[oldMode].isMobile && !modes[newMode].isMobile) {
+        analyticsCtrl.recordDesktopViewed();
+    }
+
+    if ((oldMode !== newMode) && !modes[oldMode].isMobile && modes[newMode].isMobile) {
+        analyticsCtrl.recordMobileViewed();
+    }
+
     activeMode = newMode;
 
     updateViews();

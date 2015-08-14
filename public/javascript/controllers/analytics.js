@@ -42,6 +42,14 @@ function recordDesktopEnabled() {
     window.mixpanel.track('desktopEnabled');
 }
 
+function recordMobileViewed() {
+    if (!isEnabled) {
+        return;
+    }
+
+    window.mixpanel.track('mobileViewed');
+}
+
 function recordDesktopViewed() {
     if (!isEnabled) {
         return;
@@ -56,5 +64,6 @@ module.exports = {
     recordScrollStart:       recordScrollStart,
     recordOrientationChange: recordOrientationChange,
     recordDesktopEnabled:    recordDesktopEnabled,
-    recordDesktopViewed:     recordDesktopViewed
+    recordDesktopViewed:     recordDesktopViewed,
+    recordMobileViewed:      recordMobileViewed
 };
