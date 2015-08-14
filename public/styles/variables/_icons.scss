@@ -61,3 +61,17 @@
 
     background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-port-grey-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m15.694%2019.452v-18.947c0-0.291-0.238-0.525-0.529-0.525h-10.352c-0.291%200-0.527%200.234-0.527%200.525v18.947c0%200.291%200.236%200.527%200.527%200.527h10.352c0.291%200%200.529-0.236%200.529-0.527zm-10.183-2.16v-16.061h8.959v16.061h-8.959zm3.691%201.381c0-0.461%200.373-0.834%200.832-0.834%200.461%200%200.834%200.373%200.834%200.834%200%200.459-0.373%200.832-0.834%200.832-0.459%200-0.832-0.373-0.832-0.832z%22%20fill%3D%22%23666%22%2F%3E%3C%2Fsvg%3E');
 }
+
+%icon__checkbox--checked {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20height%3D%22134%22%20width%3D%22151%22%20version%3D%221.1%22%20viewBox%3D%220%200%20151%20134%22%3E%3Ctitle%3ESlice%201%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cg%20id%3D%22checkbox-checked-Page-1%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%20fill%3D%22none%22%3E%3Cg%20id%3D%22checkbox-checked-Rectangle-1%22%20stroke-width%3D%226%22%20stroke%3D%22%236B6B6B%22%20transform%3D%22translate%283%2015%29%22%20sketch%3Atype%3D%22MSLayerGroup%22%3E%3Crect%20y%3D%220%22%20x%3D%220%22%20height%3D%22116%22%20sketch%3Atype%3D%22MSShapeGroup%22%20width%3D%22116%22%2F%3E%3C%2Fg%3E%3Cpath%20id%3D%22checkbox-checked-Path-1%22%20sketch%3Atype%3D%22MSShapeGroup%22%20stroke%3D%22%232D2D2D%22%20stroke-width%3D%2214%22%20d%3D%22m27.078%2064.789l28.736%2033.598%2087.266-90.774%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+
+%icon__checkbox {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20height%3D%22134%22%20width%3D%22151%22%20version%3D%221.1%22%20viewBox%3D%220%200%20151%20134%22%3E%3Ctitle%3ESlice%201%3C%2Ftitle%3E%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%3Cg%20id%3D%22checkbox-Page-1%22%20fill-rule%3D%22evenodd%22%20sketch%3Atype%3D%22MSPage%22%20fill%3D%22none%22%3E%3Cg%20id%3D%22checkbox-Rectangle-1%22%20stroke-width%3D%226%22%20stroke%3D%22%236B6B6B%22%20transform%3D%22translate%283%2015%29%22%20sketch%3Atype%3D%22MSLayerGroup%22%3E%3Crect%20y%3D%220%22%20x%3D%220%22%20height%3D%22116%22%20sketch%3Atype%3D%22MSShapeGroup%22%20width%3D%22116%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
