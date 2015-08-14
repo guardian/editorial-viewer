@@ -24,9 +24,11 @@
                     </div>
                 <!--</li>-->
                 @if(previewEnv == "preview") {
-                    <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile Preview Checked<!--</li>-->
+                    <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile preview checked<!--</li>-->
+                    <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
+                } else {
+                    <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                 }
-                <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
             </ul>
         </div>
     </header>

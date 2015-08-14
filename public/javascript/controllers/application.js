@@ -71,19 +71,19 @@ function updateMode(newMode) {
 function updateDesktopVisbility() {
     if (desktopEnabled) {
         buttonUtil.addClassToAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
-        buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'display', 'inline-block');
-        buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'opacity', '1');
+        buttonUtil.removeClassFromAttributeNameAndValue('switchmode', 'desktop', 'is-hidden');
 
     } else {
         buttonUtil.removeClassFromAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
-        buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'display', 'none');
-        buttonUtil.styleWithAttributeNameAndValue('switchmode', 'desktop', 'opacity', '0');
-
+        buttonUtil.addClassToAttributeNameAndValue('switchmode', 'desktop', 'is-hidden', 'none');
     }
 }
 
 function toggleDesktop() {
     if (desktopEnabled) {
+        if (activeMode === 'desktop') {
+            activeMode = defaultMode;
+        }
         desktopEnabled = false;
         cookieUtil.set('desktopEnabled', false);
     } else {
