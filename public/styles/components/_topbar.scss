@@ -23,6 +23,9 @@ $topbar-letterwidth: 20px;
     background-color: $c-bluegrey;
     border-bottom: 1px solid $c-grey-400;
 
+    white-space: nowrap;
+    overflow-y: hidden;
+
     z-index: 2;
 
     &__title {
