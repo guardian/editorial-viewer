@@ -1,0 +1,63 @@
+%icon-base {
+    content: " ";
+    width:20px;
+    height:20px;
+
+    background-repeat:no-repeat;
+    background-size: contain;
+
+    display: inline-block;
+    vertical-align: middle;
+
+}
+
+%icon__desktop--disabled {
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3Ardf%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Acc%3D%22http%3A%2F%2Fcreativecommons.org%2Fns%23%22%20xmlns%3Adc%3D%22http%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%22%20id%3D%22desktop-disabled-16-svg2%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2221%22%20width%3D%2221%22%20version%3D%221.1%22%20viewBox%3D%220%200%2021.333332%2021.333332%22%3E%3Cdefs%20id%3D%22desktop-disabled-16-defs6%22%3E%3CclipPath%20id%3D%22desktop-disabled-16-clipPath18%22%20clipPathUnits%3D%22userSpaceOnUse%22%3E%3Cpath%20id%3D%22desktop-disabled-16-path16%22%20d%3D%22m0%2016h16v-16h-16z%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg%20id%3D%22desktop-disabled-16-g10%22%20transform%3D%22matrix%281.3333%200%200%20-1.3333%200%2021.333%29%22%3E%3Cg%20id%3D%22desktop-disabled-16-g12%22%3E%3Cg%20id%3D%22desktop-disabled-16-g14%22%20clip-path%3D%22url%28%23desktop-disabled-16-clipPath18%29%22%3E%3Cpath%20id%3D%22desktop-disabled-16-path20%22%20d%3D%22m14.709%205.007h-13.418v8.758h13.418zm0.843%209.992h-15.102c-0.248%200-0.45-0.2-0.45-0.448v-10.327c0-0.248%200.202-0.45%200.45-0.45h15.102c0.248%200%200.448%200.202%200.448%200.45v10.327c0%200.248-0.2%200.448-0.448%200.448%22%20fill%3D%22%23bcbcbc%22%2F%3E%3Cg%20id%3D%22desktop-disabled-16-g22%22%20transform%3D%22translate%286.5254%2C2.8477%29%22%3E%3Cpath%20id%3D%22desktop-disabled-16-path24%22%20d%3D%22m0%200-1.843-1.841h6.634l-1.842%201.841z%22%20fill%3D%22%23bcbcbc%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+}
+
+%icon__desktop {
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3Ardf%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Acc%3D%22http%3A%2F%2Fcreativecommons.org%2Fns%23%22%20xmlns%3Adc%3D%22http%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%22%20id%3D%22desktop-grey-16-svg2%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2221%22%20width%3D%2221%22%20version%3D%221.1%22%20viewBox%3D%220%200%2021.333332%2021.333332%22%3E%3Cdefs%20id%3D%22desktop-grey-16-defs6%22%3E%3CclipPath%20id%3D%22desktop-grey-16-clipPath18%22%20clipPathUnits%3D%22userSpaceOnUse%22%3E%3Cpath%20id%3D%22desktop-grey-16-path16%22%20d%3D%22m0%2016h16v-16h-16z%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg%20id%3D%22desktop-grey-16-g10%22%20transform%3D%22matrix%281.3333%200%200%20-1.3333%200%2021.333%29%22%3E%3Cg%20id%3D%22desktop-grey-16-g12%22%3E%3Cg%20id%3D%22desktop-grey-16-g14%22%20clip-path%3D%22url%28%23desktop-grey-16-clipPath18%29%22%3E%3Cpath%20id%3D%22desktop-grey-16-path20%22%20d%3D%22m14.709%205.007h-13.418v8.758h13.418zm0.843%209.992h-15.102c-0.248%200-0.45-0.2-0.45-0.448v-10.327c0-0.248%200.202-0.45%200.45-0.45h15.102c0.248%200%200.448%200.202%200.448%200.45v10.327c0%200.248-0.2%200.448-0.448%200.448%22%20fill%3D%22%23666%22%2F%3E%3Cg%20id%3D%22desktop-grey-16-g22%22%20transform%3D%22translate%286.5254%2C2.8477%29%22%3E%3Cpath%20id%3D%22desktop-grey-16-path24%22%20d%3D%22m0%200-1.843-1.841h6.634l-1.842%201.841z%22%20fill%3D%22%23666%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')
+}
+
+%icon__mobile-landscape--selected {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-land-blue-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m19.473%204.276h-18.948c-0.291%200-0.525%200.238-0.525%200.529v10.351c0%200.291%200.234%200.527%200.525%200.527h18.947c0.291%200%200.527-0.236%200.527-0.527v-10.351c0.001-0.291-0.235-0.529-0.526-0.529zm-2.161%2010.183h-16.06v-8.959h16.061v8.959zm1.381-3.691c-0.461%200-0.834-0.373-0.834-0.832%200-0.461%200.373-0.834%200.834-0.834%200.459%200%200.832%200.373%200.832%200.834%200%200.459-0.373%200.832-0.832%200.832z%22%20fill%3D%22%2300ADEE%22%2F%3E%3C%2Fsvg%3E');
+}
+
+%icon__mobile-landscape--disabled {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-land-disabled-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m19.473%204.276h-18.948c-0.291%200-0.525%200.238-0.525%200.529v10.351c0%200.291%200.234%200.527%200.525%200.527h18.948c0.291%200%200.526-0.236%200.526-0.527v-10.351c0.001-0.291-0.235-0.529-0.526-0.529zm-2.161%2010.183h-16.06v-8.959h16.061v8.959h-0.001zm1.381-3.691c-0.461%200-0.834-0.373-0.834-0.832%200-0.461%200.373-0.834%200.834-0.834%200.459%200%200.832%200.373%200.832%200.834%200%200.459-0.373%200.832-0.832%200.832z%22%20fill%3D%22%23BCBCBC%22%2F%3E%3C%2Fsvg%3E');
+}
+
+%icon__mobile-landscape {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-land-grey-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m19.473%204.276h-18.948c-0.291%200-0.525%200.238-0.525%200.529v10.351c0%200.291%200.234%200.527%200.525%200.527h18.947c0.291%200%200.527-0.236%200.527-0.527v-10.351c0.001-0.291-0.235-0.529-0.526-0.529zm-2.161%2010.183h-16.06v-8.959h16.061v8.959zm1.381-3.691c-0.461%200-0.834-0.373-0.834-0.832%200-0.461%200.373-0.834%200.834-0.834%200.459%200%200.832%200.373%200.832%200.834%200%200.459-0.373%200.832-0.832%200.832z%22%20fill%3D%22%23666%22%2F%3E%3C%2Fsvg%3E');
+}
+%icon__mobile-portrait--selected {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-port-blue-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m15.694%2019.452v-18.947c0-0.291-0.238-0.525-0.529-0.525h-10.352c-0.291%200-0.527%200.234-0.527%200.525v18.947c0%200.291%200.236%200.527%200.527%200.527h10.352c0.291%200%200.529-0.236%200.529-0.527zm-10.183-2.16v-16.061h8.959v16.061h-8.959zm3.691%201.381c0-0.461%200.373-0.834%200.832-0.834%200.461%200%200.834%200.373%200.834%200.834%200%200.459-0.373%200.832-0.834%200.832-0.459%200-0.832-0.373-0.832-0.832z%22%20fill%3D%22%2300ADEE%22%2F%3E%3C%2Fsvg%3E');
+}
+%icon__mobile-portrait--disabled {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-port-disabled-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m15.694%2019.452v-18.947c0-0.291-0.238-0.525-0.529-0.525h-10.352c-0.291%200-0.527%200.234-0.527%200.525v18.947c0%200.291%200.236%200.527%200.527%200.527h10.352c0.291%200%200.529-0.236%200.529-0.527zm-10.183-2.16v-16.061h8.959v16.061h-8.959zm3.691%201.381c0-0.461%200.373-0.834%200.832-0.834%200.461%200%200.834%200.373%200.834%200.834%200%200.459-0.373%200.832-0.834%200.832-0.459%200-0.832-0.373-0.832-0.832z%22%20fill%3D%22%23BCBCBC%22%2F%3E%3C%2Fsvg%3E');
+}
+%icon__mobile-portrait {
+
+    @extend %icon-base;
+
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20id%3D%22mobile-port-grey-20-Layer_1%22%20xml%3Aspace%3D%22preserve%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20version%3D%221.1%22%20y%3D%220px%22%20x%3D%220px%22%20enable-background%3D%22new%200%200%2020%2020%22%3E%3Cpath%20d%3D%22m15.694%2019.452v-18.947c0-0.291-0.238-0.525-0.529-0.525h-10.352c-0.291%200-0.527%200.234-0.527%200.525v18.947c0%200.291%200.236%200.527%200.527%200.527h10.352c0.291%200%200.529-0.236%200.529-0.527zm-10.183-2.16v-16.061h8.959v16.061h-8.959zm3.691%201.381c0-0.461%200.373-0.834%200.832-0.834%200.461%200%200.834%200.373%200.834%200.834%200%200.459-0.373%200.832-0.834%200.832-0.459%200-0.832-0.373-0.832-0.832z%22%20fill%3D%22%23666%22%2F%3E%3C%2Fsvg%3E');
+}

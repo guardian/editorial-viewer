@@ -19,22 +19,21 @@
                 <li class="top-toolbar__container">
                     <div class="top-toolbar__label">Mobile web</div>
                     <div class="viewer-orientation">
-                        <div class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait">P</div>
-                        <div class="viewer-orientation__button" data-switchmode="mobile-landscape">L</div>
+                        <div class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait"><i class="top-toolbar__icon--mobile-portrait"></i></div>
+                        <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
                     </div>
                 </li>
                 @if(previewEnv == "preview") {
                     <li class="top-toolbar__button--mobilecheck" data-enabledesktop="true">Mobile Preview Checked</li>
                 }
-                <li data-switchmode="desktop" class="top-toolbar__button">Desktop</li>
+                <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop</li>
             </ul>
         </div>
     </header>
     <div class="content">
 
         <div class="viewers">
-            <iframe data-viewerName="primary" class="viewer" src="@viewerUrl"></iframe>
-            <iframe data-viewerName="secondary" class="viewer" src="@viewerUrl"></iframe>
+            <iframe id="viewer" class="viewer" src="@viewerUrl"></iframe>
         </div>
     </div>
 }
