@@ -99,8 +99,6 @@ $topbar-letterwidth: 20px;
 
         cursor: pointer;
 
-
-
         &:hover {
             border-top: 3px solid #d0d0d0;
             background-color: #d0d0d0;
@@ -108,6 +106,14 @@ $topbar-letterwidth: 20px;
 
         &.is-selected {
             border-top: 3px solid #00a8ed;
+        }
+
+        &.is-hidden {
+            display: none;
+        }
+
+        &.is-hidden.is-always-visible {
+            display: inline-block;
         }
     }
 
