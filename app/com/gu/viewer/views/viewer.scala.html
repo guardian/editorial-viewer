@@ -30,8 +30,9 @@
                     <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                 }
             </ul>
-            <div data-hidedesktopenabled="true" class="top-toolbar__view--right">To enable desktop preview you need to check the mobile view first</div>
-
+            @if(previewEnv == "preview") {
+                <div data-hidedesktopenabled="true" class="top-toolbar__view--right">To enable desktop preview you need to check the mobile view first</div>
+            }
         </div>
     </header>
     <div class="content">
