@@ -77,6 +77,20 @@ $topbar-letterwidth: 20px;
     white-space: nowrap;
 
 }
+.top-toolbar__view--right {
+
+    @extend %fs-data-3;
+
+    flex: 1 1;
+
+    padding: 18px 15px;
+
+    text-align: right;
+
+    &.is-hidden {
+        display: none;
+    }
+}
 
 
 .top-toolbar {
@@ -127,6 +141,11 @@ $topbar-letterwidth: 20px;
         border-right: 1px solid $c-grey-400;
 
         list-style: none;
+    }
+
+    &__container--right {
+        display: inline-block;
+        float: right;
     }
 
     &__label {

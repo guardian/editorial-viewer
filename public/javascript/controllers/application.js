@@ -72,10 +72,11 @@ function updateDesktopVisbility() {
     if (desktopEnabled) {
         buttonUtil.addClassToAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.removeClassFromAttributeNameAndValue('switchmode', 'desktop', 'is-hidden');
-
+        buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
     } else {
         buttonUtil.removeClassFromAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.addClassToAttributeNameAndValue('switchmode', 'desktop', 'is-hidden', 'none');
+        buttonUtil.removeClassFromAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
     }
 }
 
