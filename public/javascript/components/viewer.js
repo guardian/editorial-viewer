@@ -21,11 +21,16 @@ function updateViewer(viewportName, viewportConfig) {
     restyleViewer(isAnimated);
 }
 
+function reloadiFrame() {
+    viewerEl.src = viewerEl.src;
+}
+
 function restyleViewer(isAnimated) {
 
     var transitionEndHandler = function() {
         viewerEl.removeEventListener('transitionend', transitionEndHandler);
         viewerEl.classList.remove('is-animated');
+        reloadiFrame();
     };
 
     viewerEl.className = 'viewer is-' + currentViewPortName;
@@ -37,6 +42,10 @@ function restyleViewer(isAnimated) {
 
     viewerEl.style.width = currentViewPortConfig.width;
     viewerEl.style.height = currentViewPortConfig.height;
+
+    if (!isAnimated) {
+        reloadiFrame();
+    }
 
 }
 
