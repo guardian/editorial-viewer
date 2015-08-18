@@ -1,6 +1,6 @@
 # Editorial Viewer service
 
-Mobile first preview of Guardian content.
+Mobile first preview of Guardian content. [https://viewer.gutools.co.uk](https://viewer.gutools.co.uk)
 
 # Installation
 
@@ -19,11 +19,12 @@ $ sbt run
 
 The app will then be accessible locally at: https://viewer.local.dev-gutools.co.uk/ and articles previews are accessible at the following urls:
 
-Preview: https://viewer.local.dev-gutools.co.uk/preview/{articlepath}
-Live: https://viewer.local.dev-gutools.co.uk/live/{articlepath}
+Preview: ```https://viewer.local.dev-gutools.co.uk/preview/{articlepath}```
 
-e.g. https://viewer.local.dev-gutools.co.uk/preview/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute
-or https://viewer.local.dev-gutools.co.uk/live/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute
+Live: ```https://viewer.local.dev-gutools.co.uk/live/{articlepath}```
+
+e.g. ```https://viewer.local.dev-gutools.co.uk/preview/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute```
+or ```https://viewer.local.dev-gutools.co.uk/live/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute```
 
 
 ## Developing
