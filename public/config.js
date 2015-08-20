@@ -1,23 +1,21 @@
 System.config({
-  "transpiler": "babel",
-  "babelOptions": {
+  defaultJSExtensions: true,
+  transpiler: "babel",
+  babelOptions: {
     "optional": [
       "runtime"
     ]
   },
-  "paths": {
-    "*": "*.js",
-    "github:*": "jspm_packages/github/*.js",
-    "npm:*": "jspm_packages/npm/*.js"
-  }
-});
+  paths: {
+    "github:*": "jspm_packages/github/*",
+    "npm:*": "jspm_packages/npm/*"
+  },
 
-System.config({
-  "map": {
+  map: {
     "babel": "npm:babel-core@5.8.22",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "composer-components": "github:guardian/tools-components@1.0.8",
-    "core-js": "npm:core-js@1.0.1",
+    "core-js": "npm:core-js@1.1.1",
     "css": "github:systemjs/plugin-css@0.1.13",
     "github:angular/bower-angular-route@1.4.3": {
       "angular": "github:angular/bower-angular@1.4.3"
@@ -89,7 +87,7 @@ System.config({
       "proto-list": "npm:proto-list@1.2.4",
       "url": "github:jspm/nodelibs-url@0.1.0"
     },
-    "npm:core-js@1.0.1": {
+    "npm:core-js@1.1.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
@@ -164,4 +162,3 @@ System.config({
     }
   }
 });
-
