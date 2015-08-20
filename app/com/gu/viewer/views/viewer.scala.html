@@ -25,7 +25,7 @@
                         </div>
                     <!--</li>-->
                     @if(previewEnv == "preview") {
-                        <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile preview verified<!--</li>-->
+                        <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile checked & verified<!--</li>-->
                         <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                     } else {
                         <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
@@ -34,7 +34,7 @@
             </div>
         </div>
         @if(previewEnv == "preview") {
-            <div data-hidedesktopenabled="true" class="info-bar">To enable desktop preview you need to verify the mobile view first</div>
+            <div data-hidedesktopenabled="true" class="info-bar">To enable desktop preview you need to check and verify mobile first</div>
         }
     </header>
 
