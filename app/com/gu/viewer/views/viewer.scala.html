@@ -1,40 +1,45 @@
 @(viewerUrl: String, previewEnv: String)
 
 @main("Viewer") {
-    <header class="top-toolbar">
-        <div class="top-toolbar__title">
-            <div class="top-toolbar__letter">
-                <span class="top-toolbar__letter-text">C</span>
+    <header class="fixed-header">
+        <div class="top-toolbar">
+            <div class="top-toolbar__title">
+                <div class="top-toolbar__letter">
+                    <span class="top-toolbar__letter-text">C</span>
+                </div>
+                <h1 class="top-toolbar__page-title">
+                    <span class="top-toolbar__page-title-text">Viewer</span>
+                </h1>
             </div>
-            <h1 class="top-toolbar__page-title">
-                <span class="top-toolbar__page-title-text">Viewer</span>
-            </h1>
-        </div>
 
-        <div class="top-toolbar__view-toolbar">
-            <ul class="tool-bar">
-                <li class="top-toolbar__container">
-                    <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
-                <!--</li>-->
-                <li class="top-toolbar__container">
-                    <div class="top-toolbar__label">Mobile web</div>
-                    <div class="viewer-orientation">
-                        <div class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait"><i class="top-toolbar__icon--mobile-portrait"></i></div>
-                        <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
-                    </div>
-                <!--</li>-->
-                @if(previewEnv == "preview") {
-                    <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile preview checked<!--</li>-->
-                    <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
-                } else {
-                    <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
-                }
-            </ul>
+            <div class="top-toolbar__view-toolbar">
+                <ul class="tool-bar">
+                    <li class="top-toolbar__container">
+                        <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
+                    <!--</li>-->
+                    <li class="top-toolbar__container">
+                        <div class="top-toolbar__label">Mobile web</div>
+                        <div class="viewer-orientation">
+                            <div class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait"><i class="top-toolbar__icon--mobile-portrait"></i></div>
+                            <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
+                        </div>
+                    <!--</li>-->
+                    @if(previewEnv == "preview") {
+                        <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile preview verified<!--</li>-->
+                        <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
+                    } else {
+                        <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
+                    }
+                </ul>
+            </div>
         </div>
+        @if(previewEnv == "preview") {
+            <div data-hidedesktopenabled="true" class="info-bar">To enable desktop preview you need to check the mobile view first</div>
+        }
     </header>
-    @if(previewEnv == "preview") {
-        <div data-hidedesktopenabled="true" class="info-bar">To enable desktop preview you need to check the mobile view first</div>
-    }
+
+
+
     <div class="content">
         <div class="viewers">
             <iframe id="viewer" class="viewer" src="@viewerUrl"></iframe>
