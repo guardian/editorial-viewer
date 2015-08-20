@@ -1,5 +1,21 @@
 $topbar-titlewidth: 140px;
 $topbar-letterwidth: 20px;
+$header-height: 90px;
+
+$infobar-color: #DDEDF7;
+
+body {
+    margin-top: $header-height;
+}
+
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    z-index: 2;
+}
 
 %top-toolbar__status {
     box-sizing: border-box;
@@ -13,6 +29,7 @@ $topbar-letterwidth: 20px;
 }
 
 .top-toolbar {
+
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -192,7 +209,7 @@ $topbar-letterwidth: 20px;
 }
 
 .info-bar {
-  background-color: rgba(187, 219, 239, 0.5);
+  background-color: $infobar-color;
   text-align: center;
   padding: 10px;
 
