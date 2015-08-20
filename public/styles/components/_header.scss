@@ -1,0 +1,223 @@
+$topbar-titlewidth: 140px;
+$topbar-letterwidth: 20px;
+$header-height: 90px;
+
+$infobar-color: #DDEDF7;
+
+body {
+    margin-top: $header-height;
+}
+
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    z-index: 2;
+}
+
+%top-toolbar__status {
+    box-sizing: border-box;
+    margin: 13px;
+    padding: 3px 10px;
+    border-radius: 25px;
+
+    text-transform: uppercase;
+
+    font-weight: 700;
+}
+
+.top-toolbar {
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+
+    min-height: 50px;
+    max-height: 50px;
+    background-color: $c-bluegrey;
+    border-bottom: 1px solid $c-grey-400;
+
+    white-space: nowrap;
+    overflow-y: hidden;
+
+    z-index: 2;
+
+    &__title {
+        @extend %f-title;
+        font-size: 18px;
+        width: $topbar-titlewidth;
+        min-width: $topbar-titlewidth;
+        background-color: $c-grey-350;
+        margin: 0;
+        line-height: 50px;
+        border-right: 1px solid $c-grey-400;
+        display: flex;
+    }
+
+    &__letter,
+    &__page-title {
+        display: inline-block;
+        text-align: center;
+        line-height: 55px;
+    }
+
+    &__letter {
+        border-right: 1px solid $c-grey-300;
+        padding: 0 10px;
+        font-size: 20px;
+        flex: 0 0 $topbar-letterwidth;
+    }
+    &__page-title {
+        flex: 1 1 auto;
+        font-size: 18px;
+        margin: 0px;
+    }
+}
+
+.top-toolbar__view-toolbar {
+    // Flexbox prefixes - TODO: Autoprefixer
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+
+    // Flexbox prefixes - TODO: Autoprefixer
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    white-space: nowrap;
+
+}
+
+.top-toolbar {
+    &__button,
+    &__button--mobilecheck {
+        @extend %fs-data-3;
+
+        display: inline-block;
+        position: relative;
+
+        padding-top: 16px;
+        padding-bottom: 16px;
+        padding-left: 15px;
+        padding-right: 15px;
+
+        border-top: 3px solid $c-bluegrey;
+        border-right: 1px solid $c-grey-400;
+
+        list-style: none;
+
+        cursor: pointer;
+
+        &:hover {
+            border-top: 3px solid #d0d0d0;
+            background-color: #d0d0d0;
+        }
+
+        &.is-selected {
+            border-top: 3px solid #00a8ed;
+        }
+
+        &.is-hidden {
+            display: none;
+        }
+
+        &.is-hidden.is-always-visible {
+            display: inline-block;
+        }
+    }
+
+    &__button--mobilecheck.is-selected {
+        border-top: 3px solid $c-bluegrey;
+    }
+
+    &__container {
+        display: inline-block;
+
+        border-right: 1px solid $c-grey-400;
+
+        list-style: none;
+    }
+
+    &__container--right {
+        display: inline-block;
+        float: right;
+    }
+
+    &__label {
+        @extend %fs-data-3;
+
+        display: inline-block;
+        padding-left: 15px;
+        padding-right: 10px;
+    }
+
+    &__status--preview {
+        @extend %top-toolbar__status;
+        background-color: $c-yellow;
+    }
+
+    &__status--live {
+        @extend %top-toolbar__status;
+        background-color: $c-green;
+        color: $c-white;
+    }
+}
+
+.top-toolbar__icon--desktop {
+    @extend %icon__desktop;
+
+    height: 17px;
+    margin-right: 7px;
+}
+
+.top-toolbar__icon--mobile-portrait {
+    @extend %icon__mobile-portrait;
+
+    .is-selected & {
+        @extend %icon__mobile-portrait--selected;
+    }
+}
+
+.top-toolbar__icon--mobile-landscape {
+    @extend %icon__mobile-landscape;
+
+    .is-selected & {
+        @extend %icon__mobile-landscape--selected;
+    }
+}
+
+.top-toolbar__icon--checkbox {
+    @extend %icon__checkbox;
+
+    height: 18px;
+    position: relative;
+    top: -2px;
+    margin-right: 7px;
+
+    .is-checked & {
+        @extend %icon__checkbox--checked;
+
+        height: 18px;
+    }
+}
+
+.info-bar {
+  background-color: $infobar-color;
+  text-align: center;
+  padding: 10px;
+
+  opacity: 1;
+
+  transition: 0.3s opacity;
+
+  &.is-hidden {
+      opacity: 0;
+  }
+}
