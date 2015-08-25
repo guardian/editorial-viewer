@@ -47,35 +47,35 @@
       }
     },
       "EnvironmentMap": {
-          "CODE": {
-            "lowercase": "code",
-            "desiredCapacity": 1,
-            "maxSize": 2
-          },
           "RELEASE": {
             "lowercase": "release",
+            "instanceType": "t2.micro",
             "desiredCapacity": 1,
             "maxSize": 2
           },
           "QA": {
             "lowercase": "qa",
+            "instanceType": "t2.micro",
             "desiredCapacity": 1,
             "maxSize": 2
           },
           "TEST": {
             "lowercase": "test",
+            "instanceType": "t2.micro",
             "desiredCapacity": 1,
             "maxSize": 2
           },
           "CODE": {
             "lowercase": "code",
+            "instanceType": "t2.micro",
             "desiredCapacity": 1,
             "maxSize": 2
           },
           "PROD": {
             "lowercase": "prod",
-            "desiredCapacity": 2,
-            "maxSize": 4
+            "instanceType": "t2.small",
+            "desiredCapacity": 3,
+            "maxSize": 6
           }
       }
   },
@@ -327,7 +327,7 @@
           {"Ref": "SSHSecurityGroup"},
           {"Ref": "PingSecurityGroup"}
         ],
-        "InstanceType": "t2.micro",
+        "InstanceType": { "Fn::FindInMap" : [ "EnvironmentMap", { "Ref" : "Stage" }, "instanceType"]},
         "IamInstanceProfile": {"Ref": "ViewerInstanceProfile"},
         "UserData": {
           "Fn::Base64": {
