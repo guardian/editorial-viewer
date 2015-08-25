@@ -8,7 +8,7 @@ import com.gu.viewer.views.html
 class Application extends Controller {
 
   def index = Action {
-    Ok(html.index("Your new application is ready."))
+    Redirect("/live/uk")
   }
 
   def previewViewer = (path: String) => {
