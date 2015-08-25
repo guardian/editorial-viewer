@@ -19,12 +19,13 @@ class Application extends Controller {
     viewer("live", path, "live")
   }
 
-  def viewer(target: String, path: String, previewEnv: String) = Action {
-    val viewerDomain = target match {
+  def viewer(target: String, path: String, previewEnv: String) = Action { request =>
+    val protocol = if (request.secure) "https" else "http"
+    val viewerHost = target match {
       case "preview" => Configuration.previewHost
       case _ => Configuration.liveHost
     }
-    val viewerUrl = s"$viewerDomain/$path"
+    val viewerUrl = s"$protocol://$viewerHost/$path"
 
     Ok(html.viewer(viewerUrl, previewEnv))
   }
