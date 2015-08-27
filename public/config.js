@@ -1,4 +1,5 @@
 System.config({
+  baseURL: "/assets",
   defaultJSExtensions: true,
   transpiler: "babel",
   babelOptions: {
