@@ -1,5 +1,7 @@
 var isEnabled = false;
 
+var pageOpenTime = Date.now();
+
 function init() {
     if (!window.mixpanel) {
         console.log('No mixpanel detected');
@@ -37,6 +39,10 @@ function recordOrientationChange() {
 function recordDesktopEnabled() {
     if (!isEnabled) {
         return;
+    }
+    
+    if (pageOpenTime) {
+        console.log(Date.now() - pageOpenTime);
     }
 
     window.mixpanel.track('desktopEnabled');

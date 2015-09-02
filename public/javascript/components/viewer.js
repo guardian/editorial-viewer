@@ -24,6 +24,9 @@ function updateViewer(viewportName, viewportConfig) {
 function reloadiFrame() {
     viewerEl.src = viewerEl.src;
 }
+function updateUrl(url) {
+    viewerEl.src = url;
+}
 
 function restyleViewer(isAnimated) {
 
@@ -50,5 +53,6 @@ function restyleViewer(isAnimated) {
 }
 
 module.exports = {
-    updateViewer: updateViewer
+    updateViewer: updateViewer,
+    updateUrl: updateUrl
 };
