@@ -25,9 +25,7 @@ class Application extends Controller {
       case "preview" => Configuration.previewHost
       case _ => Configuration.liveHost
     }
-    val anchor = "#top"
-
-    val viewerUrl = s"$protocol://$viewerHost/$path$anchor"
+    val viewerUrl = s"$protocol://$viewerHost/$path"
 
     Ok(html.viewer(viewerUrl, previewEnv))
   }
