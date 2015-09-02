@@ -26,8 +26,9 @@ class Application extends Controller {
       case _ => Configuration.liveHost
     }
     val viewerUrl = s"$protocol://$viewerHost/$path"
+    val composerUrl = Configuration.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, previewEnv))
+    Ok(html.viewer(viewerUrl, previewEnv, composerUrl))
   }
 
 }
