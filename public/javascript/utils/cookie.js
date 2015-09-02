@@ -17,7 +17,6 @@ module.exports = {
                 return c.substring(match.length, c.length);
             }
         }
-
         return null;
     },
     delete: function (n) {
