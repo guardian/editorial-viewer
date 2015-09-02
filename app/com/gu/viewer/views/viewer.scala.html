@@ -1,12 +1,14 @@
-@(viewerUrl: String, previewEnv: String)
+@(viewerUrl: String, previewEnv: String, composerUrl: String)
 
 @main("Viewer") {
     <header class="fixed-header">
         <div class="top-toolbar">
             <div class="top-toolbar__title">
-                <div class="top-toolbar__letter">
-                    <span class="top-toolbar__letter-text">C</span>
-                </div>
+                <a href="@composerUrl">
+                  <div class="top-toolbar__letter">
+                      <span class="top-toolbar__letter-text">C</span>
+                  </div>
+                </a>
                 <h1 class="top-toolbar__page-title">
                     <span class="top-toolbar__page-title-text">Viewer</span>
                 </h1>
