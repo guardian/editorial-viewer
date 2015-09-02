@@ -13,13 +13,15 @@ object Configuration {
       sys.error(s"Config key required: $key")
     }
 
+
   lazy val stage: String = AWS.readTag("Stage") match {
     case Some(value) => value
     case None => "DEV" // default to DEV stage
   }
 
+
   val previewHost = getConfigString(s"previewHost.$stage")
   val liveHost = getConfigString(s"liveHost.$stage")
   val mixpanel = getConfigString(s"mixpanel.$stage")
-  val composerReturn = getConfigString(s"composerReturnUri.$stage")
+
 }
