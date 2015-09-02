@@ -1,11 +1,28 @@
 var isEnabled = false;
 
+var pageOpenTime = Date.now();
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
+
 function init() {
     if (!window.mixpanel) {
         console.log('No mixpanel detected');
     }
 
     isEnabled = true;
+
+    var unique = guid()
+    mixpanel.identify(unique);
+
     //TODO Generate session parameter?
     //TODO Get user info?
 }
@@ -39,7 +56,14 @@ function recordDesktopEnabled() {
         return;
     }
 
+    if (pageOpenTime) {
+        var timeTaken = Math.floor((Date.now() - pageOpenTime) / 1000)
+        pageOpenTime = null;
+        mixpanel.people.set({"timeTakenToEnable": timeTaken})
+    }
+
     window.mixpanel.track('desktopEnabled');
+
 }
 
 function recordMobileViewed() {
