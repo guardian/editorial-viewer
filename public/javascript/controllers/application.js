@@ -27,7 +27,7 @@ var modes = {
 };
 
 function init(options) {
-    if (cookieUtil.get('desktopEnabled') === true) {
+    if (cookieUtil.get('desktopEnabled') === "true") {
         desktopEnabled = true;
     }
 
