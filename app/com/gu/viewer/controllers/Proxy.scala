@@ -7,7 +7,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play.current
 import play.api.Logger
 import play.api.libs.ws.{WSResponse, WSClient, WSRequest}
-import play.api.mvc.{Controller, Cookie, Cookies, Action, Result}
+import play.api.mvc.{Controller, Cookie, Cookies, Action, Result, RequestHeader}
 import scala.concurrent.Future
 
 
@@ -22,12 +22,14 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
   val log = Logger.logger
 
-  val queryRegex = "(\\?.*redirect_uri=)([^&]+)".r
-
   val previewLoginUrl = s"http://${Configuration.previewHost}/login"
 
+  def loginCallbackUrl(implicit request: RequestHeader) = {
+    val protocol = if (request.secure) "https" else "http"
+    s"$protocol://${request.host}${routes.Proxy.previewAuthCallback()}"
+  }
 
-  def proxy(service: String, path: String) = Action.async { request =>
+  def proxy(service: String, path: String) = Action.async { implicit request =>
     val protocol = if (request.secure) "https" else "http"
     val serviceHost = service match {
       case "preview" => Configuration.previewHost
@@ -37,11 +39,11 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
 
     def doPreviewAuth() = {
-      val loginCallbackUrl = s"$protocol://${request.host}${routes.Proxy.previewAuthCallback()}"
       val proxyRequestUrl = previewLoginUrl
 
       log.info(s"Proxy Preview auth to: $proxyRequestUrl")
       ws.url(proxyRequestUrl)
+        .withQueryString("redirect-url" -> loginCallbackUrl)
         .withFollowRedirects(follow = false)
         .withHeaders("Content-Length" -> "0")
         .post(Map.empty[String, Seq[String]])
@@ -50,7 +52,6 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
           (response.status, response.header("Location")) match {
             case (303, Some(loc)) => {
-              val newLocation = queryRegex.replaceAllIn(loc, m => m.group(1) + URLEncoder.encode(loginCallbackUrl, "utf8"))
 
               // store new preview session from response
               val cookies = Cookies.fromSetCookieHeader(response.header("Set-Cookie"))
@@ -125,9 +126,9 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
    * Proxy all request params and Preview session cookie to Preview authentication callback.
    * Store response cookies into Viewer's play session.
    */
-  def previewAuthCallback = Action.async { request =>
+  def previewAuthCallback = Action.async { implicit request =>
 
-    val queryParams = request.queryString.flatMap( q => q._2.map { v => q._1 -> v } )
+    val queryParams = request.queryString.flatMap( q => q._2.map { v => q._1 -> v } ).toSeq :+ ("redirect-url" -> loginCallbackUrl)
 
     def handleResponse(response: WSResponse): Result = {
       val newCookies: Map[String, Cookie] = response.allHeaders.get("Set-Cookie") match {
@@ -168,7 +169,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
         log.info(s"Proxy preview auth callback to: $proxyUrl")
 
         ws.url(proxyUrl)
-          .withQueryString(queryParams.toSeq: _*)
+          .withQueryString(queryParams: _*)
           .withHeaders("Cookie" -> Cookies.encodeCookieHeader( Seq( Cookie(COOKIE_PREVIEW_SESSION, session, path = "/", httpOnly = true ) ) ) )
           .withFollowRedirects(follow = false)
           .withRequestTimeout(30000)
