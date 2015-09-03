@@ -13,6 +13,12 @@ import scala.concurrent.Future
 
 class Proxy @Inject() (ws: WSClient) extends Controller {
 
+  private val COOKIE_PREVIEW_SESSION = "PLAY_SESSION"
+  private val COOKIE_PREVIEW_AUTH = "GU_PV_AUTH"
+
+  private val SESSION_KEY_PREVIEW_SESSION = "preview-session"
+  private val SESSION_KEY_PREVIEW_AUTH = "preview-auth"
+
   val log = Logger.logger
 
   val queryRegex = "(\\?.*redirect_uri=)([^&]+)".r
@@ -47,11 +53,11 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
               // store new preview session from response
               val cookies = Cookies.fromSetCookieHeader(response.header("Set-Cookie"))
-              val previewSession = cookies.get("PLAY_SESSION").map( c => "preview-session" -> c.value )
+              val previewSessionOpt = cookies.get(COOKIE_PREVIEW_SESSION).map( c => SESSION_KEY_PREVIEW_SESSION -> c.value )
 
-              previewSession match {
+              previewSessionOpt match {
                 case Some(session) => Redirect(newLocation)
-                  .withSession(request.session - "preview-session" - "preview-auth" + session)
+                  .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session)
 
                 case None => BadGateway("Unexpected response from preview login request")
               }
@@ -65,7 +71,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
     def doPreviewProxy(session: String, auth: String) = {
       log.info(s"Proxy to preview: $url")
 
-      val cookies = Seq("PLAY_SESSION" -> session, "GU_PV_AUTH" -> auth).map(c => Cookie(c._1, c._2))
+      val cookies = Seq(COOKIE_PREVIEW_SESSION -> session, COOKIE_PREVIEW_AUTH -> auth).map(c => Cookie(c._1, c._2))
       val proxyRequest: WSRequest = ws.url(url)
         .withFollowRedirects(follow = false)
         .withHeaders("Cookie" -> Cookies.encodeCookieHeader(cookies))
@@ -96,7 +102,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
 
     if (service == "preview") {
-      request.session.get("preview-session") -> request.session.get("preview-auth") match {
+      request.session.get(SESSION_KEY_PREVIEW_SESSION) -> request.session.get(SESSION_KEY_PREVIEW_AUTH) match {
         case (Some(session), Some(auth)) => doPreviewProxy(session, auth)
         case _ => doPreviewAuth()
       }
@@ -133,11 +139,11 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
       val responseCookies = Cookies.fromCookieHeader(response.header("Cookie"))
 
-      val sessionOpt = newCookies.get("PLAY_SESSION")
-        .orElse(responseCookies.get("PLAY_SESSION"))
-        .map(c => "preview-session" -> c.value)
+      val sessionOpt = newCookies.get(COOKIE_PREVIEW_SESSION)
+        .orElse(responseCookies.get(COOKIE_PREVIEW_SESSION))
+        .map(c => SESSION_KEY_PREVIEW_SESSION -> c.value)
 
-      val authOpt = newCookies.get("GU_PV_AUTH").map(c => "preview-auth" -> c.value)
+      val authOpt = newCookies.get(COOKIE_PREVIEW_AUTH).map(c => SESSION_KEY_PREVIEW_AUTH -> c.value)
 
 
       (sessionOpt, authOpt) match {
@@ -149,7 +155,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
       }
     }
 
-    request.session.get("preview-session") match {
+    request.session.get(SESSION_KEY_PREVIEW_SESSION) match {
       case None => Future.successful(BadRequest("Preview session not established"))
 
       case Some(session) => {
@@ -158,7 +164,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
         ws.url(proxyUrl)
           .withQueryString(queryParams.toSeq: _*)
-          .withHeaders("Cookie" -> Cookies.encodeCookieHeader( Seq( Cookie("PLAY_SESSION", session, path = "/", httpOnly = true ) ) ) )
+          .withHeaders("Cookie" -> Cookies.encodeCookieHeader( Seq( Cookie(COOKIE_PREVIEW_SESSION, session, path = "/", httpOnly = true ) ) ) )
           .withFollowRedirects(follow = false)
           .withRequestTimeout(30000)
           .get()
