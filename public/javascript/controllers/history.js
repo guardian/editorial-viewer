@@ -4,18 +4,24 @@ function init() {
     //Bind to history change (for back buttons!)
     window.addEventListener('popstate', onPopState);
 
+    //Bind to viewer load event (Probably want to do this through the viewer component)
     document.getElementById('viewer').addEventListener('load', function(e){
-        addLocationHistory(e.target.contentWindow.location.pathname);
+        //Validate it is an actual page (not blank, chrome error)
+        var iframeLocation = e.target.contentWindow.location;
+
+        if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
+            addLocationHistory(e.target.contentWindow.location.pathname);
+        }
     })
 }
 
 function onPopState(e){
     //TODO REMOVE HARDCODED PREVIEW
-    viewer.updateUrl('http://preview.guardian.com/' + e.state.path)
+    viewer.updateUrl('http://preview.gutools.co.uk' + e.state.path)
 }
 
 function addLocationHistory(path) {
-    //TODO REMOVE HARDCODED PREVIEW
+    //TODO REMOVE HARDCODED VIEWER URL
     window.history.pushState({path: path}, "", "/preview" + path);
 }
 
