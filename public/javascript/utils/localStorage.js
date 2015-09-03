@@ -1,6 +1,6 @@
 var localforage = require('localforage');
 
-var ENABLED_PAGES_MAX = 30;
+var ENABLED_PAGES_MAX = 100;
 var ENABLED_PAGES_KEY = 'desktopEnabled'
 
 function getEnabledHrefs() {
