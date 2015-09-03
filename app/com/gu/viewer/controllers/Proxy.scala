@@ -29,8 +29,10 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
     def doPreviewAuth() = {
       val loginCallbackUrl = s"$protocol://${request.host}${routes.Proxy.previewAuthCallback()}"
+      val proxyRequestUrl = s"http://${Configuration.previewHost}/login"
 
-      ws.url(s"http://${Configuration.previewHost}/login")
+      log.info(s"Proxy Preview auth to: $proxyRequestUrl")
+      ws.url(proxyRequestUrl)
         .withFollowRedirects(follow = false)
         .withHeaders("Content-Length" -> "0")
         .post(Map.empty[String, Seq[String]])
@@ -57,15 +59,17 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
       }
     }
 
+
     def doPreviewProxy(session: String, auth: String) = {
-      log.info("Do preview proxy")
+      log.info(s"Proxy to preview: $url")
+
       val cookies = Seq("PLAY_SESSION" -> session, "GU_PV_AUTH" -> auth).map(c => Cookie(c._1, c._2))
       val proxyRequest: WSRequest = ws.url(url)
         .withFollowRedirects(follow = false)
         .withHeaders("Cookie" -> Cookies.encodeCookieHeader(cookies))
 
+      // TODO handle expired preview session
       proxyRequest.get().map { response =>
-
         Ok(response.body)
           .withSession(request.session)
 
@@ -73,28 +77,17 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
       }
     }
 
-    def doProxy() = {
-      log.info("Do normal proxy")
-      val proxyRequest: WSRequest = ws.url(url)
 
-      proxyRequest.get().map { response =>
+    def doProxy() = {
+      log.info(s"Proxy to: $url")
+
+      ws.url(url).get().map { response =>
         Ok(response.body)
           .as(response.header("Content-Type").getOrElse("text/plain"))
       }
     }
 
     if (service == "preview") {
-      // Cold start
-      //  - no preview-session in cookie
-      //  - POST to preview/login
-      //  - follow redirects for google login
-      //  - auth callback redirects back to original request
-
-      //  - 303 response from preview (expired)
-      //  - POST to preview/login
-      //  - follow redirects for google login
-      //  - auth callback redirects back to original request
-
       request.session.get("preview-session") -> request.session.get("preview-auth") match {
         case (Some(session), Some(auth)) => doPreviewProxy(session, auth)
         case _ => doPreviewAuth()
@@ -151,13 +144,18 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
     request.session.get("preview-session") match {
       case None => Future.successful(BadRequest("Preview session not established"))
 
-      case Some(session) => ws.url(s"http://${Configuration.previewHost}/oauth2callback")
-        .withQueryString(queryParams.toSeq: _*)
-        .withHeaders("Cookie" -> Cookies.encodeCookieHeader( Seq( Cookie("PLAY_SESSION", session, path = "/", httpOnly = true ) ) ) )
-        .withFollowRedirects(follow = false)
-        .withRequestTimeout(30000)
-        .get()
-        .map(handleResponse)
+      case Some(session) => {
+        val proxyUrl = s"http://${Configuration.previewHost}/oauth2callback"
+        log.info(s"Proxy preview auth callback to: $proxyUrl")
+
+        ws.url(proxyUrl)
+          .withQueryString(queryParams.toSeq: _*)
+          .withHeaders("Cookie" -> Cookies.encodeCookieHeader( Seq( Cookie("PLAY_SESSION", session, path = "/", httpOnly = true ) ) ) )
+          .withFollowRedirects(follow = false)
+          .withRequestTimeout(30000)
+          .get()
+          .map(handleResponse)
+      }
     }
   }
 
