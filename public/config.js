@@ -11,6 +11,31 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+  bundles: {
+    "build.js": [
+      "javascript/main.js",
+      "javascript/controllers/application.js",
+      "javascript/controllers/analytics.js",
+      "javascript/utils/button.js",
+      "javascript/utils/localStorage.js",
+      "javascript/components/viewer.js",
+      "npm:localforage@1.2.10",
+      "npm:localforage@1.2.10/src/localforage",
+      "npm:promise@5.0.0",
+      "npm:localforage@1.2.10/src/drivers/localstorage",
+      "npm:localforage@1.2.10/src/drivers/websql",
+      "npm:localforage@1.2.10/src/drivers/indexeddb",
+      "npm:promise@5.0.0/index",
+      "npm:localforage@1.2.10/src/utils/serializer",
+      "npm:asap@1.0.0",
+      "npm:promise@5.0.0/core",
+      "npm:asap@1.0.0/asap",
+      "github:jspm/nodelibs-process@0.1.1",
+      "github:jspm/nodelibs-process@0.1.1/index",
+      "npm:process@0.10.1",
+      "npm:process@0.10.1/browser"
+    ]
+  },
 
   map: {
     "babel": "npm:babel-core@5.8.22",
@@ -18,6 +43,7 @@ System.config({
     "composer-components": "github:guardian/tools-components@1.0.8",
     "core-js": "npm:core-js@1.1.1",
     "css": "github:systemjs/plugin-css@0.1.13",
+    "localforage": "npm:localforage@1.2.10",
     "github:angular/bower-angular-route@1.4.3": {
       "angular": "github:angular/bower-angular@1.4.3"
     },
@@ -66,6 +92,9 @@ System.config({
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
+    "npm:asap@1.0.0": {
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
     },
@@ -111,6 +140,11 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
+    "npm:localforage@1.2.10": {
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "promise": "npm:promise@5.0.0"
+    },
     "npm:mkdirp@0.5.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "minimist": "npm:minimist@0.0.8",
@@ -127,6 +161,9 @@ System.config({
     },
     "npm:path-browserify@0.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:promise@5.0.0": {
+      "asap": "npm:asap@1.0.0"
     },
     "npm:punycode@1.3.2": {
       "process": "github:jspm/nodelibs-process@0.1.1"
