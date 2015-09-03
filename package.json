@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
-    "bundlejs": "jspm bundle javascript/main --inject --minify",
+    "bundlejs": "jspm bundle javascript/main --inject --minify --mangle",
     "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
     "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
     "postinstall": "jspm install -y && npm run sass && npm run bundlejs"
@@ -30,7 +30,9 @@
     "directories": {
       "baseURL": "public"
     },
-    "dependencies": {},
+    "dependencies": {
+      "localforage": "npm:localforage@^1.2.10"
+    },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.22",
       "babel-runtime": "npm:babel-runtime@^5.8.20",

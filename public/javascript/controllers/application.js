@@ -1,4 +1,4 @@
-var cookieUtil = require('javascript/utils/cookie');
+var localStorageUtil = require('javascript/utils/localStorage');
 var buttonUtil = require('javascript/utils/button');
 
 var analyticsCtrl = require('javascript/controllers/analytics');
@@ -27,14 +27,22 @@ var modes = {
 };
 
 function init(options) {
-    if (cookieUtil.get('desktopEnabled') === "true") {
-        desktopEnabled = true;
-    }
 
     activeMode = defaultMode;
 
     bindClicks();
     updateViews();
+    checkDesktopEnabled();
+
+}
+
+function checkDesktopEnabled() {
+    localStorageUtil.getEnabledHrefs().then(function(hrefs){
+        if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
+            desktopEnabled = true;
+            updateViews();
+        }
+    });
 }
 
 function bindClicks() {
@@ -86,10 +94,10 @@ function toggleDesktop() {
             activeMode = defaultMode;
         }
         desktopEnabled = false;
-        cookieUtil.set('desktopEnabled', false);
+        localStorageUtil.removeEnabledHref(window.location.href);
     } else {
         desktopEnabled = true;
-        cookieUtil.set('desktopEnabled', true);
+        localStorageUtil.addEnabledHref(window.location.href);
         analyticsCtrl.recordDesktopEnabled();
     }
 
