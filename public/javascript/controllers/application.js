@@ -40,6 +40,7 @@ function init(options) {
 function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
+    buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
 }
 
 function updateViews() {
