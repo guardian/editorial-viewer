@@ -18,6 +18,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
   private val SESSION_KEY_PREVIEW_SESSION = "preview-session"
   private val SESSION_KEY_PREVIEW_AUTH = "preview-auth"
+  private val SESSION_KEY_RETURN_URL = "preview-auth-return-url"
 
   val log = Logger.logger
 
@@ -47,8 +48,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
         .map { response =>
           log.info("Preview auth Response: " + response.toString + response.allHeaders + response.body)
 
-          response.header("Location") match {
-            case Some(loc) => {
+          (response.status, response.header("Location")) match {
+            case (303, Some(loc)) => {
               val newLocation = queryRegex.replaceAllIn(loc, m => m.group(1) + URLEncoder.encode(loginCallbackUrl, "utf8"))
 
               // store new preview session from response
@@ -56,13 +57,16 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
               val previewSessionOpt = cookies.get(COOKIE_PREVIEW_SESSION).map( c => SESSION_KEY_PREVIEW_SESSION -> c.value )
 
               previewSessionOpt match {
-                case Some(session) => Redirect(newLocation)
-                  .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session)
+                case Some(session) => {
+                  val returnUrl = SESSION_KEY_RETURN_URL -> request.uri
+                  Redirect(loc)
+                    .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session + returnUrl)
+                }
 
                 case None => BadGateway("Unexpected response from preview login request")
               }
             }
-            case None => BadGateway
+            case (status, _) => BadGateway(s"Unexpected response status from preview: $status")
           }
       }
     }
@@ -123,8 +127,6 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
    */
   def previewAuthCallback = Action.async { request =>
 
-    // TODO: redirect to original URL
-
     val queryParams = request.queryString.flatMap( q => q._2.map { v => q._1 -> v } )
 
     def handleResponse(response: WSResponse): Result = {
@@ -147,8 +149,11 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
 
       (sessionOpt, authOpt) match {
-        case (Some(sessionValue), Some(authValue)) => Redirect("/proxy/preview/uk")
-          .withSession(request.session + sessionValue + authValue)
+        case (Some(sessionValue), Some(authValue)) => {
+          val returnUrl = request.session.get(SESSION_KEY_RETURN_URL).getOrElse("/proxy/preview/uk")
+          Redirect(returnUrl)
+            .withSession(request.session - SESSION_KEY_RETURN_URL + sessionValue + authValue)
+        }
         case (None, None) => BadGateway("Bad response from preview auth callback")
         case (None, _) => BadGateway("Preview Session cookie not returned")
         case (_, None) => BadGateway("Preview Auth cookie not returned")
