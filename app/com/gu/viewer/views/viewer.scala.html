@@ -17,7 +17,11 @@
             <div class="top-toolbar__view-toolbar">
                 <ul class="tool-bar">
                     <li class="top-toolbar__container">
-                        <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
+                        @if(previewEnv == "preview") {
+                            <div class="top-toolbar__status--@previewEnv">DRAFT</div>
+                        } else {
+                            <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
+                        }
                     <!--</li>-->
                     <li class="top-toolbar__container">
                         <div class="top-toolbar__label">Mobile web</div>
