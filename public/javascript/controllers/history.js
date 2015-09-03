@@ -14,27 +14,19 @@ function init() {
 }
 
 function onPopState(e){
-    //TODO REMOVE HARDCODED PREVIEW
-    
-    currentPath = e.state.viewerHref;
     viewer.updateUrl(e.state.viewerHref)
 }
 
 function addLocationHistory(location) {
 
-    var path = location.pathname;
-    var href = location.href;
+    //TODO REMOVE HARDCODED PREVIEW URL
+    var newPath = '/preview' + location.pathname;
+    var viewerHref = location.href;
 
-    //Check not already there, or not first load.
-
-    if (!currentPath || currentPath === href) {
-        currentPath = href;
-        return;
+    if (newPath !== window.location.pathname) {
+        window.history.pushState({viewerHref: viewerHref}, "", newPath);
     }
 
-    //TODO REMOVE HARDCODED PREVIEW URL
-    window.history.pushState({viewerHref: href}, "", '/preview' + path);
-    currentPath = href;
 }
 
 module.exports = {
