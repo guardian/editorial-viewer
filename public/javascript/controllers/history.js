@@ -10,7 +10,7 @@ function init() {
         var iframeLocation = e.target.contentWindow.location;
 
         if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
-            addLocationHistory(e.target.contentWindow.location.pathname);
+            addLocationHistory(iframeLocation.pathname);
         }
     })
 }
