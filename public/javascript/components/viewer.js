@@ -3,6 +3,7 @@ var viewerEl = document.getElementById('viewer');
 
 var currentViewPortConfig;
 var currentViewPortName;
+var currentViewerUrl;
 
 function updateViewer(viewportName, viewportConfig) {
 
@@ -19,13 +20,26 @@ function updateViewer(viewportName, viewportConfig) {
     currentViewPortName = viewportName;
 
     restyleViewer(isAnimated);
+
+    viewerEl.addEventListener('load', function(e){
+        var iframeLocation = e.target.contentWindow.location;
+        if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
+            currentViewerUrl = iframeLocation.href;
+        }
+    });
 }
 
 function reloadiFrame() {
-    viewerEl.src = viewerEl.src;
+    if (!currentViewerUrl) {
+        viewerEl.src = viewerEl.src;
+    } else {
+        viewerEl.src = currentViewerUrl;
+    }
 }
+
 function updateUrl(url) {
     viewerEl.src = url;
+    currentViewerUrl = url;
 }
 
 function restyleViewer(isAnimated) {
