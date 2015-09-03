@@ -17,6 +17,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
   val queryRegex = "(\\?.*redirect_uri=)([^&]+)".r
 
+  val previewLoginUrl = s"http://${Configuration.previewHost}/login"
+
 
   def proxy(service: String, path: String) = Action.async { request =>
     val protocol = if (request.secure) "https" else "http"
@@ -29,7 +31,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
     def doPreviewAuth() = {
       val loginCallbackUrl = s"$protocol://${request.host}${routes.Proxy.previewAuthCallback()}"
-      val proxyRequestUrl = s"http://${Configuration.previewHost}/login"
+      val proxyRequestUrl = previewLoginUrl
 
       log.info(s"Proxy Preview auth to: $proxyRequestUrl")
       ws.url(proxyRequestUrl)
@@ -68,12 +70,17 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
         .withFollowRedirects(follow = false)
         .withHeaders("Cookie" -> Cookies.encodeCookieHeader(cookies))
 
-      // TODO handle expired preview session
-      proxyRequest.get().map { response =>
-        Ok(response.body)
-          .withSession(request.session)
+      proxyRequest.get().flatMap { response =>
+        (response.status, response.header("Location")) match {
+          case (303, Some(`previewLoginUrl`)) => doPreviewAuth()
+          case _ => Future.successful {
+            Ok(response.body)
+              .withSession(request.session)
 
-          .as(response.header("Content-Type").getOrElse("text/plain"))
+              .as(response.header("Content-Type").getOrElse("text/plain"))
+          }
+        }
+
       }
     }
 
@@ -86,6 +93,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
           .as(response.header("Content-Type").getOrElse("text/plain"))
       }
     }
+
 
     if (service == "preview") {
       request.session.get("preview-session") -> request.session.get("preview-auth") match {
