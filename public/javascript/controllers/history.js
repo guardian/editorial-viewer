@@ -1,5 +1,6 @@
 var viewer = require('../components/viewer');
-var currentPath;
+
+var initialHref;
 
 function init() {
     window.addEventListener('popstate', onPopState);
@@ -8,28 +9,33 @@ function init() {
         var iframeLocation = e.target.contentWindow.location;
 
         if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
-            addLocationHistory(iframeLocation);
+            //Needs to be replace (not push) as the iframe has added it's own history entry (shakes fist).
+            replaceLocationHistory(iframeLocation);
         }
     })
 }
 
 function onPopState(e){
-    viewer.updateUrl(e.state.viewerHref)
+    if (e.state && e.state.viewerHref) {
+        viewer.updateUrl(e.state.viewerHref)
+    } else if (initialHref) {
+        viewer.updateUrl(initialHref)
+    }
 }
 
-function addLocationHistory(location) {
+function replaceLocationHistory(location) {
 
-    //TODO REMOVE HARDCODED PREVIEW URL
-    var newPath = '/preview' + location.pathname;
-    var viewerHref = location.href;
-
-    if (newPath !== window.location.pathname) {
-        window.history.pushState({viewerHref: viewerHref}, "", newPath);
+    if (!initialHref) {
+        initialHref = location.href;
     }
 
+    var newPath = window._baseAppUrl + location.pathname;
+    var viewerHref = location.href;
+
+    window.history.replaceState({viewerHref: viewerHref}, "", newPath);
 }
 
 module.exports = {
     init: init,
-    updateUrl: addLocationHistory
+    updateUrl: replaceLocationHistory
 };
