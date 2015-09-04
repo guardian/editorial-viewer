@@ -28,6 +28,10 @@ body {
     font-weight: 700;
 }
 
+.tool-bar {
+    width: 100%;
+}
+
 .top-toolbar {
 
     display: -webkit-box;
@@ -101,7 +105,8 @@ body {
 
 .top-toolbar {
     &__button,
-    &__button--mobilecheck {
+    &__button--mobilecheck,
+    &__button--right {
         @extend %fs-data-3;
 
         display: inline-block;
@@ -121,6 +126,8 @@ body {
         list-style: none;
 
         cursor: pointer;
+
+
 
         &:hover {
             border-top: 3px solid #d0d0d0;
@@ -142,6 +149,14 @@ body {
 
     &__button--mobilecheck.is-selected {
         border-top: 3px solid $c-bluegrey;
+    }
+
+    &__button--right {
+
+        float: right;
+
+        border-left: 1px solid $c-grey-400;
+        border-right-width: 0;
     }
 
     &__container {
@@ -183,6 +198,13 @@ body {
 
 .top-toolbar__icon--desktop {
     @extend %icon__desktop;
+
+    height: 17px;
+    margin-right: 7px;
+}
+
+.top-toolbar__icon--printer {
+    @extend %icon__printer;
 
     height: 17px;
     margin-right: 7px;
