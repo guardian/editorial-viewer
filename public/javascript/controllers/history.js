@@ -1,4 +1,5 @@
 var viewer = require('../components/viewer');
+var applicationController = require('./application.js');
 
 var initialHref;
 
@@ -32,7 +33,12 @@ function replaceLocationHistory(location) {
     var newPath = window._baseAppUrl + location.pathname;
     var viewerHref = location.href;
 
-    window.history.replaceState({viewerHref: viewerHref}, "", newPath);
+    if (newPath !== window.location.pathname) {
+        window.history.replaceState({viewerHref: viewerHref}, "", newPath);
+        console.log("calling cde")
+        applicationController.checkDesktopEnabled();
+    }
+
 }
 
 module.exports = {

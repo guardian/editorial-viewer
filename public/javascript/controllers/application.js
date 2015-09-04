@@ -37,11 +37,22 @@ function init(options) {
 }
 
 function checkDesktopEnabled() {
+    console.log("check desktop enabled for: ", window.location.href)
     localStorageUtil.getEnabledHrefs().then(function(hrefs){
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
             desktopEnabled = true;
+        } else {
+            desktopEnabled = false;
+        }
+
+        if (activeMode !== 'desktop') {
+            //Only remove/add button
+            updateDesktopVisbility();
+        } else {
+            //Full update including iframe refresh
             updateViews();
         }
+
     });
 }
 
@@ -101,9 +112,10 @@ function toggleDesktop() {
         analyticsCtrl.recordDesktopEnabled();
     }
 
-    updateViews();
+    updateDesktopVisbility();
 }
 
 module.exports = {
-    init: init
+    init: init,
+    checkDesktopEnabled: checkDesktopEnabled
 };

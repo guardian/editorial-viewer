@@ -57,10 +57,6 @@ function recordDesktopEnabled() {
     }
 
     if (pageOpenTime) {
-        console.log(Date.now() - pageOpenTime);
-    }
-
-    if (pageOpenTime) {
         var timeTaken = Math.floor((Date.now() - pageOpenTime) / 1000)
         pageOpenTime = null;
         mixpanel.people.set({"timeTakenToEnable": timeTaken})
