@@ -35,7 +35,6 @@ function replaceLocationHistory(location) {
 
     if (newPath !== window.location.pathname) {
         window.history.replaceState({viewerHref: viewerHref}, "", newPath);
-        console.log("calling cde")
         applicationController.checkDesktopEnabled();
     }
 
