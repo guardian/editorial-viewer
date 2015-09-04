@@ -20,8 +20,8 @@ var modes = {
         height:   '320px'
     },
     'desktop': {
-        width:    '',
-        height:   ''
+        width:  '',
+        height: ''
     },
     'reader': {
         width:    '',
@@ -41,7 +41,7 @@ function init(options) {
 }
 
 function checkDesktopEnabled() {
-    localStorageUtil.getEnabledHrefs().then(function(hrefs){
+    localStorageUtil.getEnabledHrefs().then(function(hrefs) {
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
             desktopEnabled = true;
             updateViews();
