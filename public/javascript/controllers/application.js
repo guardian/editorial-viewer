@@ -20,9 +20,13 @@ var modes = {
         height:   '320px'
     },
     'desktop': {
-        isMobile: false,
         width:    '',
         height:   ''
+    },
+    'reader': {
+        width:    '',
+        height:   '',
+        isReader: true
     }
 };
 
@@ -106,5 +110,6 @@ function toggleDesktop() {
 }
 
 module.exports = {
-    init: init
+    init:    init,
+    setMode: updateMode
 };

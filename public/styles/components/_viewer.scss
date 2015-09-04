@@ -19,7 +19,8 @@
         border-width: 20px 60px 30px 30px;
     }
 
-    &.is-desktop {
+    &.is-desktop,
+    &.is-reader {
         position: fixed;
         top: 51px;
         left: 0;
@@ -32,6 +33,12 @@
         border-width: 0;
         border-radius: 0;
 
+    }
+
+    &.is-reader {
+        top: 100px;
+        left: 5%;
+        width: 90%;
     }
 
     &.is-animated {

@@ -5,8 +5,8 @@ var currentViewPortConfig;
 var currentViewPortName;
 
 function updateViewer(viewportName, viewportConfig) {
-
     var isAnimated = false;
+    var preventRefresh = false;
 
     if (currentViewPortConfig && currentViewPortConfig !== viewportConfig) {
         //We have a change of viewport, test for special cases where we can animate
@@ -15,10 +15,15 @@ function updateViewer(viewportName, viewportConfig) {
         }
     }
 
+    if (viewportConfig.isReader) {
+        enableReader();
+        preventRefresh = true;
+    }
+
     currentViewPortConfig = viewportConfig;
     currentViewPortName = viewportName;
 
-    restyleViewer(isAnimated);
+    restyleViewer(isAnimated, preventRefresh);
 }
 
 function reloadiFrame() {
@@ -27,13 +32,21 @@ function reloadiFrame() {
 
 function printViewer() {
     try {
-      viewerEl.contentWindow.print();
+        viewerEl.contentWindow.print();
     } catch (e) {
-      console.log("Can't communicate with iframe")
+        console.log("Can't communicate with iframe")
     }
 }
 
-function restyleViewer(isAnimated) {
+function enableReader() {
+    try {
+        viewerEl.contentDocument.querySelector('link[media="print"]')[0].setAttribute('media', 'all');
+    } catch (e) {
+        console.log("Can't communicate with iframe")
+    }
+}
+
+function restyleViewer(isAnimated, preventRefresh) {
 
     var transitionEndHandler = function() {
         viewerEl.removeEventListener('transitionend', transitionEndHandler);
@@ -51,13 +64,13 @@ function restyleViewer(isAnimated) {
     viewerEl.style.width = currentViewPortConfig.width;
     viewerEl.style.height = currentViewPortConfig.height;
 
-    if (!isAnimated) {
+    if (!isAnimated && !preventRefresh) {
         reloadiFrame();
     }
-
 }
 
 module.exports = {
     updateViewer: updateViewer,
-    printViewer: printViewer
+    printViewer:  printViewer,
+    enableReader: enableReader
 };
