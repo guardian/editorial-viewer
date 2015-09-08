@@ -13,13 +13,20 @@ object Configuration {
       sys.error(s"Config key required: $key")
     }
 
+  lazy val app: String = AWS.readTag("App").getOrElse("viewer")
+
   lazy val stage: String = AWS.readTag("Stage") match {
     case Some(value) => value
     case None => "DEV" // default to DEV stage
   }
 
+  lazy val stack: String = AWS.readTag("Stack").getOrElse("flexible")
+
   val previewHost = getConfigString(s"previewHost.$stage")
   val liveHost = getConfigString(s"liveHost.$stage")
   val mixpanel = getConfigString(s"mixpanel.$stage")
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
+
+  val logstashEnabled = config.getBoolean("logstash.enabled").getOrElse(false)
+  val logstashDestination = config.getString("logstash.destination")
 }
