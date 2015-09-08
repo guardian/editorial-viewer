@@ -30,7 +30,9 @@
     "directories": {
       "baseURL": "public"
     },
-    "dependencies": {},
+    "dependencies": {
+      "localforage": "npm:localforage@^1.2.10"
+    },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.22",
       "babel-runtime": "npm:babel-runtime@^5.8.20",
