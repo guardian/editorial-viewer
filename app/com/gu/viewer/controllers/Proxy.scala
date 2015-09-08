@@ -179,4 +179,22 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
     }
   }
 
+
+  /**
+   * Redirect requests to routes that don't exist which originate (Referer header)
+   * from a proxied request. Catches server relative requests in a proxied response.
+   */
+  def redirectRelative(path: String) = Action { request =>
+
+    val fromProxy = """^\w+:\/\/viewer.local.dev-gutools.co.uk\/proxy\/([^/]+).*$""".r
+
+    request.headers.get("Referer") match {
+      case Some(fromProxy(service)) => {
+        val queryString = if (request.rawQueryString.isEmpty) "" else request.rawQueryString
+        Redirect(routes.Proxy.proxy(service, s"$path$queryString"))
+      }
+
+      case _ => NotFound(s"Resource not found: $path")
+    }
+  }
 }
