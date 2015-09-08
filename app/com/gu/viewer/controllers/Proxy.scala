@@ -1,6 +1,7 @@
 package com.gu.viewer.controllers
 
 import com.gu.viewer.config.Configuration
+import com.gu.viewer.views.html
 import java.net.URLEncoder
 import javax.inject.Inject
 import play.api.libs.concurrent.Execution.Implicits._
@@ -59,8 +60,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
 
               previewSessionOpt match {
                 case Some(session) => {
-                  val returnUrl = SESSION_KEY_RETURN_URL -> request.uri
-                  Redirect(loc)
+                  val returnUrl = SESSION_KEY_RETURN_URL -> request.headers.get("Referer").getOrElse(request.uri)
+                  Ok(html.loginRedirect(loc))
                     .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session + returnUrl)
                 }
 
