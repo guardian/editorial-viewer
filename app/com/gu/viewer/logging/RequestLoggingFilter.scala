@@ -1,4 +1,4 @@
-package com.gu.viewer.Logging
+package com.gu.viewer.logging
 
 import play.api.Logger
 import play.api.libs.iteratee.{Iteratee, Enumeratee}

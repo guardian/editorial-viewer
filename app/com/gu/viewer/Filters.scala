@@ -2,7 +2,7 @@ package com.gu.viewer
 
 import javax.inject.Inject
 
-import com.gu.viewer.Logging.RequestLoggingFilter
+import com.gu.viewer.logging.RequestLoggingFilter
 import play.api.http.HttpFilters
 
 
