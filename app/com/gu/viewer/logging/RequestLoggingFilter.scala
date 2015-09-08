@@ -1,6 +1,5 @@
 package com.gu.viewer.logging
 
-import play.api.Logger
 import play.api.libs.iteratee.{Iteratee, Enumeratee}
 import play.api.mvc._
 import scala.concurrent.Future
@@ -9,7 +8,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.util.control.NonFatal
 
-class RequestLoggingFilter extends Filter {
+class RequestLoggingFilter extends Filter with Loggable {
 
   def apply(nextFilter: RequestHeader => Future[Result])
            (requestHeader: RequestHeader): Future[Result] = {
@@ -36,7 +35,7 @@ class RequestLoggingFilter extends Filter {
       }
 
       def doLog(info: String) = {
-        Logger.info(s"${requestHeader.method} ${requestHeader.uri} " +
+        log.info(s"${requestHeader.method} ${requestHeader.uri} " +
           s"took ${requestTime}ms and returned $info")
 
         result.withHeaders("Request-Time" -> requestTime.toString)
@@ -47,7 +46,7 @@ class RequestLoggingFilter extends Filter {
 
       } recover {
         case NonFatal(ex) => {
-          Logger.warn("Error retrieving response body for logging", ex)
+          log.warn("Error retrieving response body for logging", ex)
           doLog("<unknown body>")
         }
       }
