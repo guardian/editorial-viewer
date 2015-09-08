@@ -186,10 +186,11 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
    */
   def redirectRelative(path: String) = Action { request =>
 
-    val fromProxy = """^\w+:\/\/viewer.local.dev-gutools.co.uk\/proxy\/([^/]+).*$""".r
+    val fromProxy = """^\w+:\/\/([^/]+)\/proxy\/([^/]+).*$""".r
+    val host = request.host
 
     request.headers.get("Referer") match {
-      case Some(fromProxy(service)) => {
+      case Some(fromProxy(`host`, service)) => {
         val queryString = if (request.rawQueryString.isEmpty) "" else request.rawQueryString
         Redirect(routes.Proxy.proxy(service, s"$path$queryString"))
       }
