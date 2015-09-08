@@ -1,4 +1,4 @@
-@(viewerUrl: String, previewEnv: String, composerUrl: String)
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String)
 
 @main("Viewer") {
     <header class="fixed-header">
@@ -35,7 +35,7 @@
                         <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                     } else {
                         <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
-                        <li class="top-toolbar__container"><a href="@viewerUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
+                        <li class="top-toolbar__container"><a href="@actualUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
                     }
                 </ul>
             </div>
