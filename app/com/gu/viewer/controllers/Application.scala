@@ -1,11 +1,14 @@
 package com.gu.viewer.controllers
 
+import com.gu.viewer.logging.Loggable
 import play.api._
 import play.api.mvc._
 import com.gu.viewer.config.Configuration
 import com.gu.viewer.views.html
 
-class Application extends Controller {
+class Application extends Controller with Loggable {
+
+  Loggable.init()
 
   def index = Action {
     Redirect("/live/uk")
