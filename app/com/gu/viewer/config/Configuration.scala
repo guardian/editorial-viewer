@@ -15,10 +15,7 @@ object Configuration {
 
   lazy val app: String = AWS.readTag("App").getOrElse("viewer")
 
-  lazy val stage: String = AWS.readTag("Stage") match {
-    case Some(value) => value
-    case None => "DEV" // default to DEV stage
-  }
+  lazy val stage: String = AWS.readTag("Stage").getOrElse("DEV")
 
   lazy val stack: String = AWS.readTag("Stack").getOrElse("flexible")
 
