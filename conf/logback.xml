@@ -2,7 +2,12 @@
 
   <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <!-- Log only WARN and ERROR to stderr-->
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>WARN</level>
+    </filter>
     <encoder>
       <pattern>%coloredLevel - %logger - %message%n%xException</pattern>
     </encoder>
@@ -15,8 +20,8 @@
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
 
-  <root level="ERROR">
-    <appender-ref ref="STDOUT" />
+  <root level="INFO">
+    <appender-ref ref="STDERR" />
   </root>
 
 </configuration>
