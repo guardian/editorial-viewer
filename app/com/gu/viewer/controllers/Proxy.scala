@@ -1,6 +1,7 @@
 package com.gu.viewer.controllers
 
 import com.gu.viewer.config.Configuration
+import com.gu.viewer.proxy.{Proxy => NewProxy}
 import com.gu.viewer.views.html
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -12,7 +13,7 @@ import play.api.mvc.{Controller, Cookie, Cookies, Action, Result, RequestHeader}
 import scala.concurrent.Future
 
 
-class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
+class Proxy @Inject() (ws: WSClient, newProxy: NewProxy) extends Controller with Loggable {
 
   private val COOKIE_PREVIEW_SESSION = "PLAY_SESSION"
   private val COOKIE_PREVIEW_AUTH = "GU_PV_AUTH"
@@ -114,10 +115,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
     def doProxy() = {
       log.info(s"Proxy to: $url")
 
-      ws.url(url).get().map { response =>
-        Ok(response.body)
-          .as(response.header("Content-Type").getOrElse("text/plain"))
-      }
+      // TODO rewrite redirects to proxied URLS
+      newProxy.ProxyRequest(url, followRedirects = true).get()
     }
 
 
