@@ -94,8 +94,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
       proxyRequest.get().flatMap { response =>
         (response.status, response.header("Location")) match {
           case (303, Some(`previewLoginUrl`)) => doPreviewAuth()
-          case _ => Future.successful {
-            Ok(response.body)
+          case (status, _) => Future.successful {
+            Status(status)(response.body)
               .withSession(request.session)
 
               .as(response.header("Content-Type").getOrElse("text/plain"))
