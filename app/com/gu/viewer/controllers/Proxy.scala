@@ -1,6 +1,7 @@
 package com.gu.viewer.controllers
 
 import com.gu.viewer.config.Configuration
+import com.gu.viewer.views.html
 import java.net.URLEncoder
 import javax.inject.Inject
 import com.gu.viewer.logging.Loggable
@@ -27,6 +28,18 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
     s"$protocol://${request.host}${routes.Proxy.previewAuthCallback()}"
   }
 
+  /**
+   * Transform proxy server relative URI to viewer URI.
+   */
+  def proxyUriToViewerUri(uri: String) = {
+    val proxyUri = """^\/proxy(\/.+)$""".r
+
+    uri match {
+      case proxyUri(path) => Some(path)
+      case _ => None
+    }
+  }
+
   def proxy(service: String, path: String) = Action.async { implicit request =>
     val protocol = if (request.secure) "https" else "http"
     val serviceHost = service match {
@@ -46,7 +59,6 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
         .withHeaders("Content-Length" -> "0")
         .post(Map.empty[String, Seq[String]])
         .map { response =>
-          log.info("Preview auth Response: " + response.toString + response.allHeaders + response.body)
 
           (response.status, response.header("Location")) match {
             case (303, Some(loc)) => {
@@ -57,15 +69,15 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
 
               previewSessionOpt match {
                 case Some(session) => {
-                  val returnUrl = SESSION_KEY_RETURN_URL -> request.uri
-                  Redirect(loc)
+                  val returnUrl = SESSION_KEY_RETURN_URL -> proxyUriToViewerUri(request.uri).getOrElse(request.uri)
+                  Ok(html.loginRedirect(loc))
                     .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session + returnUrl)
                 }
 
-                case None => BadGateway("Unexpected response from preview login request")
+                case None => badGatewayResponse("Unexpected response from preview login request", response)
               }
             }
-            case (status, _) => BadGateway(s"Unexpected response status from preview: $status")
+            case (status, _) => badGatewayResponse(s"Unexpected response status from preview: $status", response)
           }
       }
     }
@@ -82,8 +94,13 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
       proxyRequest.get().flatMap { response =>
         (response.status, response.header("Location")) match {
           case (303, Some(`previewLoginUrl`)) => doPreviewAuth()
-          case _ => Future.successful {
-            Ok(response.body)
+          case (303, Some("/login")) => doPreviewAuth()
+          case (status, Some(otherLocation)) => {
+            log.warn(s"Proxied response for $url is $status redirect to: $otherLocation")
+            Future.successful(Status(status).withHeaders("Location" -> otherLocation))
+          }
+          case (status, _) => Future.successful {
+            Status(status)(response.body)
               .withSession(request.session)
 
               .as(response.header("Content-Type").getOrElse("text/plain"))
@@ -146,16 +163,15 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
 
       val authOpt = newCookies.get(COOKIE_PREVIEW_AUTH).map(c => SESSION_KEY_PREVIEW_AUTH -> c.value)
 
-
       (sessionOpt, authOpt) match {
         case (Some(sessionValue), Some(authValue)) => {
           val returnUrl = request.session.get(SESSION_KEY_RETURN_URL).getOrElse("/proxy/preview/uk")
           Redirect(returnUrl)
             .withSession(request.session - SESSION_KEY_RETURN_URL + sessionValue + authValue)
         }
-        case (None, None) => BadGateway("Bad response from preview auth callback")
-        case (None, _) => BadGateway("Preview Session cookie not returned")
-        case (_, None) => BadGateway("Preview Auth cookie not returned")
+        case (None, None) => badGatewayResponse("Bad response from preview auth callback", response)
+        case (None, _) => badGatewayResponse("Preview Session cookie not returned", response)
+        case (_, None) => badGatewayResponse("Preview Auth cookie not returned", response)
       }
     }
 
@@ -193,5 +209,10 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
 
       case _ => NotFound(s"Resource not found: $path")
     }
+  }
+
+  private def badGatewayResponse(msg: String, response: WSResponse) = {
+    log.warn(s"$msg: ${response.toString} ${response.allHeaders} ${response.body}")
+    BadGateway(msg)
   }
 }
