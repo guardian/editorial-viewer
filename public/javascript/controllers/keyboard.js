@@ -1,10 +1,9 @@
 var viewer = require('../components/viewer');
 var alreadyRan = false;
 
-
-
 function onKeyPress(e) {
-    if ((e.ctrlKey || e.metaKey) && e.keyIdentifier === "U+0050") {
+
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.keyIdentifier === "U+0050")) {
       viewer.printViewer();
       e.preventDefault();
     }
