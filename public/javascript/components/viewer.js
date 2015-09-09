@@ -25,6 +25,14 @@ function reloadiFrame() {
     viewerEl.src = viewerEl.src;
 }
 
+function printViewer() {
+    try {
+      viewerEl.contentWindow.print();
+    } catch (e) {
+      console.log("Can't communicate with iframe")
+    }
+}
+
 function restyleViewer(isAnimated) {
 
     var transitionEndHandler = function() {
@@ -50,5 +58,6 @@ function restyleViewer(isAnimated) {
 }
 
 module.exports = {
-    updateViewer: updateViewer
+    updateViewer: updateViewer,
+    printViewer: printViewer
 };
