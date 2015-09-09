@@ -1,4 +1,4 @@
-@(viewerUrl: String, previewEnv: String, composerUrl: String)
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String)
 
 @main("Viewer") {
     <header class="fixed-header">
@@ -17,7 +17,11 @@
             <div class="top-toolbar__view-toolbar">
                 <ul class="tool-bar">
                     <li class="top-toolbar__container">
-                        <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
+                        @if(previewEnv == "preview") {
+                            <div class="top-toolbar__status--@previewEnv">DRAFT</div>
+                        } else {
+                            <div class="top-toolbar__status--@previewEnv">@previewEnv</div>
+                        }
                     <!--</li>-->
                     <li class="top-toolbar__container">
                         <div class="top-toolbar__label">Mobile web</div>
@@ -31,7 +35,7 @@
                         <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                     } else {
                         <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
-                        <li class="top-toolbar__container"><a href="@viewerUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
+                        <li class="top-toolbar__container"><a href="@actualUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
                     }
                     <li class="top-toolbar__button--right" data-print="true"><i class="top-toolbar__icon--printer"></i>Print version<!--</li>-->
                 </ul>
