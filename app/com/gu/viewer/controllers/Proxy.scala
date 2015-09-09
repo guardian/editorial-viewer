@@ -190,10 +190,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
     val host = request.host
 
     request.headers.get("Referer") match {
-      case Some(fromProxy(`host`, service)) => {
-        val queryString = if (request.rawQueryString.isEmpty) "" else s"?${request.rawQueryString}"
-        Redirect(routes.Proxy.proxy(service, s"$path$queryString"))
-      }
+      case Some(fromProxy(`host`, service)) =>
+        Redirect(routes.Proxy.proxy(service, request.uri.tail))
 
       case _ => NotFound(s"Resource not found: $path")
     }
