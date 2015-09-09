@@ -28,6 +28,18 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
     s"$protocol://${request.host}${routes.Proxy.previewAuthCallback()}"
   }
 
+  /**
+   * Transform proxy server relative URI to viewer URI.
+   */
+  def proxyUriToViewerUri(uri: String) = {
+    val proxyUri = """^\/proxy(\/.+)$""".r
+
+    uri match {
+      case proxyUri(path) => Some(path)
+      case _ => None
+    }
+  }
+
   def proxy(service: String, path: String) = Action.async { implicit request =>
     val protocol = if (request.secure) "https" else "http"
     val serviceHost = service match {
@@ -58,7 +70,7 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
 
               previewSessionOpt match {
                 case Some(session) => {
-                  val returnUrl = SESSION_KEY_RETURN_URL -> request.headers.get("Referer").getOrElse(request.uri)
+                  val returnUrl = SESSION_KEY_RETURN_URL -> proxyUriToViewerUri(request.uri).getOrElse(request.uri)
                   Ok(html.loginRedirect(loc))
                     .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session + returnUrl)
                 }
