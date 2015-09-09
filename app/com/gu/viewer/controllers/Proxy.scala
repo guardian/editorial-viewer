@@ -4,15 +4,15 @@ import com.gu.viewer.config.Configuration
 import com.gu.viewer.views.html
 import java.net.URLEncoder
 import javax.inject.Inject
+import com.gu.viewer.logging.Loggable
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play.current
-import play.api.Logger
 import play.api.libs.ws.{WSResponse, WSClient, WSRequest}
 import play.api.mvc.{Controller, Cookie, Cookies, Action, Result, RequestHeader}
 import scala.concurrent.Future
 
 
-class Proxy @Inject() (ws: WSClient) extends Controller {
+class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
 
   private val COOKIE_PREVIEW_SESSION = "PLAY_SESSION"
   private val COOKIE_PREVIEW_AUTH = "GU_PV_AUTH"
@@ -20,8 +20,6 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
   private val SESSION_KEY_PREVIEW_SESSION = "preview-session"
   private val SESSION_KEY_PREVIEW_AUTH = "preview-auth"
   private val SESSION_KEY_RETURN_URL = "preview-auth-return-url"
-
-  val log = Logger.logger
 
   val previewLoginUrl = s"http://${Configuration.previewHost}/login"
 
@@ -180,4 +178,21 @@ class Proxy @Inject() (ws: WSClient) extends Controller {
     }
   }
 
+
+  /**
+   * Redirect requests to routes that don't exist which originate (Referer header)
+   * from a proxied request. Catches server relative requests in a proxied response.
+   */
+  def redirectRelative(path: String) = Action { request =>
+
+    val fromProxy = """^\w+:\/\/([^/]+)\/proxy\/([^/]+).*$""".r
+    val host = request.host
+
+    request.headers.get("Referer") match {
+      case Some(fromProxy(`host`, service)) =>
+        Redirect(routes.Proxy.proxy(service, request.uri.tail))
+
+      case _ => NotFound(s"Resource not found: $path")
+    }
+  }
 }
