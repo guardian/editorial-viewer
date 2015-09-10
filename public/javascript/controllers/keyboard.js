@@ -15,8 +15,6 @@ function onKeyPress(e) {
     }
 }
 
-
-
 function init() {
     if (alreadyRan) {
         console.log("Already init'd keyboardController");
