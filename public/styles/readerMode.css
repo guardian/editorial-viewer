@@ -36,6 +36,22 @@ article a,
     width: 200px !important;
     float: none !important;
     margin: 0 auto !important;
+    margin-bottom: 25px !important;
+    border: 1px solid #dcdcdc !important;
+    padding: 10px !important;
+}
+
+#article figcaption {
+
+    font-size: 15px !important;
+    line-height: 22px;
+    margin-bottom: 20px !important;
+    text-align: center;
+}
+
+#article figcaption:before {
+    content: "Caption: ";
+    display: inline;
 }
 
 /* Image Fixes */
@@ -45,6 +61,7 @@ article a,
 #article .gu-image {
     position: relative !important;
     margin: 0 auto !important;
+    width: 100% !important;
 }
 
 /* Image Fixes */
@@ -53,8 +70,11 @@ article a,
     display: none !important;
 }
 
+
 .social,
-svg {
+svg,
+.submeta,
+.content__dateline {
     display: none !important;
 }
 
@@ -74,30 +94,37 @@ article .twitter-tweet {
 article .element-tweet:before,
 article .element-interactive:before,
 article .element-video:before,
-article .element-embed:before {
+article .element-embed:before,
+article figure[itemprop~="video"]:before  {
     display: block;
-    width: 50%;
+    width: 100%;
 
     padding: 20px;
     margin: 0 auto;
     margin-bottom: 25px;
 
-    background-color: #e3e3e3;
+    color: #666;
+
+    background-color: #ECECEC;
     text-align: center;
+
+    font-size: 13px
 }
 
 article .element-tweet:before {
-    content: "Tweet Placeholder" !important;
+    content: "Tweet placeholder. To view tweet switch to mobile or desktop views." !important;
 }
 
 article .element-interactive:before {
-    content: "Interactive Placeholder" !important;
+    content: "Interactive placeholder. To view interactive switch to mobile or desktop views." !important;
 }
 
-article .element-video:before {
-    content: "Video Placeholder" !important;
+article .element-video:before,
+article figure[itemprop~="video"]:before {
+    content: "Video placeholder. To view video switch to mobile or desktop views." !important;
+    margin-bottom: 5px;
 }
 
 article .element-embed:before {
-    content: "Embed Placeholder" !important;
+    content: "Embed placeholder. To view embed switch to mobile or desktop views." !important;
 }
