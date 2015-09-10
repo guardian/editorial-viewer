@@ -1,13 +1,14 @@
 package com.gu.viewer.controllers
 
 import com.gu.viewer.config.Configuration
-import com.gu.viewer.proxy.{Proxy => NewProxy, PreviewProxy}
-import javax.inject.Inject
 import com.gu.viewer.logging.Loggable
+import com.gu.viewer.proxy._
+import javax.inject.Inject
 import play.api.mvc.{Controller, Action}
+import scala.concurrent.Future
 
 
-class Proxy @Inject() (newProxy: NewProxy, previewProxy: PreviewProxy) extends Controller with Loggable {
+class Proxy @Inject() (previewProxy: PreviewProxy, liveProxy: LiveProxy) extends Controller with Loggable {
 
   def proxy(service: String, path: String) = Action.async { implicit request =>
     val protocol = if (request.secure) "https" else "http"
@@ -17,15 +18,10 @@ class Proxy @Inject() (newProxy: NewProxy, previewProxy: PreviewProxy) extends C
     }
     val url = s"$protocol://$serviceHost/$path"
 
-    if (service == "preview") {
-      previewProxy.proxy(request.secure, request.host, request.uri, url, request.session)
-
-    } else {
-      // live
-      log.info(s"Proxy to: $url")
-
-      // TODO rewrite redirects to proxied URLS
-      newProxy.get(url, followRedirects = true)()
+    ProxyRequest(service, path, request) match {
+      case r: PreviewProxyRequest => previewProxy.proxy(request.secure, request.host, request.uri, url, request.session)
+      case r: LiveProxyRequest => liveProxy.proxy(r)
+      case UnknownProxyRequest => Future.successful(BadRequest(s"Unknown proxy service: $service"))
     }
 
   }
