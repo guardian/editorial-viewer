@@ -5,6 +5,7 @@ var currentViewPortConfig;
 var currentViewPortName;
 
 function updateViewer(viewportName, viewportConfig) {
+
     var isAnimated = false;
     var preventRefresh = false;
 
@@ -28,6 +29,10 @@ function updateViewer(viewportName, viewportConfig) {
 
 function reloadiFrame() {
     viewerEl.src = viewerEl.src;
+
+    if (currentViewPortName === 'reader') {
+        enableReader();
+    }
 }
 
 function printViewer() {
@@ -65,7 +70,10 @@ function restyleViewer(isAnimated, preventRefresh) {
     var transitionEndHandler = function() {
         viewerEl.removeEventListener('transitionend', transitionEndHandler);
         viewerEl.classList.remove('is-animated');
-        reloadiFrame();
+
+        if (!preventRefresh) {
+            reloadiFrame();
+        }
     };
 
     viewerEl.className = 'viewer is-' + currentViewPortName;

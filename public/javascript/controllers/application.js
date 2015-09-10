@@ -59,6 +59,12 @@ function updateViews() {
     updateDesktopVisbility();
     viewer.updateViewer(activeMode, modes[activeMode]);
     buttonUtil.markSelected('switchmode', activeMode);
+
+    if (activeMode === 'reader') {
+        buttonUtil.removeClassFromAttributeNameAndValue('showreaderactive', 'true', 'is-hidden');
+    } else {
+        buttonUtil.addClassToAttributeNameAndValue('showreaderactive', 'true', 'is-hidden');
+    }
 }
 
 function updateMode(newMode) {
@@ -91,10 +97,15 @@ function updateDesktopVisbility() {
         buttonUtil.addClassToAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.removeClassFromAttributeNameAndValue('switchmode', 'desktop', 'is-hidden');
         buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
+
     } else {
         buttonUtil.removeClassFromAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.addClassToAttributeNameAndValue('switchmode', 'desktop', 'is-hidden', 'none');
         buttonUtil.removeClassFromAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
+    }
+
+    if (!desktopEnabled && activeMode === 'reader') {
+        buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
     }
 }
 
