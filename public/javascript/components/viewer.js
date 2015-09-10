@@ -1,4 +1,3 @@
-var tween = require('tween');
 var viewerEl = document.getElementById('viewer');
 
 var currentViewPortConfig;
