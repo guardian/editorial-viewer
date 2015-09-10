@@ -1,6 +1,5 @@
 package com.gu.viewer.controllers
 
-import com.gu.viewer.config.Configuration
 import com.gu.viewer.logging.Loggable
 import com.gu.viewer.proxy._
 import javax.inject.Inject
@@ -11,19 +10,11 @@ import scala.concurrent.Future
 class Proxy @Inject() (previewProxy: PreviewProxy, liveProxy: LiveProxy) extends Controller with Loggable {
 
   def proxy(service: String, path: String) = Action.async { implicit request =>
-    val protocol = if (request.secure) "https" else "http"
-    val serviceHost = service match {
-      case "preview" => Configuration.previewHost
-      case _ => Configuration.liveHost
-    }
-    val url = s"$protocol://$serviceHost/$path"
-
     ProxyRequest(service, path, request) match {
-      case r: PreviewProxyRequest => previewProxy.proxy(request.secure, request.host, request.uri, url, request.session)
+      case r: PreviewProxyRequest => previewProxy.proxy(r)
       case r: LiveProxyRequest => liveProxy.proxy(r)
       case UnknownProxyRequest => Future.successful(BadRequest(s"Unknown proxy service: $service"))
     }
-
   }
 
 
@@ -34,7 +25,7 @@ class Proxy @Inject() (previewProxy: PreviewProxy, liveProxy: LiveProxy) extends
    * Store response cookies into Viewer's play session.
    */
   def previewAuthCallback = Action.async { request =>
-    previewProxy.previewAuthCallback(request.host, request.secure, request.queryString, request.session)
+    previewProxy.previewAuthCallback(PreviewProxyRequest.authCallbackRequest(request))
   }
 
 
