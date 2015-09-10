@@ -13,7 +13,7 @@ import play.api.mvc.{Controller, Cookie, Cookies, Action, Result, RequestHeader}
 import scala.concurrent.Future
 
 
-class Proxy @Inject() (ws: WSClient, newProxy: NewProxy) extends Controller with Loggable {
+class Proxy @Inject() (newProxy: NewProxy) extends Controller with Loggable {
 
   private val COOKIE_PREVIEW_SESSION = "PLAY_SESSION"
   private val COOKIE_PREVIEW_AUTH = "GU_PV_AUTH"
@@ -54,32 +54,29 @@ class Proxy @Inject() (ws: WSClient, newProxy: NewProxy) extends Controller with
       val proxyRequestUrl = previewLoginUrl
 
       log.info(s"Proxy Preview auth to: $proxyRequestUrl")
-      ws.url(proxyRequestUrl)
-        .withQueryString("redirect-url" -> loginCallbackUrl)
-        .withFollowRedirects(follow = false)
-        .withHeaders("Content-Length" -> "0")
-        .post(Map.empty[String, Seq[String]])
-        .map { response =>
 
-          (response.status, response.header("Location")) match {
-            case (303, Some(loc)) => {
+      def handleResponse(response: WSResponse) = {
 
-              // store new preview session from response
-              val cookies = Cookies.fromSetCookieHeader(response.header("Set-Cookie"))
-              val previewSessionOpt = cookies.get(COOKIE_PREVIEW_SESSION).map( c => SESSION_KEY_PREVIEW_SESSION -> c.value )
+        // store new preview session from response
+        val cookies = Cookies.fromSetCookieHeader(response.header("Set-Cookie"))
+        val previewSessionOpt = cookies.get(COOKIE_PREVIEW_SESSION).map( c => SESSION_KEY_PREVIEW_SESSION -> c.value )
 
-              previewSessionOpt match {
-                case Some(session) => {
-                  val returnUrl = SESSION_KEY_RETURN_URL -> proxyUriToViewerUri(request.uri).getOrElse(request.uri)
-                  Ok(html.loginRedirect(loc))
-                    .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session + returnUrl)
-                }
+        val loc = response.header("Location").get
 
-                case None => badGatewayResponse("Unexpected response from preview login request", response)
-              }
-            }
-            case (status, _) => badGatewayResponse(s"Unexpected response status from preview: $status", response)
+        previewSessionOpt match {
+          case Some(session) => {
+            val returnUrl = SESSION_KEY_RETURN_URL -> proxyUriToViewerUri(request.uri).getOrElse(request.uri)
+            Ok(html.loginRedirect(loc))
+              .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + session + returnUrl)
           }
+
+          case None => badGatewayResponse("Unexpected response from preview login request", response)
+        }
+      }
+
+      newProxy.ProxyRequest(proxyRequestUrl, queryString = Seq("redirect-url" -> loginCallbackUrl)).post() {
+        case response if response.status == 303 => Future.successful(handleResponse(response))
+        // TODO should we handle non redirect responses here?
       }
     }
 
@@ -88,27 +85,23 @@ class Proxy @Inject() (ws: WSClient, newProxy: NewProxy) extends Controller with
       log.info(s"Proxy to preview: $url")
 
       val cookies = Seq(COOKIE_PREVIEW_SESSION -> session, COOKIE_PREVIEW_AUTH -> auth).map(c => Cookie(c._1, c._2))
-      val proxyRequest: WSRequest = ws.url(url)
-        .withFollowRedirects(follow = false)
-        .withHeaders("Cookie" -> Cookies.encodeCookieHeader(cookies))
 
-      proxyRequest.get().flatMap { response =>
-        (response.status, response.header("Location")) match {
-          case (303, Some(`previewLoginUrl`)) => doPreviewAuth()
-          case (303, Some("/login")) => doPreviewAuth()
+      /* TODO handle redirects with proxy
           case (status, Some(otherLocation)) => {
             log.warn(s"Proxied response for $url is $status redirect to: $otherLocation")
             Future.successful(Status(status).withHeaders("Location" -> otherLocation))
           }
-          case (status, _) => Future.successful {
-            Status(status)(response.body)
-              .withSession(request.session)
+      */
 
-              .as(response.header("Content-Type").getOrElse("text/plain"))
-          }
-        }
-
+      def isLoginRedirect(response: WSResponse) = {
+        response.status == 303 &&
+        response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
       }
+
+      newProxy.ProxyRequest(url, cookies = cookies).get {
+        case response if isLoginRedirect(response) => doPreviewAuth()
+      }
+
     }
 
 
@@ -181,13 +174,11 @@ class Proxy @Inject() (ws: WSClient, newProxy: NewProxy) extends Controller with
         val proxyUrl = s"http://${Configuration.previewHost}/oauth2callback"
         log.info(s"Proxy preview auth callback to: $proxyUrl")
 
-        ws.url(proxyUrl)
-          .withQueryString(queryParams: _*)
-          .withHeaders("Cookie" -> Cookies.encodeCookieHeader( Seq( Cookie(COOKIE_PREVIEW_SESSION, session, path = "/", httpOnly = true ) ) ) )
-          .withFollowRedirects(follow = false)
-          .withRequestTimeout(30000)
-          .get()
-          .map(handleResponse)
+        val cookies = Seq(Cookie(COOKIE_PREVIEW_SESSION, session))
+
+        newProxy.ProxyRequest(proxyUrl, queryString = queryParams, cookies = cookies).get {
+          case r => Future.successful(handleResponse(r))
+        }
       }
     }
   }
