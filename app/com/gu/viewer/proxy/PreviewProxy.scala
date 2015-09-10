@@ -22,13 +22,13 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
   private val SESSION_KEY_RETURN_URL = "preview-auth-return-url"
 
 
-  val previewLoginUrl = s"http://${Configuration.previewHost}/login"
+  val serviceHost = Configuration.previewHost
+  val previewLoginUrl = s"http://$serviceHost/login"
 
 
-  def loginCallbackUrl(isSecure: Boolean, host: String) = {
-    val protocol = if (isSecure) "https" else "http"
-    s"$protocol://$host${routes.Proxy.previewAuthCallback()}"
-  }
+  def loginCallbackUrl(request: PreviewProxyRequest) =
+    s"${request.protocol}://${request.requestHost}${routes.Proxy.previewAuthCallback()}"
+
 
   /**
    * Transform proxy server relative URI to viewer URI.
@@ -42,7 +42,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     }
   }
 
-  def doPreviewAuth(isSecure: Boolean, host: String, requestUri: String, session: Session) = {
+  def doPreviewAuth(request: PreviewProxyRequest) = {
     val proxyRequestUrl = previewLoginUrl
 
     log.info(s"Proxy Preview auth to: $proxyRequestUrl")
@@ -57,23 +57,25 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
       previewSessionOpt match {
         case Some(previewSession) => {
-          val returnUrl = SESSION_KEY_RETURN_URL -> proxyUriToViewerUri(requestUri).getOrElse(requestUri)
+          val returnUrl = SESSION_KEY_RETURN_URL -> proxyUriToViewerUri(request.requestUri).getOrElse(request.requestUri)
           Ok(html.loginRedirect(loc))
-            .withSession(session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + previewSession + returnUrl)
+            .withSession(request.session - SESSION_KEY_PREVIEW_SESSION - SESSION_KEY_PREVIEW_AUTH + previewSession + returnUrl)
         }
 
         case None => badGatewayResponse("Unexpected response from preview login request", response)
       }
     }
 
-    proxyClient.post(proxyRequestUrl, queryString = Seq("redirect-url" -> loginCallbackUrl(isSecure, host))) {
+    proxyClient.post(proxyRequestUrl, queryString = Seq("redirect-url" -> loginCallbackUrl(request))) {
       case response if response.status == 303 => Future.successful(handleResponse(response))
       // TODO should we handle non redirect responses here?
     }
   }
 
 
-  def doPreviewProxy(isSecure: Boolean, host: String, requestUri: String, url: String, session: Session, previewSession: String, auth: String) = {
+  def doPreviewProxy(request: PreviewProxyRequest, previewSession: String, auth: String) = {
+
+    val url = s"${request.protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Proxy to preview: $url")
 
     val cookies = Seq(COOKIE_PREVIEW_SESSION -> previewSession, COOKIE_PREVIEW_AUTH -> auth).map(c => Cookie(c._1, c._2))
@@ -91,16 +93,16 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     }
 
     proxyClient.get(url, cookies = cookies) {
-      case response if isLoginRedirect(response) => doPreviewAuth(isSecure, host, requestUri, session)
+      case response if isLoginRedirect(response) => doPreviewAuth(request)
     }
 
   }
 
 
-  def proxy(isSecure: Boolean, host: String, requestUri: String, url: String, session: Session) = {
-      session.get(SESSION_KEY_PREVIEW_SESSION) -> session.get(SESSION_KEY_PREVIEW_AUTH) match {
-        case (Some(previewSession), Some(auth)) => doPreviewProxy(isSecure, host, requestUri, url, session, previewSession, auth)
-        case _ => doPreviewAuth(isSecure, host, requestUri, session)
+  def proxy(request: PreviewProxyRequest) = {
+      request.session.get(SESSION_KEY_PREVIEW_SESSION) -> request.session.get(SESSION_KEY_PREVIEW_AUTH) match {
+        case (Some(previewSession), Some(auth)) => doPreviewProxy(request, previewSession, auth)
+        case _ => doPreviewAuth(request)
       }
   }
 
@@ -112,9 +114,9 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
    * Proxy all request params and Preview session cookie to Preview authentication callback.
    * Store response cookies into Viewer's play session.
    */
-  def previewAuthCallback(host: String, isSecure: Boolean, requestQueryString: Map[String, Seq[String]], session: Session) = {
+  def previewAuthCallback(request: PreviewProxyRequest) = {
 
-    val queryParams = requestQueryString.flatMap( q => q._2.map { v => q._1 -> v } ).toSeq :+ ("redirect-url" -> loginCallbackUrl(isSecure, host))
+    val queryParams = request.requestQueryString.flatMap( q => q._2.map { v => q._1 -> v } ).toSeq :+ ("redirect-url" -> loginCallbackUrl(request))
 
     def handleResponse(response: WSResponse) = {
       val newCookies: Map[String, Cookie] = response.allHeaders.get("Set-Cookie") match {
@@ -136,9 +138,9 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
       (sessionOpt, authOpt) match {
         case (Some(sessionValue), Some(authValue)) => {
-          val returnUrl = session.get(SESSION_KEY_RETURN_URL).getOrElse("/proxy/preview/uk")
+          val returnUrl = request.session.get(SESSION_KEY_RETURN_URL).getOrElse("/proxy/preview/uk")
           Redirect(returnUrl)
-            .withSession(session - SESSION_KEY_RETURN_URL + sessionValue + authValue)
+            .withSession(request.session - SESSION_KEY_RETURN_URL + sessionValue + authValue)
         }
         case (None, None) => badGatewayResponse("Bad response from preview auth callback", response)
         case (None, _) => badGatewayResponse("Preview Session cookie not returned", response)
@@ -146,7 +148,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
       }
     }
 
-    session.get(SESSION_KEY_PREVIEW_SESSION) match {
+    request.session.get(SESSION_KEY_PREVIEW_SESSION) match {
       case None => Future.successful(BadRequest("Preview session not established"))
 
       case Some(previewSession) => {
