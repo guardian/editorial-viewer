@@ -1,4 +1,4 @@
-
+var analyticsCtrl = require('../controllers/analytics.js');
 var viewerEl = document.getElementById('viewer');
 
 var currentViewPortConfig;
@@ -33,16 +33,29 @@ function reloadiFrame() {
 function printViewer() {
     try {
         viewerEl.contentWindow.print();
+        analyticsCtrl.recordPrint();
     } catch (e) {
-        console.log("Can't communicate with iframe")
+        console.log('Can\'t communicate with iframe ', e);
     }
 }
 
 function enableReader() {
     try {
-        viewerEl.contentDocument.querySelector('link[media="print"]')[0].setAttribute('media', 'all');
+        var printStyleSheets = viewerEl.contentDocument.querySelectorAll('link[media=\'print\']');
+
+        for (var i = 0; i < printStyleSheets.length; i++) {
+            printStyleSheets[i].setAttribute('media', 'all');
+        }
+
+        var styleLink = document.createElement('link');
+        styleLink.href = '/assets/styles/readerMode.css';
+        styleLink.rel = 'stylesheet';
+        styleLink.type = 'text/css';
+
+        viewerEl.contentDocument.body.appendChild(styleLink);
+
     } catch (e) {
-        console.log("Can't communicate with iframe")
+        console.log('Can\'t enable Reader mode: ', e);
     }
 }
 

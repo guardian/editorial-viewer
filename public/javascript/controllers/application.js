@@ -26,7 +26,7 @@ var modes = {
     'reader': {
         width:    '',
         height:   '',
-        isReader: true
+        isReader: true,
     }
 };
 
@@ -68,8 +68,12 @@ function updateMode(newMode) {
         analyticsCtrl.recordOrientationChange();
     }
 
-    if ((oldMode !== newMode) && modes[oldMode].isMobile && !modes[newMode].isMobile) {
+    if ((oldMode !== "desktop") && (newMode === "desktop")) {
         analyticsCtrl.recordDesktopViewed();
+    }
+
+    if ((oldMode !== "reader") && (newMode === "reader")) {
+        analyticsCtrl.recordReaderMode();
     }
 
     if ((oldMode !== newMode) && !modes[oldMode].isMobile && modes[newMode].isMobile) {
@@ -77,6 +81,7 @@ function updateMode(newMode) {
     }
 
     activeMode = newMode;
+
 
     updateViews();
 }
