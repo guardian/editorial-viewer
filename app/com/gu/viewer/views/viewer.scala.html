@@ -30,6 +30,7 @@
                             <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
                         </div>
                     <!--</li>-->
+                    <li data-switchmode="reader" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--copycheck"></i>Copy Check<!--</li>-->
                     @if(previewEnv == "preview") {
                         <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile checked & verified<!--</li>-->
                         <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
@@ -38,7 +39,6 @@
                         <li class="top-toolbar__container"><a href="@actualUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
                     }
 
-                    <li data-switchmode="reader" class="top-toolbar__button is-always-visible">Reader<!--</li>-->
                     <li class="top-toolbar__button--right" data-print="true"><i class="top-toolbar__icon--printer"></i>Print version<!--</li>-->
                 </ul>
             </div>

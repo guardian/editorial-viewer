@@ -19,7 +19,9 @@ article {
 
 /* Link Colours */
 
-article a {
+article a,
+.content__standfirst a {
+    display: inline !important;
     color: #005689 !important;
 }
 

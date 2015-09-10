@@ -50,6 +50,7 @@ function enableReader() {
         var styleLink = document.createElement('link');
         styleLink.href = '/assets/styles/readerMode.css';
         styleLink.rel = 'stylesheet';
+        styleLink.setAttribute('media', 'screen');
         styleLink.type = 'text/css';
 
         viewerEl.contentDocument.body.appendChild(styleLink);

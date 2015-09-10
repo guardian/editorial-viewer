@@ -207,6 +207,13 @@ body {
     margin-right: 7px;
 }
 
+.top-toolbar__icon--copycheck {
+    @extend %icon__copycheck;
+
+    height: 17px;
+    margin-right: 7px;
+}
+
 .top-toolbar__icon--guardian {
     @extend %icon__guardian;
 
