@@ -10,7 +10,11 @@ scalaVersion := "2.11.6"
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
-libraryDependencies ++= Seq("com.amazonaws" % "aws-java-sdk" % "1.10.10")
+libraryDependencies ++= Seq(
+  "com.amazonaws" % "aws-java-sdk" % "1.10.10",
+  "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
+  ws
+)
 
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
