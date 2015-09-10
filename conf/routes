@@ -3,13 +3,21 @@
 # ~~~~
 
 # Home page
-GET     /                           com.gu.viewer.controllers.Application.index
-GET     /management/healthcheck     com.gu.viewer.controllers.Management.healthcheck
+GET        /                              com.gu.viewer.controllers.Application.index
+GET        /management/healthcheck        com.gu.viewer.controllers.Management.healthcheck
 
-GET     /preview/*path              com.gu.viewer.controllers.Application.previewViewer(path)
-GET     /live/*path                 com.gu.viewer.controllers.Application.liveViewer(path)
+GET        /preview/auth-callback         com.gu.viewer.controllers.Proxy.previewAuthCallback
+
+
+GET        /preview/*path                 com.gu.viewer.controllers.Application.previewViewer(path)
+GET        /live/*path                    com.gu.viewer.controllers.Application.liveViewer(path)
+
+
+GET        /proxy/preview/*path           com.gu.viewer.controllers.Proxy.proxy(service="preview", path)
+GET        /proxy/live/*path              com.gu.viewer.controllers.Proxy.proxy(service="live", path)
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
 
+GET        /*path                         com.gu.viewer.controllers.Proxy.redirectRelative(path)

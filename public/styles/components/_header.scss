@@ -44,7 +44,7 @@ body {
     background-color: $c-bluegrey;
     border-bottom: 1px solid $c-grey-400;
 
-    white-space: nowrap;
+    white-space: normal;
     overflow-y: hidden;
 
     z-index: 2;
@@ -98,9 +98,6 @@ body {
     -ms-flex-positive: 1;
     flex-grow: 1;
     flex-shrink: 1;
-
-    white-space: nowrap;
-
 }
 
 .top-toolbar {

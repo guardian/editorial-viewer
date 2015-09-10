@@ -1,11 +1,14 @@
 package com.gu.viewer.controllers
 
+import com.gu.viewer.logging.Loggable
 import play.api._
 import play.api.mvc._
 import com.gu.viewer.config.Configuration
 import com.gu.viewer.views.html
 
-class Application extends Controller {
+class Application extends Controller with Loggable {
+
+  Loggable.init()
 
   def index = Action {
     Redirect("/live/uk")
@@ -19,16 +22,17 @@ class Application extends Controller {
     viewer("live", path, "live")
   }
 
-  def viewer(target: String, path: String, previewEnv: String) = Action { request =>
+  def viewer(target: String, path: String, previewEnv: String) = Action { implicit request =>
     val protocol = if (request.secure) "https" else "http"
     val viewerHost = target match {
       case "preview" => Configuration.previewHost
       case _ => Configuration.liveHost
     }
-    val viewerUrl = s"$protocol://$viewerHost/$path"
+    val actualUrl = s"$protocol://$viewerHost/$path"
+    val viewerUrl = routes.Proxy.proxy(target, path).absoluteURL()
     val composerUrl = Configuration.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, previewEnv, composerUrl))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl))
   }
 
 }
