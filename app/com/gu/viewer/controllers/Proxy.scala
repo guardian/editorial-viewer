@@ -74,7 +74,7 @@ class Proxy @Inject() (newProxy: NewProxy) extends Controller with Loggable {
         }
       }
 
-      newProxy.ProxyRequest(proxyRequestUrl, queryString = Seq("redirect-url" -> loginCallbackUrl)).post() {
+      newProxy.post(proxyRequestUrl, queryString = Seq("redirect-url" -> loginCallbackUrl)) {
         case response if response.status == 303 => Future.successful(handleResponse(response))
         // TODO should we handle non redirect responses here?
       }
@@ -98,7 +98,7 @@ class Proxy @Inject() (newProxy: NewProxy) extends Controller with Loggable {
         response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
       }
 
-      newProxy.ProxyRequest(url, cookies = cookies).get {
+      newProxy.get(url, cookies = cookies) {
         case response if isLoginRedirect(response) => doPreviewAuth()
       }
 
@@ -109,7 +109,7 @@ class Proxy @Inject() (newProxy: NewProxy) extends Controller with Loggable {
       log.info(s"Proxy to: $url")
 
       // TODO rewrite redirects to proxied URLS
-      newProxy.ProxyRequest(url, followRedirects = true).get()
+      newProxy.get(url, followRedirects = true)()
     }
 
 
@@ -176,7 +176,7 @@ class Proxy @Inject() (newProxy: NewProxy) extends Controller with Loggable {
 
         val cookies = Seq(Cookie(COOKIE_PREVIEW_SESSION, session))
 
-        newProxy.ProxyRequest(proxyUrl, queryString = queryParams, cookies = cookies).get {
+        newProxy.get(proxyUrl, queryString = queryParams, cookies = cookies) {
           case r => Future.successful(handleResponse(r))
         }
       }
