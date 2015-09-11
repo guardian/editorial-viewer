@@ -23,11 +23,11 @@ case class PreviewProxyRequest(isSecure: Boolean,
                                requestHost: String,
                                requestUri: String,
                                requestQueryString: Map[String, Seq[String]],
-                               session: Session) extends ProxyRequest
+                               session: PreviewSession) extends ProxyRequest
 
 object PreviewProxyRequest {
   def apply(servicePath: String, request: RequestHeader): PreviewProxyRequest =
-    PreviewProxyRequest(request.secure, servicePath, request.host, request.uri, request.queryString, request.session)
+    PreviewProxyRequest(request.secure, servicePath, request.host, request.uri, request.queryString, PreviewSession(request.session))
 
   def authCallbackRequest(request: RequestHeader) =
     PreviewProxyRequest("/oauth2callback", request)
