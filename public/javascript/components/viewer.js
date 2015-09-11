@@ -91,8 +91,22 @@ function restyleViewer(isAnimated, preventRefresh) {
     }
 }
 
+function scrollViewer(scrollByAmount) {
+    viewerEl.contentWindow.scrollBy(0, scrollByAmount);
+}
+
+function scrollViewerDown() {
+    scrollViewer(viewerEl.clientHeight / 1.5);
+}
+
+function scrollViewerUp() {
+    scrollViewer(-1 * viewerEl.clientHeight / 1.5);
+}
+
 module.exports = {
     updateViewer: updateViewer,
-    printViewer:  printViewer,
+    printViewer: printViewer,
+    scrollViewerUp: scrollViewerUp,
+    scrollViewerDown: scrollViewerDown,
     enableReader: enableReader
 };

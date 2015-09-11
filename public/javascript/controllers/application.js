@@ -70,6 +70,10 @@ function updateViews() {
 function updateMode(newMode) {
     var oldMode = activeMode;
 
+    if (newMode === 'desktop' && !desktopEnabled) {
+        return;
+    }
+
     if ((oldMode !== newMode) && modes[oldMode].isMobile && modes[newMode].isMobile) {
         analyticsCtrl.recordOrientationChange();
     }
