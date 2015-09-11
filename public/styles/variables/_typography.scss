@@ -1,4 +1,4 @@
-$fonts-base-path: "/assets/fonts/";
+$fonts-base-path: "/assets/fonts/v1/";
 
 @mixin gu-font-face($family, $filebase, $font-weight: 400, $font-style: normal) {
   $file-path: $fonts-base-path + $family + "/" + $filebase;
