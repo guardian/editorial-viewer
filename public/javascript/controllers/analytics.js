@@ -59,7 +59,7 @@ function recordDesktopEnabled() {
     if (pageOpenTime) {
         var timeTaken = Math.floor((Date.now() - pageOpenTime) / 1000)
         pageOpenTime = null;
-        mixpanel.people.set({"timeTakenToEnable": timeTaken})
+        window.mixpanel.people.set({"timeTakenToEnable": timeTaken})
     }
 
     window.mixpanel.track('desktopEnabled');
@@ -82,6 +82,22 @@ function recordDesktopViewed() {
     window.mixpanel.track('desktopViewed');
 }
 
+function recordReaderMode() {
+    if (!isEnabled) {
+        return;
+    }
+
+    window.mixpanel.track('readerModeViewed');
+}
+
+function recordPrint() {
+    if (!isEnabled) {
+        return;
+    }
+
+    window.mixpanel.track('printTriggered');
+}
+
 module.exports = {
     init:                    init,
     recordPageOpen:          recordPageOpen,
@@ -89,5 +105,7 @@ module.exports = {
     recordOrientationChange: recordOrientationChange,
     recordDesktopEnabled:    recordDesktopEnabled,
     recordDesktopViewed:     recordDesktopViewed,
-    recordMobileViewed:      recordMobileViewed
+    recordMobileViewed:      recordMobileViewed,
+    recordReaderMode:        recordReaderMode,
+    recordPrint:             recordPrint
 };
