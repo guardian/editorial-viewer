@@ -17,6 +17,34 @@ body {
     z-index: 2;
 }
 
+.show-desktop-enabled {
+    display: none !important;
+}
+
+.desktop-enabled {
+    & .show-desktop-enabled {
+        display: inline-block !important;
+    }
+
+    & .hide-desktop-enabled {
+        display: none !important;
+    }
+}
+
+.show-reader-mode {
+    display: none !important;
+}
+
+.is-reader {
+    & .show-reader-mode {
+        display: inline-block !important;
+    }
+
+    & .hide-reader-mode {
+        display: none !important;
+    }
+}
+
 %top-toolbar__status {
     box-sizing: border-box;
     margin: 13px;
@@ -248,7 +276,7 @@ body {
     top: -2px;
     margin-right: 7px;
 
-    .is-checked & {
+    .desktop-enabled & {
         @extend %icon__checkbox--checked;
 
         height: 18px;
@@ -259,13 +287,5 @@ body {
   background-color: $infobar-color;
   text-align: center;
   padding: 10px;
-
-  opacity: 1;
-
-  transition: 0.3s opacity;
-
-  &.is-hidden {
-      opacity: 0;
-      display: none;
-  }
+  width: 100%;
 }

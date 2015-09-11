@@ -43,27 +43,9 @@ function styleWithAttributeNameAndValue(attributeName, attributeValue, styleAttr
     }
 }
 
-function addClassToAttributeNameAndValue(attributeName, attributeValue, className) {
-    var els = document.querySelectorAll('[data-' + attributeName + '="' + attributeValue + '"]');
-
-    for (var i = 0; i < els.length; ++i) {
-        els[i].classList.add(className);
-    }
-}
-
-function removeClassFromAttributeNameAndValue(attributeName, attributeValue, className) {
-    var els = document.querySelectorAll('[data-' + attributeName + '="' + attributeValue + '"]');
-
-    for (var i = 0; i < els.length; ++i) {
-        els[i].classList.remove(className);
-    }
-}
-
 module.exports = {
-    markSelected:                         markSelected,
-    bindClickToAttributeName:             bindClickToAttributeName,
-    bindClickToModeUpdate:                bindClickToModeUpdate,
-    styleWithAttributeNameAndValue:       styleWithAttributeNameAndValue,
-    addClassToAttributeNameAndValue:      addClassToAttributeNameAndValue,
-    removeClassFromAttributeNameAndValue: removeClassFromAttributeNameAndValue
+    markSelected:                   markSelected,
+    bindClickToAttributeName:       bindClickToAttributeName,
+    bindClickToModeUpdate:          bindClickToModeUpdate,
+    styleWithAttributeNameAndValue: styleWithAttributeNameAndValue
 };
