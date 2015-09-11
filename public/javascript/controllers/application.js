@@ -65,11 +65,11 @@ function triggerAnalytics(oldMode, newMode) {
 function updateMode(newMode) {
     var oldMode = activeMode;
 
-    triggerAnalytics(oldMode, newMode);
-
-    if (newMode === 'desktop' && !desktopEnabled) {
+    if (newMode === 'desktop' && !desktopEnabled && window._previewEnv !== 'live') {
         return;
     }
+
+    triggerAnalytics(oldMode, newMode);
 
     activeMode = newMode;
 
