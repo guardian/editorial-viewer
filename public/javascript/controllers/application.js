@@ -20,9 +20,13 @@ var modes = {
         height:   '320px'
     },
     'desktop': {
-        isMobile: false,
+        width:  '',
+        height: ''
+    },
+    'reader': {
         width:    '',
-        height:   ''
+        height:   '',
+        isReader: true,
     }
 };
 
@@ -37,7 +41,7 @@ function init(options) {
 }
 
 function checkDesktopEnabled() {
-    localStorageUtil.getEnabledHrefs().then(function(hrefs){
+    localStorageUtil.getEnabledHrefs().then(function(hrefs) {
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
             desktopEnabled = true;
             updateViews();
@@ -55,6 +59,12 @@ function updateViews() {
     updateDesktopVisbility();
     viewer.updateViewer(activeMode, modes[activeMode]);
     buttonUtil.markSelected('switchmode', activeMode);
+
+    if (activeMode === 'reader') {
+        buttonUtil.removeClassFromAttributeNameAndValue('showreaderactive', 'true', 'is-hidden');
+    } else {
+        buttonUtil.addClassToAttributeNameAndValue('showreaderactive', 'true', 'is-hidden');
+    }
 }
 
 function updateMode(newMode) {
@@ -64,8 +74,12 @@ function updateMode(newMode) {
         analyticsCtrl.recordOrientationChange();
     }
 
-    if ((oldMode !== newMode) && modes[oldMode].isMobile && !modes[newMode].isMobile) {
+    if ((oldMode !== "desktop") && (newMode === "desktop")) {
         analyticsCtrl.recordDesktopViewed();
+    }
+
+    if ((oldMode !== "reader") && (newMode === "reader")) {
+        analyticsCtrl.recordReaderMode();
     }
 
     if ((oldMode !== newMode) && !modes[oldMode].isMobile && modes[newMode].isMobile) {
@@ -73,6 +87,7 @@ function updateMode(newMode) {
     }
 
     activeMode = newMode;
+
 
     updateViews();
 }
@@ -82,10 +97,15 @@ function updateDesktopVisbility() {
         buttonUtil.addClassToAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.removeClassFromAttributeNameAndValue('switchmode', 'desktop', 'is-hidden');
         buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
+
     } else {
         buttonUtil.removeClassFromAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
         buttonUtil.addClassToAttributeNameAndValue('switchmode', 'desktop', 'is-hidden', 'none');
         buttonUtil.removeClassFromAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
+    }
+
+    if (!desktopEnabled && activeMode === 'reader') {
+        buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
     }
 }
 
@@ -106,5 +126,6 @@ function toggleDesktop() {
 }
 
 module.exports = {
-    init: init
+    init:    init,
+    setMode: updateMode
 };

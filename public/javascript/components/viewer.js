@@ -1,4 +1,4 @@
-
+var analyticsCtrl = require('../controllers/analytics.js');
 var viewerEl = document.getElementById('viewer');
 
 var currentViewPortConfig;
@@ -7,6 +7,7 @@ var currentViewPortName;
 function updateViewer(viewportName, viewportConfig) {
 
     var isAnimated = false;
+    var preventRefresh = false;
 
     if (currentViewPortConfig && currentViewPortConfig !== viewportConfig) {
         //We have a change of viewport, test for special cases where we can animate
@@ -15,30 +16,64 @@ function updateViewer(viewportName, viewportConfig) {
         }
     }
 
+    if (viewportConfig.isReader) {
+        enableReader();
+        preventRefresh = true;
+    }
+
     currentViewPortConfig = viewportConfig;
     currentViewPortName = viewportName;
 
-    restyleViewer(isAnimated);
+    restyleViewer(isAnimated, preventRefresh);
 }
 
 function reloadiFrame() {
     viewerEl.src = viewerEl.src;
+
+    if (currentViewPortName === 'reader') {
+        enableReader();
+    }
 }
 
 function printViewer() {
     try {
-      viewerEl.contentWindow.print();
+        viewerEl.contentWindow.print();
+        analyticsCtrl.recordPrint();
     } catch (e) {
-      console.log("Can't communicate with iframe")
+        console.log('Can\'t communicate with iframe ', e);
     }
 }
 
-function restyleViewer(isAnimated) {
+function enableReader() {
+    try {
+        var printStyleSheets = viewerEl.contentDocument.querySelectorAll('link[media=\'print\']');
+
+        for (var i = 0; i < printStyleSheets.length; i++) {
+            printStyleSheets[i].setAttribute('media', 'all');
+        }
+
+        var styleLink = document.createElement('link');
+        styleLink.href = '/assets/styles/readerMode.css';
+        styleLink.rel = 'stylesheet';
+        styleLink.setAttribute('media', 'screen');
+        styleLink.type = 'text/css';
+
+        viewerEl.contentDocument.body.appendChild(styleLink);
+
+    } catch (e) {
+        console.log('Can\'t enable Reader mode: ', e);
+    }
+}
+
+function restyleViewer(isAnimated, preventRefresh) {
 
     var transitionEndHandler = function() {
         viewerEl.removeEventListener('transitionend', transitionEndHandler);
         viewerEl.classList.remove('is-animated');
-        reloadiFrame();
+
+        if (!preventRefresh) {
+            reloadiFrame();
+        }
     };
 
     viewerEl.className = 'viewer is-' + currentViewPortName;
@@ -51,13 +86,13 @@ function restyleViewer(isAnimated) {
     viewerEl.style.width = currentViewPortConfig.width;
     viewerEl.style.height = currentViewPortConfig.height;
 
-    if (!isAnimated) {
+    if (!isAnimated && !preventRefresh) {
         reloadiFrame();
     }
-
 }
 
 module.exports = {
     updateViewer: updateViewer,
-    printViewer: printViewer
+    printViewer:  printViewer,
+    enableReader: enableReader
 };
