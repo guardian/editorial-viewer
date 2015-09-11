@@ -1,3 +1,5 @@
+import com.typesafe.sbt.web.pipeline.Pipeline
+
 name := "viewer"
 
 version := "0.1-SNAPSHOT"
@@ -21,6 +23,21 @@ libraryDependencies ++= Seq(
 routesGenerator := InjectedRoutesGenerator
 
 
+// Front-end assets config
+val bundle = taskKey[Pipeline.Stage]("JSPM bundle")
+
+bundle := { mappings =>
+  val log = streams.value.log
+  log.info("Running JSPM bundle")
+  val cmd = Process("npm run bundlejs", baseDirectory.value) !< log
+  if (cmd != 0) sys.error(s"Non-zero error code for `npm run bundlejs`: $cmd")
+  mappings
+}
+
+pipelineStages := Seq(bundle)
+
+
+// Config for packing app for deployment
 packageName in Universal := normalizedName.value
 
 riffRaffPackageType := (packageZipTarball in config("universal")).value
