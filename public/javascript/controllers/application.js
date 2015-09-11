@@ -70,7 +70,7 @@ function updateViews() {
 function updateMode(newMode) {
     var oldMode = activeMode;
 
-    if (newMode === 'desktop' && !desktopEnabled) {
+    if (newMode === 'desktop' && !desktopEnabled && window._previewEnv !== 'live') {
         return;
     }
 
