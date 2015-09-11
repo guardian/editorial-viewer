@@ -9,10 +9,36 @@ function onKeyPress(e) {
       e.preventDefault();
     }
 
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.keyIdentifier === 'U+0042')) {
-      applicationController.setMode('reader');
+    if (e.key === 'ArrowUp' || e.keyIdentifier === "Up") {
+      viewer.scrollViewerUp();
       e.preventDefault();
     }
+
+    if (e.key === 'ArrowDown' || e.keyIdentifier === "Down") {
+      viewer.scrollViewerDown();
+      e.preventDefault();
+    }
+
+    if (e.key === '1' || e.keyIdentifier === 'U+0031') {
+        applicationController.setMode('mobile-portrait');
+        e.preventDefault();
+    }
+
+    if (e.key === '2' || e.keyIdentifier === 'U+0032') {
+        applicationController.setMode('mobile-landscape');
+        e.preventDefault();
+    }
+
+    if (e.key === '3' || e.keyIdentifier === 'U+0033') {
+        applicationController.setMode('reader');
+        e.preventDefault();
+    }
+
+    if (e.key === '4' || e.keyIdentifier === 'U+0034') {
+        applicationController.setMode('desktop');
+        e.preventDefault();
+    }
+
 }
 
 function init() {
