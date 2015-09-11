@@ -30,6 +30,7 @@
                             <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
                         </div>
                     <!--</li>-->
+                    <li data-switchmode="reader" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--copycheck"></i>Copy taste<!--</li>-->
                     @if(previewEnv == "preview") {
                         <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile checked & verified<!--</li>-->
                         <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
@@ -37,6 +38,7 @@
                         <li data-switchmode="desktop" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                         <li class="top-toolbar__container"><a href="@actualUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
                     }
+
                     <li class="top-toolbar__button--right" data-print="true"><i class="top-toolbar__icon--printer"></i>Print version<!--</li>-->
                 </ul>
             </div>
@@ -44,6 +46,8 @@
         @if(previewEnv == "preview") {
             <div data-hidedesktopenabled="true" class="info-bar">To enable desktop preview you need to check and verify mobile first</div>
         }
+        <div data-showreaderactive="true" class="info-bar is-hidden">Copy taste presents you with a distraction free view of the article content, if you have any feedback please email <a href="mailto:digitalcms.dev@@guardian.co.uk">Digital CMS</a></div>
+
     </header>
 
 
