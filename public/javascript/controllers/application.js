@@ -1,43 +1,20 @@
 var localStorageUtil = require('javascript/utils/localStorage');
 var buttonUtil = require('javascript/utils/button');
-
 var analyticsCtrl = require('javascript/controllers/analytics');
-
+var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
 
 var desktopEnabled, activeMode;
-
 var defaultMode = 'mobile-portrait';
-var modes = {
-    'mobile-portrait': {
-        isMobile: true,
-        width:    '330px',
-        height:   '568px'
-    },
-    'mobile-landscape': {
-        isMobile: true,
-        width:    '568px',
-        height:   '320px'
-    },
-    'desktop': {
-        width:  '',
-        height: ''
-    },
-    'reader': {
-        width:    '',
-        height:   '',
-        isReader: true,
-    }
-};
 
 function init(options) {
-
     activeMode = defaultMode;
 
     bindClicks();
     updateViews();
     checkDesktopEnabled();
 
+    viewer.init();
 }
 
 function checkDesktopEnabled() {
@@ -56,61 +33,47 @@ function bindClicks() {
 }
 
 function updateViews() {
-    updateDesktopVisbility();
+
+    document.body.className = 'is-' + activeMode;
+
+    if (desktopEnabled) {
+        document.body.className += ' desktop-enabled';
+    }
+
     viewer.updateViewer(activeMode, modes[activeMode]);
     buttonUtil.markSelected('switchmode', activeMode);
-
-    if (activeMode === 'reader') {
-        buttonUtil.removeClassFromAttributeNameAndValue('showreaderactive', 'true', 'is-hidden');
-    } else {
-        buttonUtil.addClassToAttributeNameAndValue('showreaderactive', 'true', 'is-hidden');
-    }
 }
 
-function updateMode(newMode) {
-    var oldMode = activeMode;
-
-    if (newMode === 'desktop' && !desktopEnabled) {
-        return;
-    }
-
+function triggerAnalytics(oldMode, newMode) {
     if ((oldMode !== newMode) && modes[oldMode].isMobile && modes[newMode].isMobile) {
         analyticsCtrl.recordOrientationChange();
     }
 
-    if ((oldMode !== "desktop") && (newMode === "desktop")) {
+    if ((oldMode !== 'desktop') && (newMode === 'desktop')) {
         analyticsCtrl.recordDesktopViewed();
     }
 
-    if ((oldMode !== "reader") && (newMode === "reader")) {
+    if ((oldMode !== 'reader') && (newMode === 'reader')) {
         analyticsCtrl.recordReaderMode();
     }
 
     if ((oldMode !== newMode) && !modes[oldMode].isMobile && modes[newMode].isMobile) {
         analyticsCtrl.recordMobileViewed();
     }
+}
+
+function updateMode(newMode) {
+    var oldMode = activeMode;
+
+    triggerAnalytics(oldMode, newMode);
+
+    if (newMode === 'desktop' && !desktopEnabled) {
+        return;
+    }
 
     activeMode = newMode;
 
-
     updateViews();
-}
-
-function updateDesktopVisbility() {
-    if (desktopEnabled) {
-        buttonUtil.addClassToAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
-        buttonUtil.removeClassFromAttributeNameAndValue('switchmode', 'desktop', 'is-hidden');
-        buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
-
-    } else {
-        buttonUtil.removeClassFromAttributeNameAndValue('toggledesktop', 'true', 'is-checked');
-        buttonUtil.addClassToAttributeNameAndValue('switchmode', 'desktop', 'is-hidden', 'none');
-        buttonUtil.removeClassFromAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
-    }
-
-    if (!desktopEnabled && activeMode === 'reader') {
-        buttonUtil.addClassToAttributeNameAndValue('hidedesktopenabled', 'true', 'is-hidden');
-    }
 }
 
 function toggleDesktop() {
