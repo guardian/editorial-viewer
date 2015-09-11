@@ -6,6 +6,7 @@ version := "0.1-SNAPSHOT"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
+  .enablePlugins(SbtWeb)
   .enablePlugins(RiffRaffArtifact)
 
 scalaVersion := "2.11.6"
@@ -34,7 +35,7 @@ bundle := { mappings =>
   mappings
 }
 
-pipelineStages := Seq(bundle)
+pipelineStages := Seq(bundle, digest, gzip)
 
 
 // Config for packing app for deployment
