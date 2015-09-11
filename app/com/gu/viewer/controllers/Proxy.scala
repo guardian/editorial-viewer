@@ -46,7 +46,8 @@ class Proxy @Inject() (ws: WSClient) extends Controller with Loggable {
       case "preview" => Configuration.previewHost
       case _ => Configuration.liveHost
     }
-    val url = s"$protocol://$serviceHost/$path"
+    val queryString = if (request.rawQueryString.nonEmpty) s"?${request.rawQueryString}" else ""
+    val url = s"$protocol://$serviceHost/$path$queryString"
 
 
     def doPreviewAuth() = {
