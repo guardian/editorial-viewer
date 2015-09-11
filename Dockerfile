@@ -8,6 +8,12 @@ RUN apt-get update && apt-get install -y curl && \
     curl -L http://dl.bintray.com/sbt/debian/sbt-${SBT_VERSION}.deb > /tmp/sbt-${SBT_VERSION}.deb && \
     dpkg -i /tmp/sbt-${SBT_VERSION}.deb
 
+# Install nodejs 0.10.x nodesource repo
+RUN curl -sL https://deb.nodesource.com/setup_0.10 | bash -
+
+# Install nodejs and other tools
+RUN apt-get -y update && apt-get install -y --no-install-recommends build-essential nodejs git-core
+
 EXPOSE 9000
 
 RUN mkdir /opt/app
@@ -23,6 +29,7 @@ RUN sbt compile
 
 # Build the app
 ADD . /opt/app/
+RUN npm install
 RUN sbt stage
 
-CMD ["/opt/app/target/universal/stage/bin/editorial-preview"]
+CMD ["/opt/app/target/universal/stage/bin/viewer"]
