@@ -19,7 +19,8 @@
         border-width: 20px 60px 30px 30px;
     }
 
-    &.is-desktop {
+    &.is-desktop,
+    &.is-reader {
         position: fixed;
         top: 51px;
         left: 0;
