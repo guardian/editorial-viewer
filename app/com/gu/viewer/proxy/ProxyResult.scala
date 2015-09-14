@@ -59,11 +59,11 @@ object ProxyResult extends Loggable {
     .map(asResult)
     .recover {
       case err @ ProxyError(message, Some(response)) => {
-        log.warn(s"$message: ${response.toString} ${response.allHeaders} ${response.body}", err)
+        log.warn(s"[Bad Gateway] $message: ${response.toString} ${response.bodyAsString}", err)
         BadGateway(message)
       }
       case ProxyError(message, None) => {
-        log.warn(s"$message")
+        log.warn(s"[Bad Gateway] $message")
         BadGateway(message)
       }
     }
