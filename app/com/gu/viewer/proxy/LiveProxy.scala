@@ -13,7 +13,7 @@ class LiveProxy @Inject() (proxyClient: Proxy) extends Loggable {
     val url = s"${request.protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Live Proxy to: $url")
     // TODO rewrite redirects to proxied URLS
-    proxyClient.get(url, followRedirects = true)()
+    proxyClient.get(url)()
   }
 
 }
