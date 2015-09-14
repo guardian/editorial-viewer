@@ -17,6 +17,20 @@ body {
     z-index: 2;
 }
 
+.show-reader-mode {
+    display: none !important;
+}
+
+.is-reader {
+    & .show-reader-mode {
+        display: inline-block !important;
+    }
+
+    & .hide-reader-mode {
+        display: none !important;
+    }
+}
+
 %top-toolbar__status {
     box-sizing: border-box;
     margin: 13px;
@@ -103,7 +117,8 @@ body {
 .top-toolbar {
     &__button,
     &__button--mobilecheck,
-    &__button--right {
+    &__button--right,
+    &__button--desktop {
         @extend %fs-data-3;
 
         display: inline-block;
@@ -147,6 +162,15 @@ body {
     &__button--mobilecheck.is-selected {
         border-top: 3px solid $c-bluegrey;
     }
+
+    &__button--desktop {
+        display: none;
+
+        .desktop-enabled & {
+            display: inline-block;
+        }
+    }
+
 
     &__button--right {
 
@@ -248,7 +272,7 @@ body {
     top: -2px;
     margin-right: 7px;
 
-    .is-checked & {
+    .desktop-enabled & {
         @extend %icon__checkbox--checked;
 
         height: 18px;
@@ -259,13 +283,5 @@ body {
   background-color: $infobar-color;
   text-align: center;
   padding: 10px;
-
-  opacity: 1;
-
-  transition: 0.3s opacity;
-
-  &.is-hidden {
-      opacity: 0;
-      display: none;
-  }
+  width: 100%;
 }

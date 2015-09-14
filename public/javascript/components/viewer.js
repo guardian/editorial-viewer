@@ -103,10 +103,21 @@ function scrollViewerUp() {
     scrollViewer(-1 * viewerEl.clientHeight / 1.5);
 }
 
+function onViewerLoad() {
+    if (currentViewPortName === 'reader') {
+        enableReader();
+    }
+}
+
+function init() {
+    viewerEl.addEventListener('load', onViewerLoad);
+}
+
 module.exports = {
     updateViewer: updateViewer,
     printViewer: printViewer,
     scrollViewerUp: scrollViewerUp,
     scrollViewerDown: scrollViewerDown,
-    enableReader: enableReader
+    enableReader: enableReader,
+    init: init
 };
