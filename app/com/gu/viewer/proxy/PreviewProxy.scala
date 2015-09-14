@@ -5,7 +5,6 @@ import com.gu.viewer.config.Configuration
 import com.gu.viewer.controllers.routes
 import com.gu.viewer.logging.Loggable
 import com.gu.viewer.views.html
-import play.api.libs.ws.WSResponse
 import play.api.mvc.Results.{Ok, BadGateway, BadRequest, Redirect}
 
 import scala.concurrent.Future
@@ -38,7 +37,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
     log.info(s"Proxy Preview auth to: $proxyRequestUrl")
 
-    def handleResponse(response: WSResponse) = {
+    def handleResponse(response: ProxyResponse) = {
 
       val returnUrl = proxyUriToViewerUri(request.requestUri).getOrElse(request.requestUri)
 
@@ -78,7 +77,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
         }
     */
 
-    def isLoginRedirect(response: WSResponse) = {
+    def isLoginRedirect(response: ProxyResponse) = {
       response.status == 303 &&
         response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
     }
@@ -112,7 +111,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     val redirectUrlParam = "redirect-url" -> loginCallbackUrl(request)
     val queryParams = request.requestQueryString.mapValues(_.head).toSeq :+ redirectUrlParam
 
-    def handleResponse(response: WSResponse) = {
+    def handleResponse(response: ProxyResponse) = {
 
       val session = PreviewSession.fromResponseHeaders(response)
         .withPlaySessionFrom(request.session)
@@ -147,7 +146,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
 
 
-  private def badGatewayResponse(msg: String, response: WSResponse) = {
+  private def badGatewayResponse(msg: String, response: ProxyResponse) = {
     log.warn(s"$msg: ${response.toString} ${response.allHeaders} ${response.body}")
     BadGateway(msg)
   }
