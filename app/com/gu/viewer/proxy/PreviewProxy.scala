@@ -11,6 +11,8 @@ import scala.concurrent.Future
 @Singleton
 class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
+  private val PREVIEW_AUTH_REDIRECT_PARAM = "redirect-url"
+
   val serviceHost = Configuration.previewHost
   val previewLoginUrl = s"http://$serviceHost/login"
 
@@ -53,14 +55,14 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
           PreviewAuthRedirectProxyResult(location, session)
         }
 
-        case (None, _) => error("Unexpected response from preview login request", response)
+        case (None, _) => error("Unexpected response session from preview login request", response)
         case (_, None) => error("Invalid response from preview login request", response)
       }
     }
 
-    proxyClient.post(proxyRequestUrl, queryString = Seq("redirect-url" -> loginCallbackUrl(request))) {
+    proxyClient.post(proxyRequestUrl, queryString = Seq(PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request))) {
       case response if response.status == 303 => handleResponse(response)
-      // TODO should we handle non redirect responses here?
+      case response => error("Unexpected response from preview authentication request", response)
     }
   }
 
@@ -69,13 +71,6 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
     val url = s"${request.protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Proxy to preview: $url")
-
-    /* TODO handle redirects with proxy
-        case (status, Some(otherLocation)) => {
-          log.warn(s"Proxied response for $url is $status redirect to: $otherLocation")
-          Future.successful(Status(status).withHeaders("Location" -> otherLocation))
-        }
-    */
 
     def isLoginRedirect(response: ProxyResponse) = {
       response.status == 303 &&
@@ -110,7 +105,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
    */
   def previewAuthCallback(request: PreviewProxyRequest) = ProxyResult.resultFrom {
 
-    val redirectUrlParam = "redirect-url" -> loginCallbackUrl(request)
+    val redirectUrlParam = PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request)
     val queryParams = request.requestQueryString.mapValues(_.head).toSeq :+ redirectUrlParam
 
     def handleResponse(response: ProxyResponse) = {
