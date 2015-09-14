@@ -17,20 +17,6 @@ body {
     z-index: 2;
 }
 
-.show-desktop-enabled {
-    display: none !important;
-}
-
-.desktop-enabled {
-    & .show-desktop-enabled {
-        display: inline-block !important;
-    }
-
-    & .hide-desktop-enabled {
-        display: none !important;
-    }
-}
-
 .show-reader-mode {
     display: none !important;
 }
@@ -131,7 +117,8 @@ body {
 .top-toolbar {
     &__button,
     &__button--mobilecheck,
-    &__button--right {
+    &__button--right,
+    &__button--desktop {
         @extend %fs-data-3;
 
         display: inline-block;
@@ -175,6 +162,15 @@ body {
     &__button--mobilecheck.is-selected {
         border-top: 3px solid $c-bluegrey;
     }
+
+    &__button--desktop {
+        display: none;
+
+        .desktop-enabled & {
+            display: inline-block;
+        }
+    }
+
 
     &__button--right {
 
