@@ -61,10 +61,12 @@ object ProxyResult extends Loggable {
       case err @ ProxyError(message, Some(response)) => {
         log.warn(s"[Bad Gateway] $message: ${response.toString} ${response.bodyAsString}", err)
         BadGateway(message)
+          .withNewSession
       }
       case ProxyError(message, None) => {
         log.warn(s"[Bad Gateway] $message")
         BadGateway(message)
+          .withNewSession
       }
     }
 
