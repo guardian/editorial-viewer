@@ -1,7 +1,7 @@
 var localforage = require('localforage');
 
 var ENABLED_PAGES_MAX = 100;
-var ENABLED_PAGES_KEY = 'desktopEnabled'
+var ENABLED_PAGES_KEY = 'desktopEnabled';
 
 function getEnabledHrefs() {
     return localforage.getItem(ENABLED_PAGES_KEY);
@@ -13,7 +13,7 @@ function saveEnabledHrefs(hrefs) {
 
 function addEnabledHref(href) {
 
-    getEnabledHrefs().then(function(hrefs){
+    getEnabledHrefs().then(function(hrefs) {
         //Needs to be an array
         if (!Array.isArray(hrefs)) {
             hrefs = [];
