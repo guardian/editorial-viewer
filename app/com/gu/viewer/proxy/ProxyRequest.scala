@@ -9,10 +9,14 @@ sealed trait ProxyRequest {
 }
 
 object ProxyRequest {
-  def apply(service: String, servicePath: String, request: RequestHeader): ProxyRequest = service match {
-    case "live" => LiveProxyRequest(request.secure, servicePath)
-    case "preview" => PreviewProxyRequest(servicePath, request)
-    case _ => UnknownProxyRequest
+  def apply(service: String, servicePath: String, request: RequestHeader): ProxyRequest = {
+    val queryString = if (request.rawQueryString.nonEmpty) s"?${request.rawQueryString}" else ""
+
+    service match {
+      case "live" => LiveProxyRequest(request.secure, servicePath + queryString)
+      case "preview" => PreviewProxyRequest(servicePath + queryString, request)
+      case _ => UnknownProxyRequest
+    }
   }
 }
 
