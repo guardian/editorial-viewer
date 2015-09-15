@@ -29,10 +29,11 @@ val bundle = taskKey[Pipeline.Stage]("JSPM bundle")
 
 bundle := { mappings =>
   val log = streams.value.log
+  val sourceDir = (resourceDirectory in Assets).value
   log.info("Running JSPM bundle")
   val cmd = Process("npm run bundlejs", baseDirectory.value) !< log
   if (cmd != 0) sys.error(s"Non-zero error code for `npm run bundlejs`: $cmd")
-  mappings
+  mappings ++ ((sourceDir * "build.js*") pair relativeTo(sourceDir))
 }
 
 pipelineStages := Seq(bundle, digest, gzip)
