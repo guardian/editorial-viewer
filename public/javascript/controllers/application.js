@@ -8,6 +8,7 @@ var desktopEnabled, activeMode;
 var defaultMode = 'mobile-portrait';
 
 function init(options) {
+    
     activeMode = defaultMode;
 
     bindClicks();

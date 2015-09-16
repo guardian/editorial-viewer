@@ -109,7 +109,19 @@ function onViewerLoad() {
     }
 }
 
+function detectMobileAndRedirect() {
+    if (window.screen && window.screen.width <= 768) {
+        if (window._actualUrl) {
+            window.location.href = window._actualUrl;
+        } else {
+            window.location.href = viewerEl.src;
+        }
+    }
+}
+
 function init() {
+
+    detectMobileAndRedirect();
     viewerEl.addEventListener('load', onViewerLoad);
 }
 
