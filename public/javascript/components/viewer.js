@@ -111,7 +111,11 @@ function onViewerLoad() {
 
 function detectMobileAndRedirect() {
     if (window.screen && window.screen.width <= 768) {
-        window.location.href = viewerEl.src;
+        if (window._actualUrl) {
+            window.location.href = window._actualUrl;
+        } else {
+            window.location.href = viewerEl.src;
+        }
     }
 }
 
