@@ -11,15 +11,17 @@ function init(options) {
 
     activeMode = defaultMode;
 
+    viewer.init();
+
     bindClicks();
     updateViews();
     checkDesktopEnabled();
+    checkAdBlockStatus();
 
-    viewer.init();
+
 }
 
 function checkDesktopEnabled() {
-    console.log("check desktop enabled for: ", window.location.href)
     localStorageUtil.getEnabledHrefs().then(function(hrefs) {
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
             desktopEnabled = true;
@@ -32,7 +34,17 @@ function checkDesktopEnabled() {
         }
 
         updateClasses();
+    });
+}
 
+function checkAdBlockStatus() {
+    localStorageUtil.getAdBlockStatus().then(function(enabled) {
+        adsBlocked = enabled;
+        updateClasses();
+
+        if (adsBlocked) {
+            viewer.enableAdBlock();
+        }
     });
 }
 
@@ -116,9 +128,11 @@ function toggleDesktop() {
 function toggleAds() {
     if (adsBlocked) {
         viewer.disableAdBlock();
+        localStorageUtil.saveAdBlockStatus(false);
         adsBlocked = false;
     } else {
         viewer.enableAdBlock();
+        localStorageUtil.saveAdBlockStatus(true);
         adsBlocked = true;
     }
 
