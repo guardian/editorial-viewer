@@ -9,7 +9,7 @@
     "bundlejs": "jspm bundle javascript/main --inject --minify",
     "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
     "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
-    "postinstall": "jspm install -y && npm run sass && npm run bundlejs"
+    "postinstall": "jspm install -y && npm run sass"
   },
   "repository": {
     "type": "git",
