@@ -31,7 +31,7 @@ function checkDesktopEnabled() {
             activeMode = defaultMode;
         }
 
-        updateViews();
+        updateClasses();
 
     });
 }
