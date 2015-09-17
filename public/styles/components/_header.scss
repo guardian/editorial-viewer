@@ -118,7 +118,8 @@ body {
     &__button,
     &__button--mobilecheck,
     &__button--right,
-    &__button--desktop {
+    &__button--desktop,
+    &__button--blockads {
         @extend %fs-data-3;
 
         display: inline-block;
@@ -272,7 +273,13 @@ body {
     top: -2px;
     margin-right: 7px;
 
-    .desktop-enabled & {
+    .desktop-enabled .top-toolbar__button--mobilecheck & {
+        @extend %icon__checkbox--checked;
+
+        height: 18px;
+    }
+
+    .ads-blocked .top-toolbar__button--blockads & {
         @extend %icon__checkbox--checked;
 
         height: 18px;

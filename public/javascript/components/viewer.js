@@ -1,12 +1,13 @@
 var analyticsCtrl = require('../controllers/analytics.js');
 var viewerEl = document.getElementById('viewer');
+var currentViewerUrl = viewerEl.src;
 
 var errorController = require('../controllers/error.js');
 
-
 var currentViewPortConfig;
 var currentViewPortName;
-var currentViewerUrl;
+
+var adsBlocked;
 
 function updateViewer(viewportName, viewportConfig) {
 
@@ -28,23 +29,28 @@ function updateViewer(viewportName, viewportConfig) {
     currentViewPortConfig = viewportConfig;
     currentViewPortName = viewportName;
 
-    restyleViewer(isAnimated);
+    restyleViewer(isAnimated, preventRefresh);
 }
 
 function reloadiFrame() {
-
     errorController.hideError();
-
-    if (!currentViewerUrl) {
-        viewerEl.src = viewerEl.src;
-    } else {
-        viewerEl.src = currentViewerUrl;
-    }
+    updateUrl(currentViewerUrl);
 }
 
 function updateUrl(url) {
-    viewerEl.src = url;
     currentViewerUrl = url;
+
+    var newiFrameUrl = url;
+
+    if (adsBlocked) {
+        newiFrameUrl += '#noads';
+    }
+
+    //This is needed to force a refresh when only the hash value has changed.
+    viewerEl.src = 'about:blank';
+    setTimeout(function() {
+        viewerEl.src = newiFrameUrl;
+    }, 1);
 }
 
 function printViewer() {
@@ -117,7 +123,7 @@ function scrollViewerUp() {
 
 function onViewerLoad(e) {
     var iframeLocation = e.target.contentWindow.location;
-    if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
+    if (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1) {
         currentViewerUrl = iframeLocation.href;
     }
 
@@ -136,17 +142,31 @@ function detectMobileAndRedirect() {
     }
 }
 
+function enableAdBlock() {
+    adsBlocked = true;
+
+    reloadiFrame();
+}
+
+function disableAdBlock() {
+    adsBlocked = false;
+
+    reloadiFrame();
+}
+
 function init() {
     detectMobileAndRedirect();
     viewerEl.addEventListener('load', onViewerLoad);
 }
 
 module.exports = {
-    updateViewer: updateViewer,
-    updateUrl: updateUrl,
-    printViewer: printViewer,
-    scrollViewerUp: scrollViewerUp,
+    updateViewer:     updateViewer,
+    updateUrl:        updateUrl,
+    disableAdBlock:   disableAdBlock,
+    enableAdBlock:    enableAdBlock,
+    printViewer:      printViewer,
+    scrollViewerUp:   scrollViewerUp,
     scrollViewerDown: scrollViewerDown,
-    enableReader: enableReader,
-    init: init
+    enableReader:     enableReader,
+    init:             init
 };

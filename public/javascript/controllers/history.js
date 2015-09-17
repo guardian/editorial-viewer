@@ -46,9 +46,8 @@ function replaceLocationHistory(iFrameLocation) {
         return;
     }
 
-    var resourcePath = iFrameLocation.href.replace(window._proxyBase, '');
-
-    var viewerHref = iFrameLocation.href;
+    var viewerHref = iFrameLocation.origin + iFrameLocation.pathname;
+    var resourcePath = viewerHref.replace(window._proxyBase, '');
     var newAppPath = window._baseAppUrl + '/' + resourcePath;
 
     if (newAppPath !== window.location.pathname) { //Check it's actually a different url;
