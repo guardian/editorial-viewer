@@ -279,9 +279,20 @@ body {
     }
 }
 
-.info-bar {
+.info-bar,
+.error-bar--active {
   background-color: $infobar-color;
   text-align: center;
   padding: 10px;
   width: 100%;
+}
+
+.error-bar {
+    display: none;
+
+    &--active {
+        color: $c-white;
+        display: block;
+        background-color: $c-red;
+    }
 }

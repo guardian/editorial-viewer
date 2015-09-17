@@ -1,46 +1,64 @@
 var viewer = require('../components/viewer');
 var applicationController = require('./application.js');
 
-var initialHref;
+var errorController = require('./error');
 
 function init() {
     window.addEventListener('popstate', onPopState);
 
-    document.getElementById('viewer').addEventListener('load', function(e){
-        var iframeLocation = e.target.contentWindow.location;
+    document.getElementById('viewer').addEventListener('load', function(e) {
 
-        if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
+        try {
+            var iframeLocation = e.target.contentWindow.location;
+            e.target.contentWindow.location.href; //Requied to trigger Same origin warnings
+        } catch(e) {
+
+            if (window._previewEnv === 'preview') {
+                errorController.showError('This could not be detected as a Guardian page, some features will be unavailable');
+            }
+
+            return;
+        }
+
+        errorController.hideError();
+        //If we get a browser error page, then don't replaceLocationHistory
+        if (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1) {
             //Needs to be replace (not push) as the iframe has added it's own history entry (shakes fist).
             replaceLocationHistory(iframeLocation);
         }
-    })
+    });
 }
 
-function onPopState(e){
+function onPopState(e) {
     if (e.state && e.state.viewerHref) {
-        viewer.updateUrl(e.state.viewerHref)
-    } else if (initialHref) {
-        viewer.updateUrl(initialHref)
+        viewer.updateUrl(e.state.viewerHref);
+    } else {
+        var initialHref = window._proxyBase + window._originalPath;
+        viewer.updateUrl(initialHref);
     }
 }
 
-function replaceLocationHistory(location) {
+function replaceLocationHistory(iFrameLocation) {
 
-    if (!initialHref) {
-        initialHref = location.href;
+    //Check if it's a proxy URL (Although shouldn't get here with Same Origin)
+    if (iFrameLocation.href.indexOf(window._proxyBase) === -1) {
+        console.log("This isn't a proxy url");
+        return;
     }
 
-    var newPath = window._baseAppUrl + location.pathname;
-    var viewerHref = location.href;
+    var resourcePath = iFrameLocation.href.replace(window._proxyBase, '');
 
-    if (newPath !== window.location.pathname) {
-        window.history.replaceState({viewerHref: viewerHref}, "", newPath);
+    var viewerHref = iFrameLocation.href;
+    var newAppPath = window._baseAppUrl + '/' + resourcePath;
+
+    if (newAppPath !== window.location.pathname) { //Check it's actually a different url;
+        window.history.replaceState({viewerHref: viewerHref}, '', newAppPath);
         applicationController.checkDesktopEnabled();
     }
 
 }
 
 module.exports = {
-    init: init,
+    init:      init,
     updateUrl: replaceLocationHistory
 };
