@@ -30,9 +30,10 @@ class Application extends Controller with Loggable {
     }
     val actualUrl = s"$protocol://$viewerHost/$path"
     val viewerUrl = routes.Proxy.proxy(target, path).absoluteURL()
+    val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = Configuration.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path))
   }
 
 }
