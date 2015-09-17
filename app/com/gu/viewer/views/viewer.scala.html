@@ -1,4 +1,4 @@
-@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String)
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String)
 
 @main("Viewer") {
     <header class="fixed-header">
@@ -30,12 +30,12 @@
                             <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
                         </div>
                     <!--</li>-->
-                    <li data-switchmode="reader" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--copycheck"></i>Copy taste<!--</li>-->
                     @if(previewEnv == "preview") {
+                        <li data-switchmode="reader" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--copycheck"></i>Copy taste<!--</li>-->
                         <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile checked & verified<!--</li>-->
                         <li data-switchmode="desktop" class="top-toolbar__button--desktop"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                     } else {
-                        <li data-switchmode="desktop" class="top-toolbar__button--desktop"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
+                        <li data-switchmode="desktop" class="top-toolbar__button"><i class="top-toolbar__icon--desktop"></i>Desktop<!--</li>-->
                         <li class="top-toolbar__container"><a href="@actualUrl" class="top-toolbar__button"><i class="top-toolbar__icon--guardian"></i>View on theguardian.com</a><!--</li>-->
                     }
 
@@ -47,6 +47,7 @@
             <div class="info-bar hide-desktop-enabled hide-reader-mode">To enable desktop preview you need to check and verify mobile first</div>
         }
         <div class="info-bar show-reader-mode">Copy taste presents you with a distraction free view of the article content. If you have any feedback please email the <a href="mailto:digitalcms.dev@@guardian.co.uk">Digital CMS</a> team</div>
+        <div id="errorbar" class="error-bar"></div>
 
     </header>
 
@@ -59,7 +60,11 @@
     </div>
 
     <script>
+        window._baseAppUrl = '/@previewEnv';
         window._previewEnv = "@previewEnv";
         window._actualUrl = "@actualUrl";
+        window._proxyBase = "@proxyBase"
+        window._originalPath = "@path"
+
     </script>
 }

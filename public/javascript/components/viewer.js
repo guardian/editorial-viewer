@@ -1,8 +1,12 @@
 var analyticsCtrl = require('../controllers/analytics.js');
 var viewerEl = document.getElementById('viewer');
 
+var errorController = require('../controllers/error.js');
+
+
 var currentViewPortConfig;
 var currentViewPortName;
+var currentViewerUrl;
 
 function updateViewer(viewportName, viewportConfig) {
 
@@ -24,15 +28,23 @@ function updateViewer(viewportName, viewportConfig) {
     currentViewPortConfig = viewportConfig;
     currentViewPortName = viewportName;
 
-    restyleViewer(isAnimated, preventRefresh);
+    restyleViewer(isAnimated);
 }
 
 function reloadiFrame() {
-    viewerEl.src = viewerEl.src;
 
-    if (currentViewPortName === 'reader') {
-        enableReader();
+    errorController.hideError();
+
+    if (!currentViewerUrl) {
+        viewerEl.src = viewerEl.src;
+    } else {
+        viewerEl.src = currentViewerUrl;
     }
+}
+
+function updateUrl(url) {
+    viewerEl.src = url;
+    currentViewerUrl = url;
 }
 
 function printViewer() {
@@ -103,7 +115,12 @@ function scrollViewerUp() {
     scrollViewer(-1 * viewerEl.clientHeight / 1.5);
 }
 
-function onViewerLoad() {
+function onViewerLoad(e) {
+    var iframeLocation = e.target.contentWindow.location;
+    if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
+        currentViewerUrl = iframeLocation.href;
+    }
+
     if (currentViewPortName === 'reader') {
         enableReader();
     }
@@ -120,13 +137,13 @@ function detectMobileAndRedirect() {
 }
 
 function init() {
-
     detectMobileAndRedirect();
     viewerEl.addEventListener('load', onViewerLoad);
 }
 
 module.exports = {
     updateViewer: updateViewer,
+    updateUrl: updateUrl,
     printViewer: printViewer,
     scrollViewerUp: scrollViewerUp,
     scrollViewerDown: scrollViewerDown,

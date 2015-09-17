@@ -8,7 +8,7 @@ var desktopEnabled, activeMode;
 var defaultMode = 'mobile-portrait';
 
 function init(options) {
-    
+
     activeMode = defaultMode;
 
     bindClicks();
@@ -19,11 +19,20 @@ function init(options) {
 }
 
 function checkDesktopEnabled() {
+    console.log("check desktop enabled for: ", window.location.href)
     localStorageUtil.getEnabledHrefs().then(function(hrefs) {
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
             desktopEnabled = true;
-            updateViews();
+        } else {
+            desktopEnabled = false;
         }
+
+        if (activeMode === 'desktop' && !desktopEnabled) {
+            activeMode = defaultMode;
+        }
+
+        updateViews();
+
     });
 }
 
@@ -94,6 +103,7 @@ function toggleDesktop() {
 }
 
 module.exports = {
-    init:    init,
+    init: init,
+    checkDesktopEnabled: checkDesktopEnabled,
     setMode: updateMode
 };
