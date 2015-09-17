@@ -27,13 +27,11 @@ function checkDesktopEnabled() {
             desktopEnabled = false;
         }
 
-        if (activeMode !== 'desktop') {
-            //Only remove/add button
-            updateDesktopVisbility();
-        } else {
-            //Full update including iframe refresh
-            updateViews();
+        if (activeMode === 'desktop' && !desktopEnabled) {
+            activeMode = defaultMode;
         }
+
+        updateViews();
 
     });
 }

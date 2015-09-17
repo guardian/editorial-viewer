@@ -1,6 +1,9 @@
 var analyticsCtrl = require('../controllers/analytics.js');
 var viewerEl = document.getElementById('viewer');
 
+var errorController = require('../controllers/error.js');
+
+
 var currentViewPortConfig;
 var currentViewPortName;
 var currentViewerUrl;
@@ -29,6 +32,9 @@ function updateViewer(viewportName, viewportConfig) {
 }
 
 function reloadiFrame() {
+
+    errorController.hideError();
+
     if (!currentViewerUrl) {
         viewerEl.src = viewerEl.src;
     } else {
@@ -109,7 +115,7 @@ function scrollViewerUp() {
     scrollViewer(-1 * viewerEl.clientHeight / 1.5);
 }
 
-function onViewerLoad() {
+function onViewerLoad(e) {
     var iframeLocation = e.target.contentWindow.location;
     if (iframeLocation.origin !== "null" || iframeLocation.protocol.indexOf('http') !== -1) {
         currentViewerUrl = iframeLocation.href;
@@ -131,7 +137,6 @@ function detectMobileAndRedirect() {
 }
 
 function init() {
-
     detectMobileAndRedirect();
     viewerEl.addEventListener('load', onViewerLoad);
 }
