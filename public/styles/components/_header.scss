@@ -17,6 +17,20 @@ body {
     z-index: 2;
 }
 
+.show-reader-mode {
+    display: none !important;
+}
+
+.is-reader {
+    & .show-reader-mode {
+        display: inline-block !important;
+    }
+
+    & .hide-reader-mode {
+        display: none !important;
+    }
+}
+
 %top-toolbar__status {
     box-sizing: border-box;
     margin: 13px;
@@ -26,6 +40,10 @@ body {
     text-transform: uppercase;
 
     font-weight: 700;
+}
+
+.tool-bar {
+    width: 100%;
 }
 
 .top-toolbar {
@@ -40,7 +58,7 @@ body {
     background-color: $c-bluegrey;
     border-bottom: 1px solid $c-grey-400;
 
-    white-space: nowrap;
+    white-space: normal;
     overflow-y: hidden;
 
     z-index: 2;
@@ -94,14 +112,13 @@ body {
     -ms-flex-positive: 1;
     flex-grow: 1;
     flex-shrink: 1;
-
-    white-space: nowrap;
-
 }
 
 .top-toolbar {
     &__button,
-    &__button--mobilecheck {
+    &__button--mobilecheck,
+    &__button--right,
+    &__button--desktop {
         @extend %fs-data-3;
 
         display: inline-block;
@@ -121,6 +138,8 @@ body {
         list-style: none;
 
         cursor: pointer;
+
+
 
         &:hover {
             border-top: 3px solid #d0d0d0;
@@ -142,6 +161,23 @@ body {
 
     &__button--mobilecheck.is-selected {
         border-top: 3px solid $c-bluegrey;
+    }
+
+    &__button--desktop {
+        display: none;
+
+        .desktop-enabled & {
+            display: inline-block;
+        }
+    }
+
+
+    &__button--right {
+
+        float: right;
+
+        border-left: 1px solid $c-grey-400;
+        border-right-width: 0;
     }
 
     &__container {
@@ -188,6 +224,20 @@ body {
     margin-right: 7px;
 }
 
+.top-toolbar__icon--printer {
+    @extend %icon__printer;
+
+    height: 17px;
+    margin-right: 7px;
+}
+
+.top-toolbar__icon--copycheck {
+    @extend %icon__copycheck;
+
+    height: 17px;
+    margin-right: 7px;
+}
+
 .top-toolbar__icon--guardian {
     @extend %icon__guardian;
 
@@ -222,7 +272,7 @@ body {
     top: -2px;
     margin-right: 7px;
 
-    .is-checked & {
+    .desktop-enabled & {
         @extend %icon__checkbox--checked;
 
         height: 18px;
@@ -233,12 +283,5 @@ body {
   background-color: $infobar-color;
   text-align: center;
   padding: 10px;
-
-  opacity: 1;
-
-  transition: 0.3s opacity;
-
-  &.is-hidden {
-      opacity: 0;
-  }
+  width: 100%;
 }

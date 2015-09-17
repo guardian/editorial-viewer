@@ -1,0 +1,10 @@
+@(redirectUrl: String)
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>window.top.location.href = "@Html(redirectUrl)";</script>
+    </head>
+    <body>
+        <noscript><a href="@redirectUrl" target="_top">Login</a></noscript>
+    </body>
+</html>
