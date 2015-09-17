@@ -4,7 +4,7 @@ var analyticsCtrl = require('javascript/controllers/analytics');
 var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
 
-var desktopEnabled, activeMode;
+var desktopEnabled, activeMode, adsBlocked;
 var defaultMode = 'mobile-portrait';
 
 function init(options) {
@@ -38,20 +38,31 @@ function checkDesktopEnabled() {
 
 function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
+    buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
 }
 
 function updateViews() {
 
-    document.body.className = 'is-' + activeMode;
-
-    if (desktopEnabled) {
-        document.body.className += ' desktop-enabled';
-    }
+    updateClasses();
 
     viewer.updateViewer(activeMode, modes[activeMode]);
     buttonUtil.markSelected('switchmode', activeMode);
+}
+
+function updateClasses() {
+    var className = 'is-' + activeMode;
+
+    if (desktopEnabled) {
+        className += ' desktop-enabled';
+    }
+
+    if (adsBlocked) {
+        className += ' ads-blocked';
+    }
+
+    document.body.className = className;
 }
 
 function triggerAnalytics(oldMode, newMode) {
@@ -99,11 +110,23 @@ function toggleDesktop() {
         analyticsCtrl.recordDesktopEnabled();
     }
 
-    updateViews();
+    updateClasses();
+}
+
+function toggleAds() {
+    if (adsBlocked) {
+        viewer.disableAdBlock();
+        adsBlocked = false;
+    } else {
+        viewer.enableAdBlock();
+        adsBlocked = true;
+    }
+
+    updateClasses();
 }
 
 module.exports = {
-    init: init,
+    init:                init,
     checkDesktopEnabled: checkDesktopEnabled,
-    setMode: updateMode
+    setMode:             updateMode
 };
