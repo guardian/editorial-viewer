@@ -31,6 +31,12 @@ body {
     }
 }
 
+.desktop-enabled {
+    & .hide-desktop-enabled {
+        display: none !important;
+    }
+}
+
 %top-toolbar__status {
     box-sizing: border-box;
     margin: 13px;
