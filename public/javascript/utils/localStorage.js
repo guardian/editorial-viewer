@@ -3,12 +3,22 @@ var localforage = require('localforage');
 var ENABLED_PAGES_MAX = 100;
 var ENABLED_PAGES_KEY = 'desktopEnabled';
 
+var ADBLOCK_ENABLED_UNTILL_KEY = 'adblockEnabled';
+
 function getEnabledHrefs() {
     return localforage.getItem(ENABLED_PAGES_KEY);
 }
 
 function saveEnabledHrefs(hrefs) {
     return localforage.setItem(ENABLED_PAGES_KEY, hrefs);
+}
+
+function saveAdBlockStatus(status) {
+    return localforage.setItem(ADBLOCK_ENABLED_UNTILL_KEY, status);
+}
+
+function getAdBlockStatus() {
+    return localforage.getItem(ADBLOCK_ENABLED_UNTILL_KEY);
 }
 
 function addEnabledHref(href) {
@@ -29,7 +39,7 @@ function addEnabledHref(href) {
 
         //Is it too long?
         if (hrefs.length > ENABLED_PAGES_MAX) {
-            hrefs = hrefs.slice(hrefs.length - ENABLED_PAGES_MAX, hrefs.length)
+            hrefs = hrefs.slice(hrefs.length - ENABLED_PAGES_MAX, hrefs.length);
         }
 
         //Save it
@@ -52,7 +62,9 @@ function removeEnabledHref(href) {
 }
 
 module.exports = {
-    addEnabledHref: addEnabledHref,
-    removeEnabledHref: removeEnabledHref,
-    getEnabledHrefs: getEnabledHrefs
-}
+    addEnabledHref:          addEnabledHref,
+    removeEnabledHref:       removeEnabledHref,
+    getEnabledHrefs:         getEnabledHrefs,
+    saveAdBlockEnabledUntil: saveAdBlockStatus,
+    getAdBlockStatus:        getAdBlockStatus
+};

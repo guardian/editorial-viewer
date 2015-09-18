@@ -4,22 +4,24 @@ var analyticsCtrl = require('javascript/controllers/analytics');
 var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
 
-var desktopEnabled, activeMode;
+var desktopEnabled, activeMode, adsBlocked;
 var defaultMode = 'mobile-portrait';
 
 function init(options) {
 
     activeMode = defaultMode;
 
+    viewer.init();
+
     bindClicks();
     updateViews();
     checkDesktopEnabled();
+    checkAdBlockStatus();
 
-    viewer.init();
+
 }
 
 function checkDesktopEnabled() {
-    console.log("check desktop enabled for: ", window.location.href)
     localStorageUtil.getEnabledHrefs().then(function(hrefs) {
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
             desktopEnabled = true;
@@ -31,27 +33,50 @@ function checkDesktopEnabled() {
             activeMode = defaultMode;
         }
 
-        updateViews();
+        updateClasses();
+    });
+}
 
+function checkAdBlockStatus() {
+    localStorageUtil.getAdBlockStatus().then(function(adsBlockedUntil) {
+        if (adsBlockedUntil && Date.now() < adsBlockedUntil) {
+            adsBlocked = true;
+            viewer.enableAdBlock();
+        } else {
+            adsBlocked = false;
+        }
+
+        updateClasses();
     });
 }
 
 function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
+    buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
 }
 
 function updateViews() {
 
-    document.body.className = 'is-' + activeMode;
-
-    if (desktopEnabled) {
-        document.body.className += ' desktop-enabled';
-    }
+    updateClasses();
 
     viewer.updateViewer(activeMode, modes[activeMode]);
     buttonUtil.markSelected('switchmode', activeMode);
+}
+
+function updateClasses() {
+    var className = 'is-' + activeMode;
+
+    if (desktopEnabled) {
+        className += ' desktop-enabled';
+    }
+
+    if (adsBlocked) {
+        className += ' ads-blocked';
+    }
+
+    document.body.className = className;
 }
 
 function triggerAnalytics(oldMode, newMode) {
@@ -99,11 +124,28 @@ function toggleDesktop() {
         analyticsCtrl.recordDesktopEnabled();
     }
 
-    updateViews();
+    updateClasses();
+}
+
+function toggleAds() {
+    if (adsBlocked) {
+        viewer.disableAdBlock();
+        localStorageUtil.saveAdBlockEnabledUntil(false);
+        adsBlocked = false;
+    } else {
+        viewer.enableAdBlock();
+
+        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
+        localStorageUtil.saveAdBlockEnabledUntil(tenHoursFromNow);
+
+        adsBlocked = true;
+    }
+
+    updateClasses();
 }
 
 module.exports = {
-    init: init,
+    init:                init,
     checkDesktopEnabled: checkDesktopEnabled,
-    setMode: updateMode
+    setMode:             updateMode
 };
