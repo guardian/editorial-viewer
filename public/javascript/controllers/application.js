@@ -129,10 +129,9 @@ function toggleDesktop() {
 
 function toggleAds() {
     if (adsBlocked) {
-        viewer.disableAdBlock();
         localStorageUtil.saveAdBlockEnabledUntil(false);
         adsBlocked = false;
-
+        viewer.disableAdBlock();
 
     } else {
         viewer.enableAdBlock();
