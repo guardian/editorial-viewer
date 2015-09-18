@@ -38,13 +38,15 @@ function checkDesktopEnabled() {
 }
 
 function checkAdBlockStatus() {
-    localStorageUtil.getAdBlockStatus().then(function(enabled) {
-        adsBlocked = enabled;
-        updateClasses();
-
-        if (adsBlocked) {
+    localStorageUtil.getAdBlockStatus().then(function(adsBlockedUntil) {
+        if (adsBlockedUntil && Date.now() < adsBlockedUntil) {
+            adsBlocked = true;
             viewer.enableAdBlock();
+        } else {
+            adsBlocked = false;
         }
+
+        updateClasses();
     });
 }
 
@@ -128,11 +130,14 @@ function toggleDesktop() {
 function toggleAds() {
     if (adsBlocked) {
         viewer.disableAdBlock();
-        localStorageUtil.saveAdBlockStatus(false);
+        localStorageUtil.saveAdBlockEnabledUntil(false);
         adsBlocked = false;
     } else {
         viewer.enableAdBlock();
-        localStorageUtil.saveAdBlockStatus(true);
+
+        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
+        localStorageUtil.saveAdBlockEnabledUntil(tenHoursFromNow);
+
         adsBlocked = true;
     }
 
