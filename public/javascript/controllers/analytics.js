@@ -82,6 +82,15 @@ function recordDesktopViewed() {
     window.mixpanel.track('desktopViewed');
 }
 
+
+function recordAdsDisabled() {
+    if (!isEnabled) {
+        return;
+    }
+
+    window.mixpanel.track('adsDisabled');
+}
+
 function recordReaderMode() {
     if (!isEnabled) {
         return;
@@ -107,5 +116,6 @@ module.exports = {
     recordDesktopViewed:     recordDesktopViewed,
     recordMobileViewed:      recordMobileViewed,
     recordReaderMode:        recordReaderMode,
+    recordAdsDisabled:       recordAdsDisabled,
     recordPrint:             recordPrint
 };

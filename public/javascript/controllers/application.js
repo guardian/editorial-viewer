@@ -132,6 +132,8 @@ function toggleAds() {
         viewer.disableAdBlock();
         localStorageUtil.saveAdBlockEnabledUntil(false);
         adsBlocked = false;
+
+
     } else {
         viewer.enableAdBlock();
 
@@ -139,6 +141,7 @@ function toggleAds() {
         localStorageUtil.saveAdBlockEnabledUntil(tenHoursFromNow);
 
         adsBlocked = true;
+        analyticsCtrl.recordAdsDisabled();
     }
 
     updateClasses();
