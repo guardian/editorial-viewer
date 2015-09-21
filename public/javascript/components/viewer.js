@@ -44,6 +44,8 @@ function updateUrl(url) {
 
     if (adsBlocked) {
         newiFrameUrl += '#noads';
+    } else {
+        newiFrameUrl += '#';
     }
 
     //This is needed to force a refresh when only the hash value has changed.
@@ -124,7 +126,7 @@ function scrollViewerUp() {
 function onViewerLoad(e) {
     var iframeLocation = e.target.contentWindow.location;
     if (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1) {
-        currentViewerUrl = iframeLocation.href;
+        currentViewerUrl = iframeLocation.origin + iframeLocation.pathname;
     }
 
     if (currentViewPortName === 'reader') {
