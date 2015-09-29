@@ -2,12 +2,11 @@ package com.gu.viewer
 
 import javax.inject.Inject
 
-import com.gu.viewer.logging.RequestLoggingFilter
+import org.databrary.PlayLogbackAccessApi
 import play.api.http.HttpFilters
 
+class Filters @Inject() (accessLogger: PlayLogbackAccessApi) extends HttpFilters {
 
-class Filters @Inject() (logger: RequestLoggingFilter) extends HttpFilters {
-
-  val filters = Seq(logger)
+  val filters = Seq(accessLogger.filter)
 
 }
