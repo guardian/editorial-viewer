@@ -49,7 +49,7 @@ function addEnabledHref(href) {
 
 function removeEnabledHref(href) {
 
-    getEnabledHrefs().then(function(hrefs){
+    getEnabledHrefs().then(function(hrefs) {
 
         if (!Array.isArray(hrefs) || hrefs.indexOf(href) === -1) {
             //Didn't find the href... just return;
@@ -62,9 +62,9 @@ function removeEnabledHref(href) {
 }
 
 module.exports = {
-    addEnabledHref:          addEnabledHref,
-    removeEnabledHref:       removeEnabledHref,
-    getEnabledHrefs:         getEnabledHrefs,
-    saveAdBlockEnabledUntil: saveAdBlockStatus,
-    getAdBlockStatus:        getAdBlockStatus
+    addEnabledHref:           addEnabledHref,
+    removeEnabledHref:        removeEnabledHref,
+    getEnabledHrefs:          getEnabledHrefs,
+    saveAdBlockDisabledUntil: saveAdBlockStatus,
+    getAdBlockStatus:         getAdBlockStatus
 };
