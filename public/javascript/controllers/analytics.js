@@ -2,15 +2,15 @@ var isEnabled = false;
 
 var pageOpenTime = Date.now();
 
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}
+// function guid() {
+//   function s4() {
+//     return Math.floor((1 + Math.random()) * 0x10000)
+//       .toString(16)
+//       .substring(1);
+//   }
+//   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+//     s4() + '-' + s4() + s4() + s4();
+// }
 
 
 function init() {
@@ -20,11 +20,8 @@ function init() {
 
     isEnabled = true;
 
-    var unique = guid()
-    mixpanel.identify(unique);
-
-    //TODO Generate session parameter?
-    //TODO Get user info?
+    //var unique = guid()
+    //mixpanel.identify(unique);
 }
 
 function recordPageOpen() {
