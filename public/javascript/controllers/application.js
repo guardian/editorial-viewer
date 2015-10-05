@@ -38,12 +38,12 @@ function checkDesktopEnabled() {
 }
 
 function checkAdBlockStatus() {
-    localStorageUtil.getAdBlockStatus().then(function(adsBlockedUntil) {
-        if (adsBlockedUntil && Date.now() < adsBlockedUntil) {
-            adsBlocked = true;
-            viewer.enableAdBlock();
-        } else {
+    localStorageUtil.getAdBlockStatus().then(function(adsBlockedDisabledUntil) {
+        if (adsBlockedDisabledUntil && Date.now() < adsBlockedDisabledUntil) {
             adsBlocked = false;
+            viewer.disableAdBlock();
+        } else {
+            adsBlocked = true;
         }
 
         updateClasses();

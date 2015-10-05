@@ -7,7 +7,7 @@ var errorController = require('../controllers/error.js');
 var currentViewPortConfig;
 var currentViewPortName;
 
-var adsBlocked;
+var adBlockDisabled;
 
 function updateViewer(viewportName, viewportConfig) {
 
@@ -42,10 +42,10 @@ function updateUrl(url) {
 
     var newiFrameUrl = url;
 
-    if (adsBlocked) {
-        newiFrameUrl += '#noads';
-    } else {
+    if (adBlockDisabled) {
         newiFrameUrl += '#';
+    } else {
+        newiFrameUrl += '#noads';
     }
 
     //This is needed to force a refresh when only the hash value has changed.
@@ -145,13 +145,13 @@ function detectMobileAndRedirect() {
 }
 
 function enableAdBlock() {
-    adsBlocked = true;
+    adBlockDisabled = false;
 
     reloadiFrame();
 }
 
 function disableAdBlock() {
-    adsBlocked = false;
+    adBlockDisabled = true;
 
     reloadiFrame();
 }
