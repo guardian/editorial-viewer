@@ -129,16 +129,16 @@ function toggleDesktop() {
 
 function toggleAds() {
     if (adsBlocked) {
-        localStorageUtil.saveAdBlockEnabledUntil(false);
+        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
+        localStorageUtil.saveAdBlockDisabledUntil(tenHoursFromNow);
+
+
         adsBlocked = false;
         viewer.disableAdBlock();
 
     } else {
         viewer.enableAdBlock();
-
-        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
-        localStorageUtil.saveAdBlockEnabledUntil(tenHoursFromNow);
-
+        localStorageUtil.saveAdBlockDisabledUntil(false);
         adsBlocked = true;
         analyticsCtrl.recordAdsDisabled();
     }
