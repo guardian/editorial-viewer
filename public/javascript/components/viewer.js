@@ -159,6 +159,12 @@ function disableAdBlock() {
 function init() {
     detectMobileAndRedirect();
     viewerEl.addEventListener('load', onViewerLoad);
+    viewerEl.contentWindow.addEventListener('beforeunload', function(event) {
+      if (event.target && event.target.URL === 'about:blank') {
+        event.preventDefault();
+      }
+      console.log('unloading frame window', event.target.URL, event);
+    });
 }
 
 module.exports = {
