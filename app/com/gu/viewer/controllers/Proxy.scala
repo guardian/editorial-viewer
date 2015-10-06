@@ -4,17 +4,18 @@ import com.gu.viewer.logging.Loggable
 import com.gu.viewer.proxy._
 import javax.inject.Inject
 import play.api.mvc.{Controller, Action}
+import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Future
 
 
 class Proxy @Inject() (previewProxy: PreviewProxy, liveProxy: LiveProxy) extends Controller with Loggable {
 
   def proxy(service: String, path: String) = Action.async { implicit request =>
-    ProxyRequest(service, path, request) match {
+    (ProxyRequest(service, path, request) match {
       case r: PreviewProxyRequest => previewProxy.proxy(r)
       case r: LiveProxyRequest => liveProxy.proxy(r)
       case UnknownProxyRequest => Future.successful(BadRequest(s"Unknown proxy service: $service"))
-    }
+    }).map(_.withHeaders("X-Frame-Options" -> "SAMEORIGIN"))
   }
 
 
