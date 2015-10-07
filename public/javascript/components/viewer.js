@@ -5,11 +5,16 @@ var currentViewerUrl = viewerEl.src;
 var errorController = require('../controllers/error.js');
 
 var currentViewPortConfig;
-var currentViewPortName;
+var currentViewPortName = 'mobile-portrait';
 
 var adsBlocked;
 
 function updateViewer(viewportName, viewportConfig) {
+
+    //No Change, ignore;
+    if (viewportName === currentViewPortName) {
+        return;
+    }
 
     var isAnimated = false;
     var preventRefresh = false;
