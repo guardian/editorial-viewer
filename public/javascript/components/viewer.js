@@ -48,11 +48,9 @@ function updateUrl(url) {
         newiFrameUrl += '#';
     }
 
-    //This is needed to force a refresh when only the hash value has changed.
-    viewerEl.src = 'about:blank';
-    setTimeout(function() {
-        viewerEl.src = newiFrameUrl;
-    }, 1);
+    viewerEl.src = newiFrameUrl;
+    viewerEl.contentWindow.location.reload();
+
 }
 
 function printViewer() {
