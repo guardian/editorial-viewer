@@ -11,7 +11,6 @@ var adsBlocked;
 
 function updateViewer(viewportName, viewportConfig) {
 
-    //No Change, ignore;
     if (viewportName === currentViewPortName) {
         return;
     }
@@ -55,7 +54,6 @@ function updateUrl(url) {
 
     viewerEl.src = newiFrameUrl;
     viewerEl.contentWindow.location.reload();
-
 }
 
 function printViewer() {
@@ -105,9 +103,6 @@ function restyleViewer(isAnimated, preventRefresh) {
         viewerEl.classList.add('is-animated');
         viewerEl.addEventListener('transitionend', transitionEndHandler);
     }
-
-    viewerEl.style.width = currentViewPortConfig.width;
-    viewerEl.style.height = currentViewPortConfig.height;
 
     if (!isAnimated && !preventRefresh) {
         reloadiFrame();
