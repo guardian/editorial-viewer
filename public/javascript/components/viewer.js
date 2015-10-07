@@ -52,7 +52,7 @@ function updateUrl(url) {
         newiFrameUrl += '#';
     }
 
-    viewerEl.src = newiFrameUrl;
+    viewerEl.contentWindow.location = newiFrameUrl;
     viewerEl.contentWindow.location.reload();
 }
 
