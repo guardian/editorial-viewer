@@ -52,9 +52,6 @@ function updateUrl(url) {
         newiFrameUrl += '#';
     }
 
-    viewerEl.src(newiFrameUrl);
-    viewerEl.contentWindow.location.reload(true);
-
     viewerEl.src = 'about:blank';
 
     setTimeout(function() {
