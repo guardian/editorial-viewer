@@ -23,4 +23,7 @@ GET        /assets/fonts/v1/*file         controllers.Assets.at(path="/public/fo
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
 
+#Robots.txt
+GET        /robots.txt                    controllers.Assets.at(path="/public", file="robots.txt", aggressiveCaching: Boolean = false)
+
 GET        /*path                         com.gu.viewer.controllers.Proxy.redirectRelative(path)
