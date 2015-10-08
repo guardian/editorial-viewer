@@ -17,8 +17,6 @@ function init(options) {
     updateViews();
     checkDesktopEnabled();
     checkAdBlockStatus();
-
-
 }
 
 function checkDesktopEnabled() {
