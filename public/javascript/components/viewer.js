@@ -5,11 +5,15 @@ var currentViewerUrl = viewerEl.src;
 var errorController = require('../controllers/error.js');
 
 var currentViewPortConfig;
-var currentViewPortName;
+var currentViewPortName = 'mobile-portrait';
 
 var adsBlocked;
 
 function updateViewer(viewportName, viewportConfig) {
+
+    if (viewportName === currentViewPortName) {
+        return;
+    }
 
     var isAnimated = false;
     var preventRefresh = false;
@@ -48,8 +52,11 @@ function updateUrl(url) {
         newiFrameUrl += '#';
     }
 
-    viewerEl.src = newiFrameUrl;
-    viewerEl.contentWindow.location.reload();
+    viewerEl.src = 'about:blank';
+
+    setTimeout(function() {
+        viewerEl.src = newiFrameUrl;
+    }, 100);
 
 }
 
@@ -100,9 +107,6 @@ function restyleViewer(isAnimated, preventRefresh) {
         viewerEl.classList.add('is-animated');
         viewerEl.addEventListener('transitionend', transitionEndHandler);
     }
-
-    viewerEl.style.width = currentViewPortConfig.width;
-    viewerEl.style.height = currentViewPortConfig.height;
 
     if (!isAnimated && !preventRefresh) {
         reloadiFrame();
