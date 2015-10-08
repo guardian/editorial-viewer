@@ -1,21 +1,13 @@
 module.exports = {
     'mobile-portrait': {
-        isMobile: true,
-        width:    '330px',
-        height:   '568px'
+        isMobile: true
     },
     'mobile-landscape': {
-        isMobile: true,
-        width:    '568px',
-        height:   '320px'
+        isMobile: true
     },
     'desktop': {
-        width:  '',
-        height: ''
     },
     'reader': {
-        width:    '',
-        height:   '',
-        isReader: true,
+        isReader: true
     }
 };

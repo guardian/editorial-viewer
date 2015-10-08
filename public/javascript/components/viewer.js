@@ -5,11 +5,15 @@ var currentViewerUrl = viewerEl.src;
 var errorController = require('../controllers/error.js');
 
 var currentViewPortConfig;
-var currentViewPortName;
+var currentViewPortName = 'mobile-portrait';
 
 var adBlockDisabled;
 
 function updateViewer(viewportName, viewportConfig) {
+
+    if (viewportName === currentViewPortName) {
+        return;
+    }
 
     var isAnimated = false;
     var preventRefresh = false;
@@ -48,11 +52,12 @@ function updateUrl(url) {
         newiFrameUrl += '#noads';
     }
 
-    //This is needed to force a refresh when only the hash value has changed.
     viewerEl.src = 'about:blank';
+
     setTimeout(function() {
         viewerEl.src = newiFrameUrl;
-    }, 1);
+    }, 100);
+
 }
 
 function printViewer() {
@@ -102,9 +107,6 @@ function restyleViewer(isAnimated, preventRefresh) {
         viewerEl.classList.add('is-animated');
         viewerEl.addEventListener('transitionend', transitionEndHandler);
     }
-
-    viewerEl.style.width = currentViewPortConfig.width;
-    viewerEl.style.height = currentViewPortConfig.height;
 
     if (!isAnimated && !preventRefresh) {
         reloadiFrame();
