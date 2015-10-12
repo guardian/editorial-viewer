@@ -12,35 +12,6 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
-  bundles: {
-    "build.js": [
-      "javascript/main.js",
-      "javascript/controllers/analytics.js",
-      "javascript/controllers/history.js",
-      "javascript/controllers/application.js",
-      "javascript/controllers/keyboard.js",
-      "javascript/controllers/error.js",
-      "javascript/utils/button.js",
-      "javascript/utils/localStorage.js",
-      "javascript/components/viewer.js",
-      "javascript/modes.js",
-      "npm:localforage@1.2.10",
-      "npm:localforage@1.2.10/src/localforage",
-      "npm:localforage@1.2.10/src/drivers/indexeddb",
-      "npm:promise@5.0.0",
-      "npm:localforage@1.2.10/src/drivers/localstorage",
-      "npm:localforage@1.2.10/src/drivers/websql",
-      "npm:promise@5.0.0/index",
-      "npm:localforage@1.2.10/src/utils/serializer",
-      "npm:asap@1.0.0",
-      "npm:promise@5.0.0/core",
-      "npm:asap@1.0.0/asap",
-      "github:jspm/nodelibs-process@0.1.2",
-      "github:jspm/nodelibs-process@0.1.2/index",
-      "npm:process@0.11.2",
-      "npm:process@0.11.2/browser"
-    ]
-  },
 
   map: {
     "babel": "npm:babel-core@5.8.25",
