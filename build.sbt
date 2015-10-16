@@ -49,6 +49,8 @@ riffRaffArtifactResources ++= Seq(
     "packages/cloudformation/editorial-viewer.json"
 )
 
+riffRaffPackageName := s"editorial-tools:${name.value}"
+
 riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV")
 
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
