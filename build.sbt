@@ -44,11 +44,6 @@ packageName in Universal := normalizedName.value
 
 riffRaffPackageType := (packageZipTarball in config("universal")).value
 
-riffRaffArtifactResources ++= Seq(
-  baseDirectory.value / "cloudformation" / "editorial-viewer.json" ->
-    "packages/cloudformation/editorial-viewer.json"
-)
-
 riffRaffPackageName := s"editorial-tools:${name.value}"
 
 riffRaffManifestProjectName := riffRaffPackageName.value
@@ -61,5 +56,7 @@ riffRaffUploadManifestBucket := Option("riffraff-builds")
 
 riffRaffArtifactResources := Seq(
   riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
-  baseDirectory.value / "deploy.json" -> "deploy.json"
+  baseDirectory.value / "deploy.json" -> "deploy.json",
+  baseDirectory.value / "cloudformation" / "editorial-viewer.json" ->
+    "packages/cloudformation/editorial-viewer.json"
 )
