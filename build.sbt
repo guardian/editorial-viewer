@@ -51,6 +51,8 @@ riffRaffArtifactResources ++= Seq(
 
 riffRaffPackageName := s"editorial-tools:${name.value}"
 
+riffRaffManifestProjectName := riffRaffPackageName.value
+
 riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV")
 
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
