@@ -9,8 +9,6 @@ general:
     - target/riffraff
 
 dependencies:
-  pre:
-    - ./setup.sh
   # Cache the resolution-cache and build streams to speed things up
   cache_directories:
     - "~/.sbt"
@@ -20,6 +18,7 @@ dependencies:
     - "project/target/streams"
   # Compile all sources
   override:
+    - npm i
     - sbt test:compile
 
 test:
