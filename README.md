@@ -1,5 +1,7 @@
 # Editorial Viewer service
 
+[![Circle CI](https://circleci.com/gh/guardian/editorial-viewer/tree/master.svg?style=svg)](https://circleci.com/gh/guardian/editorial-viewer/tree/master)
+
 Mobile first preview of Guardian content. [https://viewer.gutools.co.uk](https://viewer.gutools.co.uk)
 
 # Installation
