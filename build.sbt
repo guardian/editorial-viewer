@@ -58,3 +58,8 @@ riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 
 riffRaffUploadManifestBucket := Option("riffraff-builds")
+
+riffRaffArtifactResources := Seq(
+  riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
+  baseDirectory.value / "deploy.json" -> "deploy.json"
+)
