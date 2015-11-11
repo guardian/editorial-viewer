@@ -11,10 +11,6 @@ var adsBlocked;
 
 function updateViewer(viewportName, viewportConfig) {
 
-    if (viewportName === currentViewPortName) {
-        return;
-    }
-
     var isAnimated = false;
     var preventRefresh = false;
 

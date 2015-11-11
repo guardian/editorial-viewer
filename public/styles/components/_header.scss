@@ -229,6 +229,14 @@ body {
 
     height: 17px;
     margin-right: 7px;
+
+    .is-selected:hover & {
+        @extend %icon__refresh-desktop;
+        position: relative;
+        top: -1px;
+        height: 17px;
+
+    }
 }
 
 .top-toolbar__icon--printer {
@@ -261,6 +269,15 @@ body {
     .is-selected & {
         @extend %icon__mobile-portrait--selected;
     }
+
+    .is-selected:hover & {
+        @extend %icon__refresh;
+
+        height: 16px;
+        width: 16px;
+        margin: 2px;
+    }
+
 }
 
 .top-toolbar__icon--mobile-landscape {
@@ -268,6 +285,14 @@ body {
 
     .is-selected & {
         @extend %icon__mobile-landscape--selected;
+    }
+
+    .is-selected:hover & {
+        @extend %icon__refresh;
+
+        height: 16px;
+        width: 16px;
+        margin: 2px;
     }
 }
 

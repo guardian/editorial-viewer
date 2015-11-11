@@ -55,6 +55,7 @@ function bindClicks() {
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
 }
 
+
 function updateViews() {
 
     updateClasses();
