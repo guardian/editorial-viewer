@@ -36,12 +36,12 @@ function checkDesktopEnabled() {
 }
 
 function checkAdBlockStatus() {
-    localStorageUtil.getAdBlockStatus().then(function(adsBlockedUntil) {
-        if (adsBlockedUntil && Date.now() < adsBlockedUntil) {
-            adsBlocked = true;
-            viewer.enableAdBlock();
-        } else {
+    localStorageUtil.getAdBlockStatus().then(function(adsBlockedDisabledUntil) {
+        if (adsBlockedDisabledUntil && Date.now() < adsBlockedDisabledUntil) {
             adsBlocked = false;
+            viewer.disableAdBlock();
+        } else {
+            adsBlocked = true;
         }
 
         updateClasses();
@@ -128,16 +128,16 @@ function toggleDesktop() {
 
 function toggleAds() {
     if (adsBlocked) {
-        localStorageUtil.saveAdBlockEnabledUntil(false);
+        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
+        localStorageUtil.saveAdBlockDisabledUntil(tenHoursFromNow);
+
+
         adsBlocked = false;
         viewer.disableAdBlock();
 
     } else {
         viewer.enableAdBlock();
-
-        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
-        localStorageUtil.saveAdBlockEnabledUntil(tenHoursFromNow);
-
+        localStorageUtil.saveAdBlockDisabledUntil(false);
         adsBlocked = true;
         analyticsCtrl.recordAdsDisabled();
     }
