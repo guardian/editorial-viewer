@@ -67,7 +67,7 @@
           },
           "CODE": {
             "lowercase": "code",
-            "instanceType": "t2.micro",
+            "instanceType": "t2.nano",
             "desiredCapacity": 1,
             "maxSize": 2
           },
