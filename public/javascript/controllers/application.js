@@ -3,6 +3,7 @@ var buttonUtil = require('javascript/utils/button');
 var analyticsCtrl = require('javascript/controllers/analytics');
 var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
+var message = require('./message')
 
 var desktopEnabled, activeMode, adsBlocked;
 var defaultMode = 'mobile-portrait';
@@ -53,6 +54,7 @@ function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
+    buttonUtil.bindClickToAttributeName('app-preview', appPreview);
 }
 
 
@@ -143,6 +145,10 @@ function toggleAds() {
     }
 
     updateClasses();
+}
+
+function appPreview() {
+    message.showmessage('An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions!')
 }
 
 module.exports = {
