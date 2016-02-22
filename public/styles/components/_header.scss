@@ -334,3 +334,9 @@ body {
         background-color: $c-red;
     }
 }
+
+.top-toolbar__button--appcheck {
+    @extend %icon__mobile-portrait;
+    height: 17px;
+    margin-right: 7px;
+}
