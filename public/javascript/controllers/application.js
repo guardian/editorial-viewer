@@ -4,6 +4,8 @@ var analyticsCtrl = require('javascript/controllers/analytics');
 var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
 var message = require('./message')
+var error = require('./error')
+var api = require('javascript/utils/api')
 
 var desktopEnabled, activeMode, adsBlocked;
 var defaultMode = 'mobile-portrait';
@@ -148,7 +150,10 @@ function toggleAds() {
 }
 
 function appPreview() {
-    message.showMessage('An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions!')
+    api.appPreviewRequest().then(
+        message.showMessage.bind(null, 'An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions!'),
+        error.showError.bind(null, 'Error while sending preview email.')
+    )
 }
 
 module.exports = {
