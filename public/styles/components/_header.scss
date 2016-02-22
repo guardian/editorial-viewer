@@ -318,6 +318,7 @@ body {
 }
 
 .info-bar,
+.message-bar--active,
 .error-bar--active {
   background-color: $infobar-color;
   text-align: center;
@@ -329,9 +330,19 @@ body {
     display: none;
 
     &--active {
-        color: $c-white;
+        color: black;
         display: block;
         background-color: $c-red;
+    }
+}
+
+.message-bar {
+    display: none;
+
+    &--active {
+        display: inherit;
+        background-color: $infobar-color;
+        cursor: pointer;
     }
 }
 
