@@ -148,7 +148,7 @@ function toggleAds() {
 }
 
 function appPreview() {
-    message.showMessage('An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions!')
+    message.showmessage('An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions!')
 }
 
 module.exports = {
