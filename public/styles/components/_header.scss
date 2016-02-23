@@ -347,7 +347,6 @@ body {
 }
 
 .top-toolbar__button--appcheck {
-    @extend %icon__mobile-portrait;
-    height: 17px;
+    @extend %icon__app-preview;
     margin-right: 7px;
 }
