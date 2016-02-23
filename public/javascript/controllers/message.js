@@ -3,19 +3,19 @@ var messageEl = document.getElementById('messageBar');
 var visibleClass = "message-bar--active";
 var inVisibleClass = "message-bar";
 
-function showMessage(text) {
+function showmessage(text) {
     messageEl.innerText = text;
     messageEl.className = visibleClass;
-    messageEl.addEventListener('click', hideMessage)
+    messageEl.addEventListener('click', hidemessage)
 }
 
-function hideMessage() {
+function hidemessage() {
     messageEl.innerText = '';
     messageEl.className = inVisibleClass;
-    messageEl.removeEventListener('click', hideMessage)
+    messageEl.removeEventListener('click', hidemessage)
 }
 
 module.exports = {
-    showMessage: showMessage,
-    hideMessage: hideMessage
+    showmessage: showmessage,
+    hidemessage: hidemessage
 };
