@@ -3,7 +3,6 @@ var buttonUtil = require('javascript/utils/button');
 var analyticsCtrl = require('javascript/controllers/analytics');
 var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
-var message = require('./message')
 var error = require('./error')
 var api = require('javascript/utils/api')
 
@@ -156,7 +155,7 @@ function appPreview() {
     ].join(' ')
 
     api.appPreviewRequest().then(
-        message.showMessage.bind(null, successMessage),
+        console.log,
         error.showError.bind(null, 'Error while sending preview email.')
     )
 }

@@ -318,7 +318,6 @@ body {
 }
 
 .info-bar,
-.message-bar--active,
 .error-bar--active {
   border-bottom: 1px solid $c-grey-100;
   background-color: $infobar-color;
@@ -335,23 +334,6 @@ body {
         display: block;
         background-color: $c-red;
     }
-}
-
-.message-bar {
-    display: none;
-
-    &--active {
-        display: inherit;
-        background-color: $infobar-color;
-        cursor: pointer;
-
-    }
-
-}
-
-.message-bar__button {
-    @extend %button-cta--confirm;
-    margin-left: 25px;
 }
 
 .top-toolbar__button--appcheck {
