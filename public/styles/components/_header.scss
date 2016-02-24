@@ -1,5 +1,3 @@
-$topbar-titlewidth: 140px;
-$topbar-letterwidth: 20px;
 $header-height: 90px;
 
 $infobar-color: #DDEDF7;
@@ -69,40 +67,14 @@ body {
 
     z-index: 2;
 
-    &__title {
-        @extend %f-title;
-        font-size: 18px;
-        width: $topbar-titlewidth;
-        min-width: $topbar-titlewidth;
-        background-color: $c-grey-350;
-        margin: 0;
-        line-height: 50px;
-        border-right: 1px solid $c-grey-400;
-        display: flex;
-    }
-
-    &__letter,
-    &__page-title {
-        display: inline-block;
-        text-align: center;
-        line-height: 55px;
-    }
-
-    &__letter {
-        border-right: 1px solid $c-grey-300;
-        padding: 0 10px;
-        font-size: 20px;
-        flex: 0 0 $topbar-letterwidth;
-    }
-    &__page-title {
-        flex: 1 1 auto;
-        font-size: 18px;
-        margin: 0px;
-    }
-
     a {
       color: inherit;
     }
+}
+
+.top-toolbar__logo {
+    width: 50px;
+    background: url(../images/eye-white-32.svg) center center no-repeat #005689;
 }
 
 .top-toolbar__view-toolbar {
