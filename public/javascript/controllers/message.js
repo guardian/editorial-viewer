@@ -4,13 +4,13 @@ var visibleClass = "message-bar--active";
 var inVisibleClass = "message-bar";
 
 function showMessage(text) {
-    messageEl.innerText = text;
+    messageEl.innerHTML = text;
     messageEl.className = visibleClass;
     messageEl.addEventListener('click', hideMessage)
 }
 
 function hideMessage() {
-    messageEl.innerText = '';
+    messageEl.innerHTML = '';
     messageEl.className = inVisibleClass;
     messageEl.removeEventListener('click', hideMessage)
 }
