@@ -150,8 +150,13 @@ function toggleAds() {
 }
 
 function appPreview() {
+    var successMessage = [
+        'An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions.',
+        '<a class="message-bar__button">Ok</a>'
+    ].join(' ')
+
     api.appPreviewRequest().then(
-        message.showMessage.bind(null, 'An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions!'),
+        message.showMessage.bind(null, successMessage),
         error.showError.bind(null, 'Error while sending preview email.')
     )
 }
