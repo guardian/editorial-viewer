@@ -5,6 +5,7 @@ var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
 var error = require('./error')
 var api = require('javascript/utils/api')
+var overlay = require('./overlay')
 
 var desktopEnabled, activeMode, adsBlocked;
 var defaultMode = 'mobile-portrait';
@@ -155,7 +156,7 @@ function appPreview() {
     ].join(' ')
 
     api.appPreviewRequest().then(
-        console.log,
+        overlay.showOverlay.bind(null),
         error.showError.bind(null, 'Error while sending preview email.')
     )
 }
