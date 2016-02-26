@@ -336,7 +336,14 @@ body {
     }
 }
 
-.top-toolbar__button--appcheck {
-    @extend %icon__app-preview;
-    margin-right: 7px;
+.top-toolbar__button--appApple {
+    @extend %icon__apple;
+    height: 17px;
+}
+
+.top-toolbar__button--appAndroid {
+    @extend %icon__android;
+    margin-right: 4px;
+    margin-left: -7px;
+    height: 17px;
 }
