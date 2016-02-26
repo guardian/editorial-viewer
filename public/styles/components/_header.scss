@@ -77,6 +77,12 @@ body {
     background: url(../images/eye-white-32.svg) center center no-repeat #005689;
 }
 
+.top-toolbar__logo-link {
+    display: block;
+    height: 50px;
+    width: 50px;
+}
+
 .top-toolbar__view-toolbar {
     // Flexbox prefixes - TODO: Autoprefixer
     display: -webkit-box;
