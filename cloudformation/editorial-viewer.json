@@ -67,7 +67,7 @@
           },
           "CODE": {
             "lowercase": "code",
-            "instanceType": "t2.small",
+            "instanceType": "t2.micro",
             "desiredCapacity": 1,
             "maxSize": 2
           },
@@ -94,7 +94,23 @@
             }
           ]
         },
-        "Path": "/
+        "Path": "/"
+      }
+    },
+    "ViewerPanDomainPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerPanDomainPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
       }
     },
     "ViewerDescribeEC2Policy": {
@@ -123,22 +139,6 @@
               "Effect": "Allow",
               "Action": ["s3:GetObject"],
               "Resource": ["arn:aws:s3:::composer-dist/*"]
-            }
-          ]
-        },
-        "Roles": [{"Ref": "ViewerRole"}]
-      }
-    },
-    "ViewerPanDomainPolicy": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "ViewerPanDomainPolicy",
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": ["s3:GetObject"],
-              "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
             }
           ]
         },
