@@ -157,7 +157,13 @@ function appPreview() {
 
     api.appPreviewRequest()
     .then(overlay.showOverlay.bind(null))
-    .fail(error.showError.bind(null, 'Error while sending preview email.'))
+    .fail(function (err, msg) {
+      if (err.status == 419) {
+        error.showError.bind(null, 'No authorization cookie, try logging into composer.'))
+      } else {
+        error.showError.bind(null, 'Error while sending preview email.'))
+      }
+  }
 }
 
 module.exports = {

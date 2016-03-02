@@ -2,7 +2,7 @@ var Reqwest = require('reqwest');
 
 function appPreviewRequest() {
     return Reqwest({
-        url: '/send-email?path=' + window._originalPath,
+        url: 'https://' + window.location.hostname + '/send-email?path=' + window._originalPath,
         method: 'post'
     });
 }
