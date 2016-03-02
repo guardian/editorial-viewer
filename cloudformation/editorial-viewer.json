@@ -94,7 +94,7 @@
             }
           ]
         },
-        "Path": "/"
+        "Path": "/
       }
     },
     "ViewerDescribeEC2Policy": {
@@ -123,6 +123,22 @@
               "Effect": "Allow",
               "Action": ["s3:GetObject"],
               "Resource": ["arn:aws:s3:::composer-dist/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "ViewerPanDomainPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerPanDomainPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
             }
           ]
         },
