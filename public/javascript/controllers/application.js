@@ -159,11 +159,11 @@ function appPreview() {
     .then(overlay.showOverlay.bind(null))
     .fail(function (err, msg) {
       if (err.status == 419) {
-        error.showError.bind(null, 'No authorization cookie, try logging into composer.'))
+        error.showError('No authorization cookie, try logging into composer.');
       } else {
-        error.showError.bind(null, 'Error while sending preview email.'))
+        error.showError('Error while sending preview email.');
       }
-  }
+    });
 }
 
 module.exports = {
