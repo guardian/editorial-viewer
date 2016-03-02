@@ -155,10 +155,9 @@ function appPreview() {
         '<a class="message-bar__button">Ok</a>'
     ].join(' ')
 
-    api.appPreviewRequest().then(
-        overlay.showOverlay.bind(null),
-        error.showError.bind(null, 'Error while sending preview email.')
-    )
+    api.appPreviewRequest()
+    .then(overlay.showOverlay.bind(null))
+    .fail(error.showError.bind(null, 'Error while sending preview email.'))
 }
 
 module.exports = {
