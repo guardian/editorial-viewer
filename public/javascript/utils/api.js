@@ -1,8 +1,10 @@
+var Reqwest = require('reqwest');
+
 function appPreviewRequest() {
-    return new Promise(function(y, n) {
-        // make actual API call
-        return y()
-    })
+    return Reqwest({
+        url: '/send-email?path=' + window._originalPath,
+        method: 'post'
+    });
 }
 
 module.exports = {
