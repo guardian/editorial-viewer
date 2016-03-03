@@ -26,31 +26,17 @@ class Application extends Controller with Loggable {
     viewer("live", path, "live")
   }
 
-  def viewer(target: String, path: String, previewEnv: String) = CORSWrapper { Action { implicit request =>
-      val protocol = if (request.secure) "https" else "http"
-      val viewerHost = target match {
-        case "preview" => Configuration.previewHost
-        case _ => Configuration.liveHost
-      }
-      val actualUrl = s"$protocol://$viewerHost/$path"
-      val viewerUrl = routes.Proxy.proxy(target, path).absoluteURL()
-      val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
-      val composerUrl = Configuration.composerReturn + "/" + path
-
-      Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path))
+  def viewer(target: String, path: String, previewEnv: String) = Action { implicit request =>
+    val protocol = if (request.secure) "https" else "http"
+    val viewerHost = target match {
+      case "preview" => Configuration.previewHost
+      case _ => Configuration.liveHost
     }
-  }
-}
+    val actualUrl = s"$protocol://$viewerHost/$path"
+    val viewerUrl = routes.Proxy.proxy(target, path).absoluteURL()
+    val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
+    val composerUrl = Configuration.composerReturn + "/" + path
 
-// Wrapper that enables http verisons of viewer to call https versions, required for emailing with panda credentials
-case class CORSWrapper[A](action: Action[A]) extends Action[A] {
-  def apply(request: Request[A]): Future[Result] = {
-    val corsHeader: Seq[(String, String)] = Seq(
-      ("Access-Control-Allow-Origin", "https://viewer." + Configuration.pandaDomain),
-      ("Access-Control-Allow-Credentials", "true")
-    )
-    action(request).map(_.withHeaders(corsHeader : _*))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path))
   }
-
-  lazy val parser = action.parser
 }

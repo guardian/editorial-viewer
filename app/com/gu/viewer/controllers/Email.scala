@@ -12,28 +12,30 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
 
   Loggable.init()
 
-  def sendEmail(path: String) = APIAuthAction { req =>
-    val email = req.user.email
-    var emailList = new java.util.ArrayList[String]()
-    emailList.add(email)
+  def sendEmail(path: String) = CORSWrapper {
+    APIAuthAction { req =>
+      val email = req.user.email
+      var emailList = new java.util.ArrayList[String]()
+      emailList.add(email)
 
-    val from = "noreply-viewer@guardian.co.uk"
-    val to = new Destination(emailList)
+      val from = "noreply-viewer@guardian.co.uk"
+      val to = new Destination(emailList)
 
-    val message = new Message(
-      new Content(s"Preview URLs for '$path'"),
-      new Body(new Content(formatEmail(path)))
-    )
+      val message = new Message(
+        new Content(s"Preview URLs for '$path'"),
+        new Body(new Content(formatEmail(path)))
+      )
 
-    val emailReq = new SendEmailRequest(from, to, message)
+      val emailReq = new SendEmailRequest(from, to, message)
 
-    try {
-      AWS.emailClient.sendEmail(emailReq)
-      Ok
-    } catch {
-      case NonFatal(e) =>{
-        println(e)
-        InternalServerError
+      try {
+        AWS.emailClient.sendEmail(emailReq)
+        Ok
+      } catch {
+        case NonFatal(e) =>{
+          println(e)
+          InternalServerError
+        }
       }
     }
   }
@@ -45,4 +47,17 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
       |
       |If you were not expecting this email please contact: digitalcms.dev@guardian.co.uk""".stripMargin
   }
+}
+
+// Wrapper that enables http verisons of viewer to call https versions, required for emailing with panda credentials
+case class CORSWrapper[A](action: Action[A]) extends Action[A] {
+  def apply(request: Request[A]): Future[Result] = {
+    val corsHeader: Seq[(String, String)] = Seq(
+      ("Access-Control-Allow-Origin", "http://viewer." + Configuration.pandaDomain),
+      ("Access-Control-Allow-Credentials", "true")
+    )
+    action(request).map(_.withHeaders(corsHeader : _*))
+  }
+
+  lazy val parser = action.parser
 }
