@@ -12,8 +12,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class Email extends Controller with Loggable with PanDomainAuthActions {
 
-  Loggable.init()
-
   def sendEmail(path: String) = CORSWrapper {
     APIAuthAction { req =>
       val email = req.user.email
@@ -35,7 +33,6 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
         Ok
       } catch {
         case NonFatal(e) =>{
-          println(e)
           InternalServerError
         }
       }
