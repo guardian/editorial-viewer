@@ -158,8 +158,8 @@ function appPreview() {
     api.appPreviewRequest()
     .then(overlay.showOverlay.bind(null))
     .fail(function (err, msg) {
-      if (err.status == 419) {
-        error.showError('No authorization cookie, try logging into composer.');
+      if (err.status == 419 || err.status == 401) {
+        error.showError('You are not authorised, try logging into composer.');
       } else {
         error.showError('Error while sending preview email.');
       }
