@@ -7,8 +7,6 @@ import play.api.mvc._
 import com.gu.viewer.config.Configuration
 import com.gu.viewer.views.html
 import com.gu.viewer.aws.AWS
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application extends Controller with Loggable {
 
