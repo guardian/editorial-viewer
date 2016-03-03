@@ -97,6 +97,22 @@
         "Path": "/"
       }
     },
+    "ViewerSESPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerSESPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["ses:*"],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
     "ViewerPanDomainPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
