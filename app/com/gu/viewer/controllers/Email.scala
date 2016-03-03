@@ -31,7 +31,10 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
       AWS.emailClient.sendEmail(emailReq)
       Ok
     } catch {
-      case NonFatal(e) => InternalServerError
+      case NonFatal(e) =>{
+        println(e)
+        InternalServerError
+      }
     }
   }
 
