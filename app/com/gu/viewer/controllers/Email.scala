@@ -7,6 +7,8 @@ import play.api.mvc._
 import com.gu.viewer.config.Configuration
 import com.gu.viewer.aws.AWS
 import scala.util.control.NonFatal
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Email extends Controller with Loggable with PanDomainAuthActions {
 
