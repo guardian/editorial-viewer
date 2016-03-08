@@ -15,7 +15,6 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.10.10",
-  "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.8",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
   ws
 )

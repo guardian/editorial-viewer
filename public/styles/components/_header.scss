@@ -297,7 +297,6 @@ body {
 
 .info-bar,
 .error-bar--active {
-  border-bottom: 1px solid $c-grey-100;
   background-color: $infobar-color;
   text-align: center;
   padding: 10px;
@@ -308,20 +307,8 @@ body {
     display: none;
 
     &--active {
-        color: black;
+        color: $c-white;
         display: block;
         background-color: $c-red;
     }
-}
-
-.top-toolbar__button--appApple {
-    @extend %icon__apple;
-    height: 17px;
-}
-
-.top-toolbar__button--appAndroid {
-    @extend %icon__android;
-    margin-right: 4px;
-    margin-left: -7px;
-    height: 17px;
 }
