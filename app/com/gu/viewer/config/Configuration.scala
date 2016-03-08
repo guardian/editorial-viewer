@@ -26,24 +26,4 @@ object Configuration {
 
   val logstashEnabled = config.getBoolean("logstash.enabled").getOrElse(false)
   val logstashDestination = config.getString("logstash.destination")
-
-  def pandaDomain = {
-    if (stage == "PROD") {
-      "gutools.co.uk"
-    } else if (stage == "CODE") {
-      "code.dev-gutools.co.uk"
-    } else {
-      "local.dev-gutools.co.uk"
-    }
-  }
-
-  def pandaAuthCallback = {
-    if (stage == "PROD") {
-      "https://viewer.gutools.co.uk/oauthCallback"
-    } else if (stage == "CODE") {
-      "https://viewer.code.dev-gutools.co.uk/oauthCallback"
-    } else {
-      "https://viewer.local.dev-gutools.co.uk/oauthCallback"
-    }
-  }
 }
