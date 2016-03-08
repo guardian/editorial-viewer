@@ -95,6 +95,38 @@
         "Path": "/"
       }
     },
+    "ViewerSESPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerSESPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["ses:*"],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "ViewerPanDomainPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerPanDomainPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
     "ViewerDescribeEC2Policy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
