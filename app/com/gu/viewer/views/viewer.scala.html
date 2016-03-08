@@ -23,6 +23,11 @@
                             <div class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></div>
                         </div>
                     <!--</li>-->
+                    <li class="top-toolbar__button" data-app-preview="true">
+                        <i class="top-toolbar__button--appApple"></i>
+                        <i class="top-toolbar__button--appAndroid"></i>
+                        Get app preview link
+                    <!--</li>-->
                     @if(previewEnv == "preview") {
                         <li data-switchmode="reader" class="top-toolbar__button is-always-visible"><i class="top-toolbar__icon--copycheck"></i>Copy taste<!--</li>-->
                         <li class="top-toolbar__button--mobilecheck" data-toggledesktop="true"><i class="top-toolbar__icon--checkbox"></i>Mobile checked & verified<!--</li>-->
@@ -42,7 +47,7 @@
         }
         <div class="info-bar show-reader-mode">Copy taste presents you with a distraction free view of the article content. If you have any feedback please email the <a href="mailto:digitalcms.dev@@guardian.co.uk">Digital CMS</a> team</div>
         <div id="errorbar" class="error-bar"></div>
-
+        <div id="messageBar" class="message-bar"></div>
     </header>
 
 
