@@ -1,12 +1,10 @@
 package com.gu.viewer.controllers
 
-import com.amazonaws.services.simpleemail.model._
 import com.gu.viewer.logging.Loggable
 import play.api._
 import play.api.mvc._
 import com.gu.viewer.config.Configuration
 import com.gu.viewer.views.html
-import com.gu.viewer.aws.AWS
 
 class Application extends Controller with Loggable {
 
@@ -37,4 +35,5 @@ class Application extends Controller with Loggable {
 
     Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path))
   }
+
 }
