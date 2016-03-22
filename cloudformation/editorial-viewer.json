@@ -41,6 +41,15 @@
     }
   },
   "Mappings": {
+<<<<<<< HEAD
+=======
+    "SSLCertificateId": {
+      "Environment": {
+        "CODE": "arn:aws:iam::743583969668:server-certificate/star.code.dev-gutools.co.uk-exp2018-02-15",
+        "PROD": "arn:aws:iam::743583969668:server-certificate/star.gutools.co.uk-exp2018-11-17"
+      }
+    },
+>>>>>>> Update certificate for CODE.
       "EnvironmentMap": {
           "CODE": {
             "lowercase": "code",
