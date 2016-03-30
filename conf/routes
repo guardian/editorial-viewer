@@ -14,7 +14,10 @@ GET        /live/*path                    com.gu.viewer.controllers.Application.
 
 
 GET        /proxy/preview/*path           com.gu.viewer.controllers.Proxy.proxy(service="preview", path)
+POST       /proxy/preview/*path           com.gu.viewer.controllers.Proxy.proxy(service="preview", path)
+
 GET        /proxy/live/*path              com.gu.viewer.controllers.Proxy.proxy(service="live", path)
+POST       /proxy/live/*path              com.gu.viewer.controllers.Proxy.proxy(service="live", path)
 
 
 # Long life cache for statically versioned font assets
@@ -27,3 +30,5 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 GET        /robots.txt                    controllers.Assets.at(path="/public", file="robots.txt", aggressiveCaching: Boolean = false)
 
 GET        /*path                         com.gu.viewer.controllers.Proxy.redirectRelative(path)
+POST       /*path                         com.gu.viewer.controllers.Proxy.catchRelativePost(path)
+
