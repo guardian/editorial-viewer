@@ -21,7 +21,7 @@ object Configuration {
 
   val previewHost = getConfigString(s"previewHost.$stage")
   val liveHost = getConfigString(s"liveHost.$stage")
-  val previewHostForceHTTP = config.getString(s"previewHostForceHTTP.$stage").getOrElse(false)
+  val previewHostForceHTTP = config.getBoolean(s"previewHostForceHTTP.$stage").getOrElse(false)
   val mixpanel = getConfigString(s"mixpanel.$stage")
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
 
