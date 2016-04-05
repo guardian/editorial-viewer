@@ -69,7 +69,9 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
   private def doPreviewProxy(request: PreviewProxyRequest) = {
 
-    val url = s"${request.protocol}://$serviceHost/${request.servicePath}"
+    val protocol: String = if (Configuration.previewHostForceHTTP == true) "http" else request.protocol
+
+    val url = s"${protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Proxy to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {
