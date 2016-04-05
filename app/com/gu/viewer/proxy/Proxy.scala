@@ -49,7 +49,7 @@ class Proxy @Inject()(ws: WSClient) {
            headers: Seq[(String, String)] = Seq.empty,
            cookies: Seq[Cookie] = Seq.empty,
            queryString: Seq[(String, String)] = Seq.empty,
-           followRedirects: Boolean = true
+           followRedirects: Boolean = false
            )(handler: PartialFunction[ProxyResponse, Future[ProxyResult]] = PartialFunction.empty) =
     proxy("GET", destination, headers, cookies, queryString, followRedirects = followRedirects)(handler)
 
@@ -60,7 +60,7 @@ class Proxy @Inject()(ws: WSClient) {
             cookies: Seq[Cookie] = Seq.empty,
             queryString: Seq[(String, String)] = Seq.empty,
             body: Map[String, Seq[String]] = Map.empty,
-            followRedirects: Boolean = true
+            followRedirects: Boolean = false
             )(handler: PartialFunction[ProxyResponse, Future[ProxyResult]] = PartialFunction.empty) =
     proxy("POST", destination, headers, cookies, queryString, body, followRedirects)(handler)
 
