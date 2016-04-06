@@ -16,4 +16,10 @@ class LiveProxy @Inject() (proxyClient: Proxy) extends Loggable {
     proxyClient.get(url)()
   }
 
+  def proxyPost(request: LiveProxyRequest) = ProxyResult.resultFrom {
+    val url = s"${request.protocol}://$serviceHost/${request.servicePath}"
+    log.info(s"Live POST Proxy to: $url")
+    proxyClient.post(destination = url, body = request.body.getOrElse(Map.empty))()
+  }
+
 }
