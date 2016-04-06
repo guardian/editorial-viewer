@@ -108,7 +108,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
    * Entry-point for proxying a request to preview
    */
   def proxy(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
-    log.info(s"Recieved proxy request for: ${request.requestUri}")
+    log.info(s"Received proxy request for: ${request.requestUri}")
     request.session.sessionCookie -> request.session.authCookie match {
       case (Some(_), Some(_)) => doPreviewProxy(request)
       case _ => doPreviewAuth(request)
@@ -116,7 +116,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
   }
 
   def proxyPost(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
-    log.info(s"Recieved proxy POST request for: ${request.requestUri}")
+    log.info(s"Received proxy POST request for: ${request.requestUri}")
 
     request.session.sessionCookie -> request.session.authCookie match {
       case (Some(_), Some(_)) => doPreviewProxyPost(request)
