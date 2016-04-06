@@ -75,7 +75,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     }
 
     val url = s"${protocol}://$serviceHost/${request.servicePath}"
-    log.info(s"Proxy to preview: $url")
+    log.info(s"Proxy GET to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {
       response.status == 303 &&
@@ -90,13 +90,46 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
   }
 
+  private def doPreviewProxyPost(request: PreviewProxyRequest) = {
+
+    val protocol: String = Configuration.previewHostForceHTTP match {
+      case true => "http"
+      case false => request.protocol
+    }
+
+    val url = s"${protocol}://$serviceHost/${request.servicePath}"
+    log.info(s"Proxy POST to preview: $url")
+
+    def isLoginRedirect(response: ProxyResponse) = {
+      response.status == 303 &&
+        response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
+    }
+
+    val cookies = request.session.asCookies
+
+    proxyClient.post(url, cookies = cookies, body = request.body.getOrElse(Map.empty)) {
+      case response if isLoginRedirect(response) => doPreviewAuth(request)
+    }
+
+  }
+
 
   /**
    * Entry-point for proxying a request to preview
    */
   def proxy(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
+    log.info(s"Received proxy request for: ${request.requestUri}")
     request.session.sessionCookie -> request.session.authCookie match {
       case (Some(_), Some(_)) => doPreviewProxy(request)
+      case _ => doPreviewAuth(request)
+    }
+  }
+
+  def proxyPost(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
+    log.info(s"Received proxy POST request for: ${request.requestUri}")
+
+    request.session.sessionCookie -> request.session.authCookie match {
+      case (Some(_), Some(_)) => doPreviewProxyPost(request)
       case _ => doPreviewAuth(request)
     }
   }
