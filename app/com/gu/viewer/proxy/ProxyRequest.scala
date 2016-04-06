@@ -9,32 +9,34 @@ sealed trait ProxyRequest {
 }
 
 object ProxyRequest {
-  def apply(service: String, servicePath: String, request: RequestHeader): ProxyRequest = {
+  def apply(service: String, servicePath: String, request: RequestHeader, body: Option[Map[String, Seq[String]]] = None): ProxyRequest = {
     val queryString = if (request.rawQueryString.nonEmpty) s"?${request.rawQueryString}" else ""
 
     service match {
-      case "live" => LiveProxyRequest(request.secure, servicePath + queryString)
-      case "preview" => PreviewProxyRequest(servicePath + queryString, request)
+      case "live" => LiveProxyRequest(request.secure, servicePath + queryString, body)
+      case "preview" => PreviewProxyRequest(servicePath + queryString, request, body)
       case _ => UnknownProxyRequest
     }
   }
 }
 
-case class LiveProxyRequest(isSecure: Boolean, servicePath: String) extends ProxyRequest
+case class LiveProxyRequest(isSecure: Boolean, servicePath: String, body: Option[Map[String, Seq[String]]] = None) extends ProxyRequest
 
 case class PreviewProxyRequest(isSecure: Boolean,
                                servicePath: String,
                                requestHost: String,
                                requestUri: String,
                                requestQueryString: Map[String, Seq[String]],
-                               session: PreviewSession) extends ProxyRequest
+                               session: PreviewSession,
+                               body: Option[Map[String, Seq[String]]] = None
+                              ) extends ProxyRequest
 
 object PreviewProxyRequest {
-  def apply(servicePath: String, request: RequestHeader): PreviewProxyRequest =
-    PreviewProxyRequest(request.secure, servicePath, request.host, request.uri, request.queryString, PreviewSession(request.session))
+  def apply(servicePath: String, request: RequestHeader, body: Option[Map[String, Seq[String]]]): PreviewProxyRequest =
+    PreviewProxyRequest(request.secure, servicePath, request.host, request.uri, request.queryString, PreviewSession(request.session), body)
 
   def authCallbackRequest(request: RequestHeader) =
-    PreviewProxyRequest("/oauth2callback", request)
+    PreviewProxyRequest("/oauth2callback", request, None)
 }
 
 case object UnknownProxyRequest extends ProxyRequest {
