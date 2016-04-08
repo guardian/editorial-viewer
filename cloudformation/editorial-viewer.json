@@ -45,8 +45,8 @@
           "CODE": {
             "lowercase": "code",
             "instanceType": "t2.micro",
-            "desiredCapacity": 1,
-            "maxSize": 2
+            "desiredCapacity": 3,
+            "maxSize": 6
           },
           "PROD": {
             "lowercase": "prod",
