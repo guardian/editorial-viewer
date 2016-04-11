@@ -1,10 +1,11 @@
 package com.gu.viewer.proxy
 
 import javax.inject.{Inject, Singleton}
+import com.gu.viewer.config.Configuration
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Cookies, Cookie}
-import play.api.http.HeaderNames.{CONTENT_LENGTH, COOKIE}
+import play.api.http.HeaderNames.{CONTENT_LENGTH, COOKIE, USER_AGENT}
 import scala.concurrent.Future
 
 @Singleton
@@ -26,6 +27,8 @@ class Proxy @Inject()(ws: WSClient) {
 
     val contentLengthHeader = if (body.nonEmpty) Some(CONTENT_LENGTH -> body.size.toString) else None
 
+    val userAgentHeader = Some(USER_AGENT -> s"gu-viewer ${Configuration.stage}")
+
     def handleResponse: PartialFunction[ProxyResponse, Future[ProxyResult]] = {
       case response =>
         Future.successful(ProxyResultWithBody(response))
@@ -33,7 +36,7 @@ class Proxy @Inject()(ws: WSClient) {
 
     ws.url(destination)
       .withFollowRedirects(follow = followRedirects)
-      .withHeaders(headers ++ contentLengthHeader ++ cookieHeader: _*)
+      .withHeaders(headers ++ contentLengthHeader ++ userAgentHeader ++ cookieHeader: _*)
       .withQueryString(queryString: _*)
       .withRequestTimeout(TIMEOUT)
       .withBody(body)
