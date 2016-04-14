@@ -29,7 +29,7 @@ class Application extends Controller with Loggable {
       case _ => Configuration.liveHost
     }
     val actualUrl = s"$protocol://$viewerHost/$path"
-    val viewerUrl = routes.Proxy.proxy(target, path).absoluteURL()
+    val viewerUrl = routes.Proxy.proxy(target, path).path()
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = Configuration.composerReturn + "/" + path
 
