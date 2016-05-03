@@ -19,6 +19,8 @@ POST       /proxy/preview/*path           com.gu.viewer.controllers.Proxy.proxy(
 GET        /proxy/live/*path              com.gu.viewer.controllers.Proxy.proxy(service="live", path)
 POST       /proxy/live/*path              com.gu.viewer.controllers.Proxy.proxy(service="live", path)
 
+POST       /send-email                    com.gu.viewer.controllers.Email.sendEmail(path)
+
 
 # Long life cache for statically versioned font assets
 GET        /assets/fonts/v1/*file         controllers.Assets.at(path="/public/fonts/v1", file, aggressiveCaching: Boolean = true)

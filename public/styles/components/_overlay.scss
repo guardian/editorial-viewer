@@ -1,0 +1,68 @@
+$offset-for-header: 51px;
+
+.overlay--hidden {
+    display: none;
+}
+
+.overlay--visible {
+    @extend %overlay;
+    // display: inherit;
+}
+
+%overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: $offset-for-header;
+    background-color: hsla(0, 0, 93%, 0.9);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay__messageBox {
+    box-sizing: border-box;
+    margin-top: -1 * $offset-for-header;
+    background-color: white;
+    border: 3px solid $c-highlight-blue;
+    padding: 110px 60px 0 60px;
+    height: 385px;
+    width: 765px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    position: relative;
+}
+
+.overlay__close {
+    @extend %icon__cross;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.overlay__image {
+    margin-right: 30px;
+    background-image: url('../images/hands-phone-200.png');
+    height: 166px;
+    flex: 0 0 200px;
+}
+
+.overlay__text {
+    @extend %fs-data-6;
+    display: block;
+    padding: 0px;
+}
+
+.overlay__ok {
+    @extend %button-cta--confirm;
+    display: inline-block;
+    margin-top: 10px;
+    cursor: pointer;
+}
