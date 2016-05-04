@@ -3,6 +3,9 @@ var buttonUtil = require('javascript/utils/button');
 var analyticsCtrl = require('javascript/controllers/analytics');
 var modes = require('../modes');
 var viewer = require('javascript/components/viewer');
+var error = require('./error')
+var api = require('javascript/utils/api')
+var overlay = require('./overlay')
 
 var desktopEnabled, activeMode, adsBlocked;
 var defaultMode = 'mobile-portrait';
@@ -53,6 +56,7 @@ function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
+    buttonUtil.bindClickToAttributeName('app-preview', appPreview);
 }
 
 
@@ -143,6 +147,23 @@ function toggleAds() {
     }
 
     updateClasses();
+}
+
+function appPreview() {
+    var successMessage = [
+        'An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions.',
+        '<a class="message-bar__button">Ok</a>'
+    ].join(' ')
+
+    api.appPreviewRequest()
+    .then(overlay.showOverlay.bind(null))
+    .fail(function (err, msg) {
+      if (err.status == 419 || err.status == 401) {
+        error.showError('You are not authorised, try logging into composer.');
+      } else {
+        error.showError('Error while sending preview email.');
+      }
+    });
 }
 
 module.exports = {
