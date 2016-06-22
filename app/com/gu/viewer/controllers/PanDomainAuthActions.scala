@@ -2,6 +2,8 @@ package com.gu.viewer.controllers
 
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
+import com.amazonaws.auth._
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.gu.viewer.config.Configuration
 
 trait PanDomainAuthActions extends AuthActions {
@@ -17,4 +19,12 @@ trait PanDomainAuthActions extends AuthActions {
   override lazy val domain: String = Configuration.pandaDomain
 
   override lazy val system: String = "viewer"
+
+  override def awsCredentialsProvider: AWSCredentialsProvider =  new AWSCredentialsProviderChain(
+    new EnvironmentVariableCredentialsProvider,
+    new SystemPropertiesCredentialsProvider,
+    new ProfileCredentialsProvider("composer"),
+    new InstanceProfileCredentialsProvider
+  )
+
 }
