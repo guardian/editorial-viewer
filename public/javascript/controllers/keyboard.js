@@ -33,8 +33,13 @@ function onKeyPress(e) {
         applicationController.setMode('reader');
         e.preventDefault();
     }
+    
+    if (e.key === '4' || e.keyIdentifier === 'U+0035') {
+        applicationController.setMode('social-share');
+        e.preventDefault();
+    }
 
-    if (e.key === '4' || e.keyIdentifier === 'U+0034') {
+    if (e.key === '5' || e.keyIdentifier === 'U+0034') {
         applicationController.setMode('desktop');
         e.preventDefault();
     }

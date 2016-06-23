@@ -26,6 +26,11 @@ function updateViewer(viewportName, viewportConfig) {
         preventRefresh = true;
     }
 
+    if (viewportConfig.isSocial) {
+        enableSocialShare();
+        preventRefresh = true;
+    }
+
     currentViewPortConfig = viewportConfig;
     currentViewPortName = viewportName;
 
@@ -86,6 +91,48 @@ function enableReader() {
     }
 }
 
+function enableSocialShare() {
+    try {
+        var printStyleSheets = viewerEl.contentDocument.querySelectorAll('link[media=\'print\']');
+
+        for (var i = 0; i < printStyleSheets.length; i++) {
+            printStyleSheets[i].setAttribute('media', 'all');
+        }
+
+        var styleLink = document.createElement('link');
+        styleLink.href = '/assets/styles/socialShareMode.css';
+        styleLink.rel = 'stylesheet';
+        styleLink.setAttribute('media', 'screen');
+        styleLink.type = 'text/css';
+
+        viewerEl.contentDocument.body.appendChild(styleLink);
+
+        var socialImage = viewerEl.contentDocument.querySelector('meta[property=\'og:image\']');
+        var socialTitle = viewerEl.contentDocument.querySelector('meta[property=\'og:title\']');
+        var socialDescription = viewerEl.contentDocument.querySelector('meta[property=\'og:description\']');
+
+        var previousCard = viewerEl.contentDocument.getElementById('socialCard');
+        if (previousCard) {
+            previousCard.parentNode.removeChild(previousCard);
+        }
+
+        var socialCard = document.createElement('div');
+        socialCard.id = 'socialCard'
+        socialCard.innerHTML = '' +
+            '<div class=\'image\'><img src=\''+ socialImage.content + '\'></img></div>'+
+            '<div class=\'header\'>' +
+            '  <div class=\'title\'>' + socialTitle.content + '</div>' +
+            '  <div class=\'desc\'>' + socialDescription.content + '</div>' +
+            '  <div class=\'author\'> theguardian.com | By '  + '</div>' +
+            ' </div>';
+
+        viewerEl.contentDocument.body.appendChild(socialCard);
+
+    } catch (e) {
+        console.log('Can\'t enable Social share mode: ', e);
+    }
+}
+
 function restyleViewer(isAnimated, preventRefresh) {
 
     var transitionEndHandler = function() {
@@ -130,6 +177,9 @@ function onViewerLoad(e) {
     if (currentViewPortName === 'reader') {
         enableReader();
     }
+    if (currentViewPortName === 'social-share') {
+        enableSocialShare();
+    }
 }
 
 function detectMobileAndRedirect() {
@@ -168,5 +218,6 @@ module.exports = {
     scrollViewerUp:   scrollViewerUp,
     scrollViewerDown: scrollViewerDown,
     enableReader:     enableReader,
+    enableSocialShare: enableSocialShare,
     init:             init
 };
