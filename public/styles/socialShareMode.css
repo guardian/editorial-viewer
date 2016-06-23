@@ -1,0 +1,47 @@
+
+#socialCard {
+    width: 476px;
+    margin: 10px auto !important;
+    border: 1px rgba(0, 0, 0, .3) solid !important;
+}
+
+#socialCard > div > img {
+    width: 470px;
+    height: 246px;
+}
+
+
+#socialCard .header {
+    height: auto;
+    margin: 10px 12px !important;
+    max-height: 100px;
+}
+
+#socialCard .title {
+    white-space: nowrap;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 5px !important;  
+}
+
+#socialCard .desc {
+    font-size: 12px;
+}
+
+#socialCard .author {
+    font-family: 'San Francisco', -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+    font-size: 11px;
+    line-height: 11px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: #90949c !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+/* Hide article completely */
+
+article {
+    display: none !important;
+}

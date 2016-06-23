@@ -9,5 +9,8 @@ module.exports = {
     },
     'reader': {
         isReader: true
+    },
+    'social-share': {
+        isSocial: true
     }
 };

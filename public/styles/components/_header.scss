@@ -231,6 +231,13 @@ body {
     margin-right: 7px;
 }
 
+.top-toolbar__icon--socialshare {
+    @extend %icon__socialshare;
+
+    height: 17px;
+    margin-right: 7px;
+}
+
 .top-toolbar__icon--guardian {
     @extend %icon__guardian;
 
