@@ -107,31 +107,71 @@ function enableSocialShare() {
 
         viewerEl.contentDocument.body.appendChild(styleLink);
 
-        var socialImage = viewerEl.contentDocument.querySelector('meta[property=\'og:image\']');
-        var socialTitle = viewerEl.contentDocument.querySelector('meta[property=\'og:title\']');
-        var socialDescription = viewerEl.contentDocument.querySelector('meta[property=\'og:description\']');
+        /* Facebook header */
+        remove(viewerEl, 'fbHeader');
+        var fbHeader = document.createElement('h1');
+        fbHeader.id = 'fbHeader';
+        fbHeader.innerHTML = 'Facebook';
+        viewerEl.contentDocument.body.appendChild(fbHeader);
+
+        /* Facebook card */
+        var ogImage = viewerEl.contentDocument.querySelector('meta[property=\'og:image\']');
+        var ogTitle = viewerEl.contentDocument.querySelector('meta[property=\'og:title\']');
+        var ogDesc = viewerEl.contentDocument.querySelector('meta[property=\'og:description\']');
         var author = viewerEl.contentDocument.querySelectorAll('meta[name=\'author\']')[0];
 
-        var previousCard = viewerEl.contentDocument.getElementById('socialCard');
-        if (previousCard) {
-            previousCard.parentNode.removeChild(previousCard);
-        }
+        remove(viewerEl, 'fbCard');
 
-        var socialCard = document.createElement('div');
-        socialCard.id = 'socialCard'
-        socialCard.innerHTML = '' +
-            '<div class=\'image\'><img src=\''+ socialImage.content + '\'></img></div>'+
+        var fbCard = document.createElement('div');
+        fbCard.id = 'fbCard';
+        fbCard.innerHTML = '' +
+            '<div class=\'image\'><img src=\''+ ogImage.content + '\'></img></div>'+
             '<div class=\'header\'>' +
-            '  <div class=\'title\'>' + socialTitle.content + '</div>' +
-            '  <div class=\'desc\'>' + socialDescription.content + '</div>' +
+            '  <div class=\'title\'><span>' + ogTitle.content + '</span></div>' +
+            '  <div class=\'desc\'>' + ogDesc.content + '</div>' +
             '  <div class=\'author\'> theguardian.com | By ' + author.content  + '</div>' +
             ' </div>';
 
-        viewerEl.contentDocument.body.appendChild(socialCard);
+        viewerEl.contentDocument.body.appendChild(fbCard);
+
+
+         /* Twitter header */
+        remove(viewerEl, 'twHeader');
+        var twHeader = document.createElement('h1');
+        twHeader.id = 'twHeader';
+        twHeader.innerHTML = 'Twitter';
+        viewerEl.contentDocument.body.appendChild(twHeader);
+
+        /* Twitter card */
+        var twCardType = viewerEl.contentDocument.querySelector('meta[name=\'twitter:card\']');
+        var twImage = viewerEl.contentDocument.querySelector('meta[name=\'twitter:image\']');
+        var twTitle = viewerEl.contentDocument.querySelector('meta[name=\'twitter:title\']');
+        var twDesc = viewerEl.contentDocument.querySelector('meta[name=\'twitter:description\']');
+        
+        remove(viewerEl, 'twCard');
+        var twCard = document.createElement('div');
+        twCard.id = 'twCard';
+        twCard.className = twCardType.content
+        twCard.innerHTML = '' +
+            '<div class=\'image\'><img src=\''+ (twImage ? twImage.content : ogImage.content) + '\'></img></div>'+
+            '<div class=\'header\'>' +
+            '  <div class=\'title\'>' + (twTitle ? twTitle.content : ogTitle.content) + '</div>' +
+            '  <div class=\'desc\'>' + (twDesc ? twDesc.content : ogDesc.content) + '</div>' +
+            '  <div class=\'author\'> theguardian.com </div>' +
+            ' </div>';
+
+        viewerEl.contentDocument.body.appendChild(twCard);
 
     } catch (e) {
         console.log('Can\'t enable Social share mode: ', e);
     }
+}
+
+function remove(frame, id) {
+    var previous = frame.contentDocument.getElementById(id);
+    if (previous) {
+        previous.parentNode.removeChild(previous);
+    }   
 }
 
 function restyleViewer(isAnimated, preventRefresh) {
