@@ -110,6 +110,7 @@ function enableSocialShare() {
         var socialImage = viewerEl.contentDocument.querySelector('meta[property=\'og:image\']');
         var socialTitle = viewerEl.contentDocument.querySelector('meta[property=\'og:title\']');
         var socialDescription = viewerEl.contentDocument.querySelector('meta[property=\'og:description\']');
+        var author = viewerEl.contentDocument.querySelectorAll('meta[name=\'author\']')[0];
 
         var previousCard = viewerEl.contentDocument.getElementById('socialCard');
         if (previousCard) {
@@ -123,7 +124,7 @@ function enableSocialShare() {
             '<div class=\'header\'>' +
             '  <div class=\'title\'>' + socialTitle.content + '</div>' +
             '  <div class=\'desc\'>' + socialDescription.content + '</div>' +
-            '  <div class=\'author\'> theguardian.com | By '  + '</div>' +
+            '  <div class=\'author\'> theguardian.com | By ' + author.content  + '</div>' +
             ' </div>';
 
         viewerEl.contentDocument.body.appendChild(socialCard);
