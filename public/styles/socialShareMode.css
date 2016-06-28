@@ -1,35 +1,33 @@
 
-#socialCard {
+#fbCard {
     width: 476px;
-    margin: 10px auto !important;
+    margin: 20px auto !important;
     border: 1px rgba(0, 0, 0, .3) solid !important;
 }
 
-#socialCard > div > img {
+#fbCard > div > img {
     width: 470px;
     height: 246px;
 }
 
 
-#socialCard .header {
+#fbCard .header {
     height: auto;
     margin: 10px 12px !important;
-    max-height: 100px;
 }
 
-#socialCard .title {
-    white-space: nowrap;
+#fbCard .title {
     font-family: Georgia, serif;
     font-size: 18px;
     font-weight: 500;
     margin-bottom: 5px !important;  
 }
 
-#socialCard .desc {
+#fbCard .desc {
     font-size: 12px;
 }
 
-#socialCard .author {
+#fbCard .author {
     font-family: 'San Francisco', -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
     font-size: 11px;
     line-height: 11px;
@@ -38,6 +36,75 @@
     color: #90949c !important;
     margin-top: 5px !important;
     margin-bottom: 5px !important;
+}
+
+#twCard {
+    content: 'Twitter';
+}
+
+#twCard {
+    display: flex;
+    width: 550px;
+    margin: 20px auto !important;
+    border: 1px rgba(0, 0, 0, .3) solid !important;
+    border-radius: .42857em;
+}
+
+
+#twCard .image {
+    flex: initial;
+    width: 125px !important;
+    height: 125px !important;
+    min-width: 125px !important;
+    text-align: center !important; /* ensures the image is always in the h-middle */
+    overflow: hidden !important; /* hide the cropped portion */
+}
+
+#twCard > div > img {
+    max-width: none !important; /* print css put max-width 100% to every element */
+    height: 125px !important;
+    position: relative; /* allows repositioning */
+    left: 50%;
+    transform: translate(-50%,0)
+}
+
+#twCard .header {
+    flex: 1;
+    box-sizing: border-box;
+    width: calc(100% - 8.81667em - 2px) !important;
+    padding: .75em !important;
+    border-radius: .42857em;
+    font-size:14px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#twCard .title {
+    margin: 0 0 .15em !important;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#twCard .desc {
+    text-align: left;
+}
+
+#twCard .author {
+    margin-top: .32333em !important;
+    font-size:14px;
+    text-transform: lowercase;
+    color: #8899A6 !important;
+    max-height: 1.3em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+h1 {
+    font-size: 1em;
+    text-transform: none;
+    font-family: "GuardianAgateSans1Web", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 /* Hide article completely */
