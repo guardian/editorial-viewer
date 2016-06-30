@@ -39,10 +39,6 @@
 }
 
 #twCard {
-    content: 'Twitter';
-}
-
-#twCard {
     display: flex;
     width: 550px;
     margin: 20px auto !important;
