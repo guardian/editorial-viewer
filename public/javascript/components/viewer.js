@@ -26,6 +26,11 @@ function updateViewer(viewportName, viewportConfig) {
         preventRefresh = true;
     }
 
+    if (viewportConfig.isSocial) {
+        enableSocialShare();
+        preventRefresh = true;
+    }
+
     currentViewPortConfig = viewportConfig;
     currentViewPortName = viewportName;
 
@@ -86,6 +91,89 @@ function enableReader() {
     }
 }
 
+function enableSocialShare() {
+    try {
+        var printStyleSheets = viewerEl.contentDocument.querySelectorAll('link[media=\'print\']');
+
+        for (var i = 0; i < printStyleSheets.length; i++) {
+            printStyleSheets[i].setAttribute('media', 'all');
+        }
+
+        var styleLink = document.createElement('link');
+        styleLink.href = '/assets/styles/socialShareMode.css';
+        styleLink.rel = 'stylesheet';
+        styleLink.setAttribute('media', 'screen');
+        styleLink.type = 'text/css';
+
+        viewerEl.contentDocument.body.appendChild(styleLink);
+
+        /* Facebook header */
+        remove(viewerEl, 'fbHeader');
+        var fbHeader = document.createElement('h1');
+        fbHeader.id = 'fbHeader';
+        fbHeader.innerHTML = 'Facebook';
+        viewerEl.contentDocument.body.appendChild(fbHeader);
+
+        /* Facebook card */
+        var ogImage = viewerEl.contentDocument.querySelector('meta[property=\'og:image\']');
+        var ogTitle = viewerEl.contentDocument.querySelector('meta[property=\'og:title\']');
+        var ogDesc = viewerEl.contentDocument.querySelector('meta[property=\'og:description\']');
+        var author = viewerEl.contentDocument.querySelectorAll('meta[name=\'author\']')[0];
+
+        remove(viewerEl, 'fbCard');
+
+        var fbCard = document.createElement('div');
+        fbCard.id = 'fbCard';
+        fbCard.innerHTML = '' +
+            '<div class=\'image\'><img src=\''+ ogImage.content + '\'></img></div>'+
+            '<div class=\'header\'>' +
+            '  <div class=\'title\'><span>' + ogTitle.content + '</span></div>' +
+            '  <div class=\'desc\'>' + ogDesc.content + '</div>' +
+            '  <div class=\'author\'> theguardian.com | By ' + author.content  + '</div>' +
+            ' </div>';
+
+        viewerEl.contentDocument.body.appendChild(fbCard);
+
+
+         /* Twitter header */
+        remove(viewerEl, 'twHeader');
+        var twHeader = document.createElement('h1');
+        twHeader.id = 'twHeader';
+        twHeader.innerHTML = 'Twitter';
+        viewerEl.contentDocument.body.appendChild(twHeader);
+
+        /* Twitter card */
+        var twCardType = viewerEl.contentDocument.querySelector('meta[name=\'twitter:card\']');
+        var twImage = viewerEl.contentDocument.querySelector('meta[name=\'twitter:image\']');
+        var twTitle = viewerEl.contentDocument.querySelector('meta[name=\'twitter:title\']');
+        var twDesc = viewerEl.contentDocument.querySelector('meta[name=\'twitter:description\']');
+        
+        remove(viewerEl, 'twCard');
+        var twCard = document.createElement('div');
+        twCard.id = 'twCard';
+        twCard.className = twCardType.content
+        twCard.innerHTML = '' +
+            '<div class=\'image\'><img src=\''+ (twImage ? twImage.content : ogImage.content) + '\'></img></div>'+
+            '<div class=\'header\'>' +
+            '  <div class=\'title\'>' + (twTitle ? twTitle.content : ogTitle.content) + '</div>' +
+            '  <div class=\'desc\'>' + (twDesc ? twDesc.content : ogDesc.content) + '</div>' +
+            '  <div class=\'author\'> theguardian.com </div>' +
+            ' </div>';
+
+        viewerEl.contentDocument.body.appendChild(twCard);
+
+    } catch (e) {
+        console.log('Can\'t enable Social share mode: ', e);
+    }
+}
+
+function remove(frame, id) {
+    var previous = frame.contentDocument.getElementById(id);
+    if (previous) {
+        previous.parentNode.removeChild(previous);
+    }   
+}
+
 function restyleViewer(isAnimated, preventRefresh) {
 
     var transitionEndHandler = function() {
@@ -130,6 +218,9 @@ function onViewerLoad(e) {
     if (currentViewPortName === 'reader') {
         enableReader();
     }
+    if (currentViewPortName === 'social-share') {
+        enableSocialShare();
+    }
 }
 
 function detectMobileAndRedirect() {
@@ -168,5 +259,6 @@ module.exports = {
     scrollViewerUp:   scrollViewerUp,
     scrollViewerDown: scrollViewerDown,
     enableReader:     enableReader,
+    enableSocialShare: enableSocialShare,
     init:             init
 };
