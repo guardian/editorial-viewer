@@ -38,11 +38,7 @@
     margin-bottom: 5px !important;
 }
 
-#twCard {
-    content: 'Twitter';
-}
-
-#twCard {
+#twCard.summary {
     display: flex;
     width: 550px;
     margin: 20px auto !important;
@@ -51,7 +47,7 @@
 }
 
 
-#twCard .image {
+#twCard.summary .image {
     flex: initial;
     width: 125px !important;
     height: 125px !important;
@@ -60,7 +56,7 @@
     overflow: hidden !important; /* hide the cropped portion */
 }
 
-#twCard > div > img {
+#twCard.summary > div > img {
     max-width: none !important; /* print css put max-width 100% to every element */
     height: 125px !important;
     position: relative; /* allows repositioning */
@@ -68,15 +64,34 @@
     transform: translate(-50%,0)
 }
 
+#twCard.summary_large_image {
+    display: flex;
+    flex-direction: column;
+    width: 560px;
+    margin: 20px auto !important;
+    border: 1px rgba(0, 0, 0, .3) solid !important;
+    border-radius: .42857em;
+}
+
+
+#twCard.summary_large_image .image {
+    flex: initial;
+    width: 100% !important;
+}
+
+
 #twCard .header {
     flex: 1;
     box-sizing: border-box;
-    width: calc(100% - 8.81667em - 2px) !important;
     padding: .75em !important;
     border-radius: .42857em;
     font-size:14px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+#twCard.summary {
+     width: calc(100% - 8.81667em - 2px) !important;
+} 
 
 #twCard .title {
     margin: 0 0 .15em !important;
