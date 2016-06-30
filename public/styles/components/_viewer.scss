@@ -23,6 +23,13 @@
         height: 320px;
     }
 
+    &.is-social-share {
+        width: 1024px;
+        height: 768px;
+        border-radius: 0px;
+        border-width: 0px;
+    }
+
     &.is-desktop,
     &.is-reader {
         position: fixed;
