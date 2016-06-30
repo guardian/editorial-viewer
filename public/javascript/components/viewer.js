@@ -129,7 +129,7 @@ function enableSocialShare() {
             '<div class=\'header\'>' +
             '  <div class=\'title\'><span>' + ogTitle.content + '</span></div>' +
             '  <div class=\'desc\'>' + ogDesc.content + '</div>' +
-            '  <div class=\'author\'> theguardian.com | By ' + author.content  + '</div>' +
+            '  <div class=\'author\'> theguardian.com | By ' + (author ? author.content : 'unknown')  + '</div>' +
             ' </div>';
 
         viewerEl.contentDocument.body.appendChild(fbCard);
