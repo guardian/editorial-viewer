@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 class Filters @Inject() (logger: RequestLoggingFilter) extends HttpFilters {
 
-  val filters = Seq(logger)
+  val filters = Seq(logger, HttpsRedirectFilter)
 
 }
 
