@@ -130,6 +130,6 @@ article .element-embed:before {
 }
 
 .gallery__figcaption {
-    position: relative;
+    position: relative !important;
     width: 100%;
 }
