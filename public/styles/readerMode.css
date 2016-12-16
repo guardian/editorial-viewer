@@ -128,3 +128,8 @@ article figure[itemprop~="video"]:before {
 article .element-embed:before {
     content: "Embed placeholder. To view embed switch to mobile or desktop views." !important;
 }
+
+.gallery__figcaption {
+    position: relative;
+    width: 100%;
+}
