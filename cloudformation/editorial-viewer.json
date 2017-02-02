@@ -346,7 +346,13 @@
                 "#!/bin/bash -ev\n",
 
                 "/opt/features/gnm-ca/install.sh\n",
-                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
+                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n",
+                "mkdir /etc/gu\n",
+                "aws s3 cp 's3://atom-maker-conf/",
+                {
+                  "Ref": "Stage"
+                },
+                "/media-atom-maker.private.conf' /etc/gu\n"
               ]
             ]
           }
