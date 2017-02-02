@@ -9,6 +9,14 @@ Mobile first preview of Guardian content. [https://viewer.gutools.co.uk](https:/
 ## Set up Nginx
 Follow the [dev-nginx README](https://github.com/guardian/dev-nginx). There is an nginx mapping file in `nginx/`.
 
+## Dev configuration
+You'll need the private configuration information from the S3 bucket (`viewer-conf`) and put it `/etc/gu`:
+
+```
+    mkdir -p /etc/gu
+    aws s3 cp s3://viewer-conf/DEV/viewer.private.conf /etc/gu/viewer.private.conf --profile composer
+```
+
 ## Install client-side dependencies and build JS/CSS
 ```
 $ npm install
