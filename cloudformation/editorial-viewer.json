@@ -38,6 +38,11 @@
     "CertificateArn": {
       "Description": "ARN of the SSL certificate for this service",
       "Type": "String"
+    },
+    "GithubTeamName": {
+      "Description": "Github team name, used for giving ssh access to members of the team.",
+      "Type": "String",
+      "Default": "Editorial-Tools-SSHAccess"
     }
   },
   "Mappings": {
@@ -138,6 +143,22 @@
         "Roles": [{"Ref": "ViewerRole"}]
       }
     },
+    "ViewerGetConfigPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "ViewerGetConfigPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::viewer-conf/*"]
+            }
+          ]
+        },
+        "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
     "ViewerCloudwatchPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -152,6 +173,28 @@
           ]
         },
         "Roles": [{"Ref": "ViewerRole"}]
+      }
+    },
+    "LoggingKinesisStreamPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "LoggingKinesisStreamPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Resource": [
+                "arn:aws:kinesis:*:*:stream/elk-*-KinesisStream-*"
+              ],
+              "Action": [
+                "kinesis:PutRecord",
+                "kinesis:PutRecords",
+                "kinesis:DescribeStream"
+              ],
+              "Effect": "Allow"
+            }
+          ]
+        },
+        "Roles": [{"Ref":"ViewerRole"}]
       }
     },
     "ViewerInstanceProfile": {
@@ -344,9 +387,26 @@
               "",
               [
                 "#!/bin/bash -ev\n",
-
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "/opt/features/ssh-keys/initialise-keys-and-cron-job.sh -l -b github-team-keys -t ",
+                      {
+                        "Ref": "GithubTeamName"
+                      },
+                      " || true\n"
+                    ]
+                  ]
+                },
                 "/opt/features/gnm-ca/install.sh\n",
-                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
+                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n",
+                "mkdir /etc/gu\n",
+                "aws s3 cp 's3://viewer-conf/",
+                {
+                  "Ref": "Stage"
+                },
+                "/viewer.private.conf' /etc/gu\n"
               ]
             ]
           }
