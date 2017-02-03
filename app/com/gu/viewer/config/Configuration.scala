@@ -25,9 +25,6 @@ object Configuration {
   val mixpanel = getConfigString(s"mixpanel.$stage")
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
 
-  val logstashEnabled = config.getBoolean("logstash.enabled").getOrElse(false)
-  val logstashDestination = config.getString("logstash.destination")
-
   def pandaDomain = {
     if (stage == "PROD") {
       "gutools.co.uk"
