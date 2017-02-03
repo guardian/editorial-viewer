@@ -400,13 +400,13 @@
                   ]
                 },
                 "/opt/features/gnm-ca/install.sh\n",
-                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n",
                 "mkdir /etc/gu\n",
                 "aws s3 cp 's3://viewer-conf/",
                 {
                   "Ref": "Stage"
                 },
-                "/viewer.private.conf' /etc/gu\n"
+                "/viewer.private.conf' /etc/gu\n",
+                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
               ]
             ]
           }
