@@ -64,7 +64,7 @@ riffRaffArtifactResources := Seq(
   (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
   baseDirectory.value / "deploy.json" -> "deploy.json",
   baseDirectory.value / "cloudformation" / "editorial-viewer.json" ->
-    "packages/cloudformation/editorial-viewer.json"
+    "cloudformation/editorial-viewer.json"
 )
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
