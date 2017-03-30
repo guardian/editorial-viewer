@@ -8,6 +8,12 @@ lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .enablePlugins(SbtWeb)
   .enablePlugins(RiffRaffArtifact)
+  .enablePlugins(JDebPackaging)
+  .settings(
+    javaOptions in Universal ++= Seq(
+          "-Dpidfile.path=/dev/null"
+     )
+  )
 
 scalaVersion := "2.11.6"
 
@@ -44,8 +50,6 @@ pipelineStages := Seq(bundle, digest, gzip)
 // Config for packing app for deployment
 packageName in Universal := normalizedName.value
 
-riffRaffPackageType := (packageZipTarball in config("universal")).value
-
 riffRaffPackageName := s"editorial-tools:${name.value}"
 
 riffRaffManifestProjectName := riffRaffPackageName.value
@@ -57,8 +61,16 @@ riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 
 riffRaffArtifactResources := Seq(
-  riffRaffPackageType.value -> s"packages/${name.value}/${riffRaffPackageType.value.getName}",
+  (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
   baseDirectory.value / "deploy.json" -> "deploy.json",
   baseDirectory.value / "cloudformation" / "editorial-viewer.json" ->
     "packages/cloudformation/editorial-viewer.json"
 )
+
+import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
+serverLoading in Debian := Systemd
+
+debianPackageDependencies := Seq("openjdk-8-jre-headless")
+maintainer := "Digital CMS <digitalcms.dev@guardian.co.uk>"
+packageSummary := "viewer"
+packageDescription := """wrapper over the preview mode to give different platform previews"""
