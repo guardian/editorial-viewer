@@ -15,6 +15,11 @@
         "CODE"
       ]
     },
+    "App": {
+      "Description": "App name",
+      "Type": "String",
+      "Default": "viewer"
+    },
     "VpcId": {
       "Description": "ID of the VPC onto which to launch the application eg. vpc-1234abcd",
       "Type": "AWS::EC2::VPC::Id",
@@ -43,6 +48,10 @@
       "Description": "Github team name, used for giving ssh access to members of the team.",
       "Type": "String",
       "Default": "Editorial-Tools-SSHAccess"
+    },
+    "AMI": {
+      "Description": "AMI ID",
+      "Type": "String"
     }
   },
   "Mappings": {
@@ -322,7 +331,9 @@
           },
           {
             "Key": "App",
-            "Value": "viewer"
+            "Value": {
+              "Ref": "App"
+            }
           }
         ]
       }
@@ -354,7 +365,9 @@
           },
           {
             "Key": "App",
-            "Value": "preview",
+            "Value": {
+              "Ref": "App"
+            },
             "PropagateAtLaunch": "true"
           }
         ]
@@ -373,7 +386,7 @@
       },
       "Properties": {
         "KeyName": {"Ref": "KeyName"},
-        "ImageId": "ami-6a9bcb1d",
+        "ImageId": {"Ref": "AMI"},
         "SecurityGroups": [
           {"Ref": "AppServerSecurityGroup"},
           {"Ref": "SSHSecurityGroup"},
@@ -387,26 +400,16 @@
               "",
               [
                 "#!/bin/bash -ev\n",
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "/opt/features/ssh-keys/initialise-keys-and-cron-job.sh -l -b github-team-keys -t ",
-                      {
-                        "Ref": "GithubTeamName"
-                      },
-                      " || true\n"
-                    ]
-                  ]
-                },
-                "/opt/features/gnm-ca/install.sh\n",
+
                 "mkdir /etc/gu\n",
-                "aws s3 cp 's3://viewer-conf/",
-                {
-                  "Ref": "Stage"
-                },
-                "/viewer.private.conf' /etc/gu\n",
-                "/opt/features/native-packager/install.sh -b composer-dist -t tgz -s\n"
+                "aws s3 cp 's3://viewer-conf/", { "Ref": "Stage" }, "/viewer.private.conf' /etc/gu\n",
+
+                "aws s3 cp s3://composer-dist/flexible/", {"Ref":"Stage"}, "/viewer/viewer.deb /tmp\n",
+
+                "dpkg -i /tmp/viewer.deb\n",
+                "chown ", {"Ref": "App"},  " /etc/gu/viewer.private.conf\n",
+                "chmod 0600 /etc/gu/viewer.private.conf\n",
+
               ]
             ]
           }
