@@ -1,0 +1,20 @@
+stacks: [flexible]
+regions: [eu-west-1]
+deployments:
+  viewer:
+    type: autoscaling
+    parameters:
+      bucket: composer-dist
+    dependencies:
+      - viewer-ami-update
+  viewer-ami-update:
+      type: ami-cloudformation-parameter
+      parameters:
+        amiTags:
+          Recipe: editorial-tools-basic
+          AmigoStage: PROD
+          BuiltBy: amigo
+        cloudFormationStackByTags: false
+        cloudFormationStackName: EditorialViewer
+        prependStackToCloudFormationStackName: false
+
