@@ -49,7 +49,7 @@
       "Type": "String",
       "Default": "Editorial-Tools-SSHAccess"
     },
-    "ImageId": {
+    "AMI": {
       "Description": "AMI ID",
       "Type": "String"
     }
@@ -386,7 +386,7 @@
       },
       "Properties": {
         "KeyName": {"Ref": "KeyName"},
-        "ImageId": {"Ref": "ImageId"},
+        "ImageId": {"Ref": "AMI"},
         "SecurityGroups": [
           {"Ref": "AppServerSecurityGroup"},
           {"Ref": "SSHSecurityGroup"},
