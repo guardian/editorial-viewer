@@ -404,7 +404,7 @@
                 "mkdir /etc/gu\n",
                 "aws s3 cp 's3://viewer-conf/", { "Ref": "Stage" }, "/viewer.private.conf' /etc/gu\n",
 
-                "aws s3 cp s3://composer-dist/flexible", {"Ref":"Stage"}, "/viewer/viewer.deb /tmp\n",
+                "aws s3 cp s3://composer-dist/flexible/", {"Ref":"Stage"}, "/viewer/viewer.deb /tmp\n",
 
                 "dpkg -i /tmp/viewer.deb\n",
                 "chown ", {"Ref": "App"},  " /etc/gu/viewer.private.conf\n",
