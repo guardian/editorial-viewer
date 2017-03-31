@@ -61,10 +61,8 @@ riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 
 riffRaffArtifactResources := Seq(
-  (packageBin in Debian).value -> s"packages/${name.value}/${name.value}.deb",
-  baseDirectory.value / "deploy.json" -> "deploy.json",
-  baseDirectory.value / "cloudformation" / "editorial-viewer.json" ->
-    "packages/cloudformation/editorial-viewer.json"
+  (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
+  baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
 )
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
