@@ -41,7 +41,7 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
 
   private def formatEmail(path: String): String = {
     s"""iOS: https://entry.mobile-apps.guardianapis.com/deeplink/items/$path
-      |Android: http://preview.mobile-apps.guardianapis.com/items/$path
+      |Android: https://mobile-preview.guardianapis.com/items/$path
       |
       |
       |If you were not expecting this email please contact: digitalcms.dev@guardian.co.uk""".stripMargin
