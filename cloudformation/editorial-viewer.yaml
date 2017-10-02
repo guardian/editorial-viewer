@@ -214,7 +214,9 @@ Resources:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
       SecurityGroups:
-      - !GetAtt 'L.o'
+      - Fn::GetAtt:
+        - "LoadBalancerSecurityGroup"
+        - "GroupId"
       CrossZone: true
       Subnets: !Ref 'PublicVpcSubnets'
       Listeners:
