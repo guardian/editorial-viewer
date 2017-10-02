@@ -50,7 +50,7 @@ Mappings:
       maxSize: 6
     PROD:
       lowercase: prod
-      instanceType: t2.small
+      instanceType: t2.micro
       desiredCapacity: 3
       maxSize: 6
 Resources:
