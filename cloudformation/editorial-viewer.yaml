@@ -22,11 +22,11 @@ Parameters:
   PublicVpcSubnets:
     Description: Subnets to use in VPC for public internet-facing ELB eg. subnet-abcd1234
     Type: List<AWS::EC2::Subnet::Id>
-    Default: subnet-c3620fa6,subnet-2b37bd5c,subnet-3667c86f
+    Default: subnet-c3620fa6,subnet-2b37bd5c
   PrivateVpcSubnets:
     Description: Subnets to use in VPC for private EC2 instances eg. subnet-abcd1234
     Type: List<AWS::EC2::Subnet::Id>
-    Default: subnet-c2620fa7,subnet-2a37bd5d,subnet-2967c870
+    Default: subnet-c2620fa7,subnet-2a37bd5d
   GuardianIP:
     Description: Ip range for the office
     Type: String
@@ -46,13 +46,13 @@ Mappings:
     CODE:
       lowercase: code
       instanceType: t2.micro
-      desiredCapacity: 3
-      maxSize: 6
+      desiredCapacity: 2
+      maxSize: 4
     PROD:
       lowercase: prod
       instanceType: t2.micro
-      desiredCapacity: 3
-      maxSize: 6
+      desiredCapacity: 2
+      maxSize: 4
 Resources:
   ViewerRole:
     Type: AWS::IAM::Role
@@ -243,7 +243,13 @@ Resources:
   AutoscalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      AvailabilityZones: !GetAZs ''
+      AvailabilityZones:
+        - Fn::Select:
+          - 0
+          - Fn::GetAZs: !Ref "AWS::Region"
+        - Fn::Select:
+          - 1
+          - Fn::GetAZs: !Ref "AWS::Region"
       VPCZoneIdentifier: !Ref 'PrivateVpcSubnets'
       LaunchConfigurationName: !Ref 'ViewerLaunchConfig'
       MinSize: !FindInMap [EnvironmentMap, !Ref 'Stage', desiredCapacity]
