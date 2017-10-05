@@ -46,12 +46,12 @@ Mappings:
     CODE:
       lowercase: code
       instanceType: t2.micro
-      desiredCapacity: 2
+      minSize: 2
       maxSize: 4
     PROD:
       lowercase: prod
       instanceType: t2.micro
-      desiredCapacity: 2
+      minSize: 2
       maxSize: 4
 Resources:
   ViewerRole:
@@ -252,9 +252,8 @@ Resources:
           - Fn::GetAZs: !Ref "AWS::Region"
       VPCZoneIdentifier: !Ref 'PrivateVpcSubnets'
       LaunchConfigurationName: !Ref 'ViewerLaunchConfig'
-      MinSize: !FindInMap [EnvironmentMap, !Ref 'Stage', desiredCapacity]
+      MinSize: !FindInMap [EnvironmentMap, !Ref 'Stage', minSize]
       MaxSize: !FindInMap [EnvironmentMap, !Ref 'Stage', maxSize]
-      DesiredCapacity: !FindInMap [EnvironmentMap, !Ref 'Stage', desiredCapacity]
       HealthCheckType: ELB
       HealthCheckGracePeriod: 900
       LoadBalancerNames:
