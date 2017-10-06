@@ -1,0 +1,300 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: editorial-viewer
+Parameters:
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: String
+    Default: composer-team
+  Stage:
+    Description: Environment name
+    Type: String
+    AllowedValues:
+    - PROD
+    - CODE
+  App:
+    Description: App name
+    Type: String
+    Default: viewer
+  VpcId:
+    Description: ID of the VPC onto which to launch the application eg. vpc-1234abcd
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-381fa95d
+  PublicVpcSubnets:
+    Description: Subnets to use in VPC for public internet-facing ELB eg. subnet-abcd1234
+    Type: List<AWS::EC2::Subnet::Id>
+    Default: subnet-c3620fa6,subnet-2b37bd5c
+  PrivateVpcSubnets:
+    Description: Subnets to use in VPC for private EC2 instances eg. subnet-abcd1234
+    Type: List<AWS::EC2::Subnet::Id>
+    Default: subnet-c2620fa7,subnet-2a37bd5d
+  GuardianIP:
+    Description: Ip range for the office
+    Type: String
+    Default: 77.91.248.0/21
+  CertificateArn:
+    Description: ARN of the SSL certificate for this service
+    Type: String
+  AMI:
+    Description: AMI ID
+    Type: String
+Mappings:
+  EnvironmentMap:
+    CODE:
+      lowercase: code
+      instanceType: t2.micro
+      minSize: 2
+      maxSize: 4
+    PROD:
+      lowercase: prod
+      instanceType: t2.micro
+      minSize: 2
+      maxSize: 4
+Resources:
+  ViewerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+  ViewerSESPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ViewerSESPolicy
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - ses:*
+          Resource: '*'
+      Roles:
+      - !Ref 'ViewerRole'
+  ViewerPanDomainPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ViewerPanDomainPolicy
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+          - arn:aws:s3:::pan-domain-auth-settings/*
+      Roles:
+      - !Ref 'ViewerRole'
+  ViewerDescribeEC2Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ViewerDescribeEC2Policy
+      PolicyDocument:
+        Statement:
+        - Action:
+          - EC2:Describe*
+          Effect: Allow
+          Resource: '*'
+      Roles:
+      - !Ref 'ViewerRole'
+  ViewerGetDistributablesPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ViewerGetDistributablesPolicy
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+          - arn:aws:s3:::composer-dist/*
+      Roles:
+      - !Ref 'ViewerRole'
+  ViewerGetConfigPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ViewerGetConfigPolicy
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+          - arn:aws:s3:::viewer-conf/*
+      Roles:
+      - !Ref 'ViewerRole'
+  ViewerCloudwatchPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ViewerCloudwatchPolicy
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action:
+          - cloudwatch:*
+          Resource: '*'
+      Roles:
+      - !Ref 'ViewerRole'
+  LoggingKinesisStreamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LoggingKinesisStreamPolicy
+      PolicyDocument:
+        Statement:
+        - Resource:
+          - arn:aws:kinesis:*:*:stream/elk-*-KinesisStream-*
+          Action:
+          - kinesis:PutRecord
+          - kinesis:PutRecords
+          - kinesis:DescribeStream
+          Effect: Allow
+      Roles:
+      - !Ref 'ViewerRole'
+  ViewerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+      - !Ref 'ViewerRole'
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH access from the office
+      VpcId: !Ref 'VpcId'
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 10.249.16.133/22
+  PingSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow pinging of the instance
+      VpcId: !Ref 'VpcId'
+      SecurityGroupIngress:
+      - IpProtocol: icmp
+        FromPort: '8'
+        ToPort: '-1'
+        CidrIp: 10.249.16.133/22
+  AppServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: application servers
+      VpcId: !Ref 'VpcId'
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 9000
+        ToPort: 9000
+        CidrIp: 10.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 9000
+        ToPort: 9000
+        SourceSecurityGroupId: !Ref 'LoadBalancerSecurityGroup'
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: load balancer
+      VpcId: !Ref 'VpcId'
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+  ViewerLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      SecurityGroups:
+      - Fn::GetAtt:
+        - "LoadBalancerSecurityGroup"
+        - "GroupId"
+      CrossZone: true
+      Subnets: !Ref 'PublicVpcSubnets'
+      Listeners:
+      - LoadBalancerPort: '80'
+        InstancePort: '9000'
+        Protocol: HTTP
+      - LoadBalancerPort: '443'
+        InstancePort: '9000'
+        Protocol: HTTPS
+        SSLCertificateId: !Ref 'CertificateArn'
+      HealthCheck:
+        Target: HTTP:9000/management/healthcheck
+        HealthyThreshold: '2'
+        UnhealthyThreshold: '2'
+        Interval: '10'
+        Timeout: '5'
+      Tags:
+      - Key: Stage
+        Value: !Ref 'Stage'
+      - Key: Stack
+        Value: flexible
+      - Key: App
+        Value: !Ref 'App'
+  AutoscalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones:
+        - Fn::Select:
+          - 0
+          - Fn::GetAZs: !Ref "AWS::Region"
+        - Fn::Select:
+          - 1
+          - Fn::GetAZs: !Ref "AWS::Region"
+      VPCZoneIdentifier: !Ref 'PrivateVpcSubnets'
+      LaunchConfigurationName: !Ref 'ViewerLaunchConfig'
+      MinSize: !FindInMap [EnvironmentMap, !Ref 'Stage', minSize]
+      MaxSize: !FindInMap [EnvironmentMap, !Ref 'Stage', maxSize]
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 900
+      LoadBalancerNames:
+      - !Ref 'ViewerLoadBalancer'
+      Tags:
+      - Key: Stage
+        Value: !Ref 'Stage'
+        PropagateAtLaunch: 'true'
+      - Key: Stack
+        Value: flexible
+        PropagateAtLaunch: 'true'
+      - Key: App
+        Value: !Ref 'App'
+        PropagateAtLaunch: 'true'
+  ViewerLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Authentication:
+        distributionAuthentication:
+          type: S3
+          roleName: !Ref 'ViewerRole'
+          buckets:
+          - composer-dist
+    Properties:
+      KeyName: !Ref 'KeyName'
+      ImageId: !Ref 'AMI'
+      SecurityGroups:
+      - !Ref 'AppServerSecurityGroup'
+      - !Ref 'SSHSecurityGroup'
+      - !Ref 'PingSecurityGroup'
+      InstanceType: !FindInMap [EnvironmentMap, !Ref 'Stage', instanceType]
+      IamInstanceProfile: !Ref 'ViewerInstanceProfile'
+      UserData: !Base64
+        Fn::Sub: '#!/bin/bash -ev
+
+          mkdir /etc/gu
+
+          aws s3 cp ''s3://viewer-conf/${Stage}/viewer.private.conf'' /etc/gu
+
+          aws s3 cp s3://composer-dist/flexible/${Stage}/viewer/viewer.deb /tmp
+
+          dpkg -i /tmp/viewer.deb
+
+          chown ${App} /etc/gu/viewer.private.conf
+
+          chmod 0600 /etc/gu/viewer.private.conf
+
+          '
