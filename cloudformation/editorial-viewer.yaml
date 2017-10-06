@@ -34,10 +34,6 @@ Parameters:
   CertificateArn:
     Description: ARN of the SSL certificate for this service
     Type: String
-  GithubTeamName:
-    Description: Github team name, used for giving ssh access to members of the team.
-    Type: String
-    Default: Editorial-Tools-SSHAccess
   AMI:
     Description: AMI ID
     Type: String
@@ -171,7 +167,7 @@ Resources:
       - IpProtocol: tcp
         FromPort: '22'
         ToPort: '22'
-        CidrIp: 10.0.0.0/0
+        CidrIp: 10.249.16.133/22
   PingSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -181,7 +177,7 @@ Resources:
       - IpProtocol: icmp
         FromPort: '8'
         ToPort: '-1'
-        CidrIp: 10.0.0.0/0
+        CidrIp: 10.249.16.133/22
   AppServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
