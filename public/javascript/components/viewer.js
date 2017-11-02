@@ -125,7 +125,7 @@ function enableSocialShare() {
         var fbCard = document.createElement('div');
         fbCard.id = 'fbCard';
         fbCard.innerHTML = '' +
-            '<div class=\'image\'><img src=\''+ ogImage.content + '\'></img></div>'+
+            '<div class=\'image\'><img src=\'' + ogImage.content + '\'></img></div>' +
             '<div class=\'header\'>' +
             '  <div class=\'title\'><span>' + ogTitle.content + '</span></div>' +
             '  <div class=\'desc\'>' + ogDesc.content + '</div>' +
@@ -147,13 +147,13 @@ function enableSocialShare() {
         var twImage = viewerEl.contentDocument.querySelector('meta[name=\'twitter:image\']');
         var twTitle = viewerEl.contentDocument.querySelector('meta[name=\'twitter:title\']');
         var twDesc = viewerEl.contentDocument.querySelector('meta[name=\'twitter:description\']');
-        
+
         remove(viewerEl, 'twCard');
         var twCard = document.createElement('div');
         twCard.id = 'twCard';
-        twCard.className = twCardType.content
+        twCard.className = twCardType.content;
         twCard.innerHTML = '' +
-            '<div class=\'image\'><img src=\''+ (twImage ? twImage.content : ogImage.content) + '\'></img></div>'+
+            '<div class=\'image\'><img src=\'' + (twImage ? twImage.content : ogImage.content) + '\'></img></div>' +
             '<div class=\'header\'>' +
             '  <div class=\'title\'>' + (twTitle ? twTitle.content : ogTitle.content) + '</div>' +
             '  <div class=\'desc\'>' + (twDesc ? twDesc.content : ogDesc.content) + '</div>' +
@@ -171,7 +171,7 @@ function remove(frame, id) {
     var previous = frame.contentDocument.getElementById(id);
     if (previous) {
         previous.parentNode.removeChild(previous);
-    }   
+    }
 }
 
 function restyleViewer(isAnimated, preventRefresh) {
@@ -213,6 +213,7 @@ function onViewerLoad(e) {
     var iframeLocation = e.target.contentWindow.location;
     if (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1) {
         currentViewerUrl = iframeLocation.origin + iframeLocation.pathname;
+        addBlankToLinks();
     }
 
     if (currentViewPortName === 'reader') {
@@ -243,6 +244,18 @@ function disableAdBlock() {
     adBlockDisabled = true;
 
     reloadiFrame();
+}
+
+function addBlankToLinks() {
+    var iframe = document.getElementById('viewer');
+    var iframeDoc = iframe.contentDocument;
+    var ancs = iframeDoc.querySelectorAll('.js-article__body a');
+    for (var i = 0; i < ancs.length; i++) {
+        // If href doesn't contain gutools or theguardian (i.e: links to guardian pages) add blank
+        if (!/gutools|theguardian/.test(ancs[i].origin)) {
+            ancs[i].setAttribute('target', '_blank');
+        }
+    }
 }
 
 function init() {
