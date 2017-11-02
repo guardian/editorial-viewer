@@ -213,7 +213,6 @@ function onViewerLoad(e) {
     var iframeLocation = e.target.contentWindow.location;
     if (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1) {
         currentViewerUrl = iframeLocation.origin + iframeLocation.pathname;
-        console.log('open in a new window');
         addBlankToLinks();
     }
 
@@ -252,6 +251,7 @@ function addBlankToLinks() {
     var iframeDoc = iframe.contentDocument;
     var ancs = iframeDoc.querySelectorAll('.js-article__body a');
     for (var i = 0; i < ancs.length; i++) {
+        // If href doesn't contain gutools or theguardian (i.e: links to guardian pages) add blank
         if (!/gutools|theguardian/.test(ancs[i].origin)) {
             ancs[i].setAttribute('target', '_blank');
         }
