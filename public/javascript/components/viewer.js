@@ -250,10 +250,11 @@ function disableAdBlock() {
 function addBlankToLinks() {
     var iframe = document.getElementById('viewer');
     var iframeDoc = iframe.contentDocument;
-    var ancs = iframeDoc.querySelectorAll('.js-article__body a:not([href*="theguardian.com"]):not([href*="#"]):not([href*="dev-gutools.co.uk"])');
-    console.log(ancs);
+    var ancs = iframeDoc.querySelectorAll('.js-article__body a');
     for (var i = 0; i < ancs.length; i++) {
-        ancs[i].setAttribute('target', '_blank');
+        if (!/gutools|theguardian/.test(ancs[i].origin)) {
+            ancs[i].setAttribute('target', '_blank');
+        }
     }
 }
 
