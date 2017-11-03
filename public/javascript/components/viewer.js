@@ -254,6 +254,7 @@ function addBlankToLinks() {
         // If href doesn't contain gutools or theguardian (i.e: links to guardian pages) add blank
         if (!/gutools|theguardian/.test(ancs[i].origin)) {
             ancs[i].setAttribute('target', '_blank');
+            ancs[i].setAttribute('rel', 'noopener noreferrer');
         }
     }
 }
