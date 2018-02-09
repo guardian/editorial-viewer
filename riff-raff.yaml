@@ -11,9 +11,10 @@ deployments:
       type: ami-cloudformation-parameter
       parameters:
         amiTags:
-          Recipe: editorial-tools-basic
+          Recipe: editorial-tools-xenial-java8
           AmigoStage: PROD
           BuiltBy: amigo
+        amiEncrypted: true
         cloudFormationStackByTags: false
         cloudFormationStackName: EditorialViewer
         prependStackToCloudFormationStackName: false
