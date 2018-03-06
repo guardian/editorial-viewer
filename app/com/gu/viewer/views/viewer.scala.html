@@ -1,6 +1,6 @@
-@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String)
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, googleTrackingId: String)
 
-@main("Viewer") {
+@main("Viewer", googleTrackingId) {
     <header class="fixed-header">
         <div class="top-toolbar">
             <div class="top-toolbar__logo">

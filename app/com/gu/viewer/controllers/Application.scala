@@ -35,6 +35,6 @@ class Application extends Controller with Loggable {
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = Configuration.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, Configuration.googleTrackingId))
   }
 }
