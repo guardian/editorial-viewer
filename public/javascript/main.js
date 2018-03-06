@@ -8,6 +8,3 @@ applicationCtrl.init();
 analyticsCtrl.init();
 historyCtrl.init();
 keyboardController.init();
-
-//Track Inital View
-analyticsCtrl.recordPageOpen();

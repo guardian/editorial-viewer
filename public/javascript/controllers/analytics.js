@@ -1,116 +1,63 @@
-var isEnabled = false;
-
 var pageOpenTime = Date.now();
 
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}
-
-
 function init() {
-    if (!window.mixpanel) {
-        console.log('No mixpanel detected');
+    const gaId = window._clientConfig.gaId;
+    // tracking script should be on the page already
+    if (gaId) {
+        window.ga =
+            window.ga ||
+            (function() { return (window.ga.q = window.ga.q || []).push(arguments); });
+
+        window.ga('create', gaId, 'auto');
+        window.ga('set', 'transport', 'beacon');
+        window.ga('send', 'pageview');
     }
-
-    isEnabled = true;
-
-    var unique = guid()
-    mixpanel.identify(unique);
-
-    //TODO Generate session parameter?
-    //TODO Get user info?
+    return function() { return window.debugGA && console.log(arguments); };
 }
 
-function recordPageOpen() {
-    if (!isEnabled) {
-        return;
+function trackEvent(category, action, label, value, dimensions) {
+    if (window.ga) {
+        window.ga('send', 'event', category, action, label, value, dimensions);
     }
-
-    window.mixpanel.track('previewOpened');
-}
-
-function recordScrollStart() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('scrollStart');
 }
 
 function recordOrientationChange() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('orientationSwitched');
+    trackEvent('View', 'Changed', 'Orientation switched');
 }
 
 function recordDesktopEnabled() {
-    if (!isEnabled) {
-        return;
-    }
-
     if (pageOpenTime) {
-        var timeTaken = Math.floor((Date.now() - pageOpenTime) / 1000)
+        var timeTaken = Math.floor((Date.now() - pageOpenTime) / 1000);
         pageOpenTime = null;
-        window.mixpanel.people.set({"timeTakenToEnable": timeTaken})
+        trackEvent('View', 'Enabled', 'Desktop enabled', null, null, {timeTakenToEnable: timeTaken});
     }
 
-    window.mixpanel.track('desktopEnabled');
+    trackEvent('View', 'Enabled', 'Desktop enabled');
 
 }
 
 function recordMobileViewed() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('mobileViewed');
+    trackEvent('View', 'Changed', 'Mobile viewed');
 }
 
 function recordDesktopViewed() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('desktopViewed');
+    trackEvent('View', 'Changed', 'Desktop viewed');
 }
 
-
 function recordAdsDisabled() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('adsDisabled');
+    trackEvent('View', 'Changed', 'Ads Disabled');
 }
 
 function recordReaderMode() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('readerModeViewed');
+    trackEvent('View', 'Changed', 'Reader mode');
 }
 
 function recordPrint() {
-    if (!isEnabled) {
-        return;
-    }
-
-    window.mixpanel.track('printTriggered');
+    trackEvent('View', 'Changed', 'Print version');
 }
 
 module.exports = {
     init:                    init,
-    recordPageOpen:          recordPageOpen,
-    recordScrollStart:       recordScrollStart,
     recordOrientationChange: recordOrientationChange,
     recordDesktopEnabled:    recordDesktopEnabled,
     recordDesktopViewed:     recordDesktopViewed,
