@@ -22,7 +22,7 @@ object Configuration {
   val previewHost = getConfigString(s"previewHost.$stage")
   val liveHost = getConfigString(s"liveHost.$stage")
   val previewHostForceHTTP = config.getBoolean(s"previewHostForceHTTP.$stage").getOrElse(false)
-  val mixpanel = getConfigString(s"mixpanel.$stage")
+  val googleTrackingId = config.getString("google.tracking.id").getOrElse("")
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
 
   def pandaDomain = {
