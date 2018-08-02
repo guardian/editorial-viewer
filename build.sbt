@@ -54,7 +54,7 @@ riffRaffPackageName := s"editorial-tools:${name.value}"
 
 riffRaffManifestProjectName := riffRaffPackageName.value
 
-riffRaffBuildIdentifier := Option(System.getenv("CIRCLE_BUILD_NUM")).getOrElse("DEV")
+riffRaffBuildIdentifier := Option(System.getenv("BRANCH_NUMBER")).getOrElse("DEV")
 
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 
