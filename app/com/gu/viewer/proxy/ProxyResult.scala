@@ -1,20 +1,19 @@
 package com.gu.viewer.proxy
 
 import com.gu.viewer.logging.Loggable
-import com.gu.viewer.views.html
 import play.api.http.HeaderNames._
-import play.api.http.MimeTypes._
-import play.api.libs.concurrent.Execution.Implicits._
-import play.api.mvc.Results._
+import play.api.http.HttpEntity
+import play.api.libs.ws.StandaloneWSResponse
 import play.api.mvc.Result
-import scala.concurrent.Future
+import play.api.mvc.Results._
+import com.gu.viewer.views.html
+
+import scala.concurrent.{ExecutionContext, Future}
 
 
 sealed trait ProxyResult
 
-case class ProxyResultWithBody(response: ProxyResponse) extends ProxyResult
-
-case class RedirectProxyResult(location: String) extends ProxyResult
+case class ProxyResultWithBody(response: StandaloneWSResponse) extends ProxyResult
 
 case class RedirectProxyResultWithSession(location: String, session: PreviewSession) extends ProxyResult
 
@@ -34,14 +33,12 @@ object ProxyResult extends Loggable {
         response.header(CONTENT_LENGTH).map(CONTENT_LENGTH -> _)
       ).flatten
 
-      Status(response.status)
-        .stream(response.body)
-        .withHeaders(resultHeaders: _*)
-        .as(response.header(CONTENT_TYPE).getOrElse(TEXT))
-    }
+      val contentType = response.header(CONTENT_TYPE)
+      val contentLength = response.header(CONTENT_LENGTH).map(_.toLong)
 
-    case RedirectProxyResult(location) =>
-      Redirect(location)
+      Status(response.status)
+        .sendEntity(HttpEntity.Streamed(response.bodyAsSource, contentLength, contentType))
+    }
 
     case PreviewAuthRedirectProxyResult(location, session) => {
       Ok(html.loginRedirect(location))
@@ -55,11 +52,11 @@ object ProxyResult extends Loggable {
   }
 
 
-  def resultFrom(proxyResult: Future[ProxyResult]) = proxyResult
+  def resultFrom(proxyResult: Future[ProxyResult])(implicit ec: ExecutionContext): Future[Result] = proxyResult
     .map(asResult)
     .recover {
       case err @ ProxyError(message, Some(response)) => {
-        log.warn(s"[Bad Gateway] $message: ${response.toString} ${response.bodyAsString}", err)
+        log.warn(s"[Bad Gateway] $message: ${response.toString}", err)
         BadGateway(message)
           .withNewSession
       }

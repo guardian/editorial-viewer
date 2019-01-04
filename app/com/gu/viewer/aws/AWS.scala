@@ -1,26 +1,31 @@
 package com.gu.viewer.aws
 
-import com.amazonaws.regions.{Regions, Region}
-import com.amazonaws.services.ec2.AmazonEC2Client
-import com.amazonaws.services.ec2.model.{Filter, DescribeTagsRequest}
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.auth.{AWSCredentialsProviderChain, InstanceProfileCredentialsProvider}
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
+import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
 import com.amazonaws.services.simpleemail._
 import com.amazonaws.util.EC2MetadataUtils
+
 import scala.collection.JavaConverters._
 
 object AWS extends AwsInstanceTags {
 
-  lazy val region = Region getRegion Regions.EU_WEST_1
+  val region = Regions.EU_WEST_1
+  val credentials = new AWSCredentialsProviderChain(
+    new ProfileCredentialsProvider("composer"),
+    InstanceProfileCredentialsProvider.getInstance()
+  )
 
-  lazy val EC2Client = region.createClient(classOf[AmazonEC2Client], null, null)
-
-  lazy val emailClient = new AmazonSimpleEmailServiceClient()
-  emailClient.setRegion(region)
+  val EC2Client = AmazonEC2ClientBuilder.standard().withRegion(region).withCredentials(credentials).build()
+  val SESClient = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(region).withCredentials(credentials).build()
 }
 
 trait AwsInstanceTags {
-  lazy val instanceId = Option(EC2MetadataUtils.getInstanceId)
+  val instanceId = Option(EC2MetadataUtils.getInstanceId)
 
-  def readTag(tagName: String) = {
+  def readTag(tagName: String): Option[String] = {
     instanceId.flatMap { id =>
       val tagsResult = AWS.EC2Client.describeTags(
         new DescribeTagsRequest().withFilters(

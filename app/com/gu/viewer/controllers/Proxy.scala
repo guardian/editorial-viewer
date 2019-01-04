@@ -3,11 +3,13 @@ package com.gu.viewer.controllers
 import com.gu.viewer.logging.Loggable
 import com.gu.viewer.proxy._
 import javax.inject.Inject
-import play.api.mvc.{Controller, Action}
+import play.api.mvc.{Action, BaseController, Controller, ControllerComponents}
+
 import scala.concurrent.Future
 
 
-class Proxy @Inject() (previewProxy: PreviewProxy, liveProxy: LiveProxy) extends Controller with Loggable {
+class Proxy(previewProxy: PreviewProxy, liveProxy: LiveProxy, override val controllerComponents: ControllerComponents)
+  extends BaseController with Loggable {
 
   def proxy(service: String, path: String) = Action.async { implicit request =>
 

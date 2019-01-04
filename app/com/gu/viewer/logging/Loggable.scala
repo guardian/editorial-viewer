@@ -7,7 +7,7 @@ import com.gu.logback.appender.kinesis.KinesisAppender
 import com.gu.viewer.aws.{AWS, AwsInstanceTags}
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.{LoggerFactory, Logger => SLFLogger}
-import play.api.{Logger => PlayLogger}
+import play.api.Configuration
 
 
 trait Loggable {
@@ -17,16 +17,12 @@ trait Loggable {
 object Loggable extends AwsInstanceTags {
   val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
 
-  import play.api.Play.current
-  val config = play.api.Play.configuration
-  val loggingPrefix = "aws.kinesis.logging"
-
-  def init() = {
+  def init(config: Configuration) = {
     for {
       stack <- readTag("Stack")
       app <- readTag("App")
       stage <- readTag("Stage")
-      stream <- config.getString(s"$loggingPrefix.streamName")
+      stream <- config.get[Option[String]]("aws.kinesis.logging.streamName")
     } yield {
       val context = rootLogger.getLoggerContext
 

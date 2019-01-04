@@ -1,19 +1,18 @@
 package com.gu.viewer.proxy
 
-import javax.inject.{Inject, Singleton}
-import com.gu.viewer.config.Configuration
 import com.gu.viewer.controllers.routes
 import com.gu.viewer.logging.Loggable
+import play.api.libs.ws.StandaloneWSResponse
 import play.api.mvc.Result
-import scala.concurrent.Future
 
+import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
+// TODO MRB: can we remove previewHostForceHTTP?
+
+class PreviewProxy(serviceHost: String, previewHostForceHTTP: Boolean, proxyClient: ProxyClient)(implicit ec: ExecutionContext) extends Loggable {
 
   private val PREVIEW_AUTH_REDIRECT_PARAM = "redirect-url"
 
-  val serviceHost = Configuration.previewHost
   val previewLoginUrl = s"http://$serviceHost/login"
 
 
@@ -33,12 +32,12 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     }
   }
 
-  private def doPreviewAuth(request: PreviewProxyRequest) = {
+  private def doPreviewAuth(request: PreviewProxyRequest): Future[ProxyResult] = {
     val proxyRequestUrl = previewLoginUrl
 
     log.info(s"Proxy Preview auth to: $proxyRequestUrl")
 
-    def handleResponse(response: ProxyResponse) = {
+    def handleResponse(response: StandaloneWSResponse) = {
 
       val returnUrl = proxyUriToViewerUri(request.requestUri).getOrElse(request.requestUri)
 
@@ -60,16 +59,19 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
       }
     }
 
-    proxyClient.post(proxyRequestUrl, queryString = Seq(PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request))) {
-      case response if response.status == 303 => handleResponse(response)
-      case response => error("Unexpected response from preview authentication request", response)
+    proxyClient.post(proxyRequestUrl, queryString = Seq(PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request))).flatMap {
+      case response if response.status == 303 =>
+        handleResponse(response)
+
+      case response =>
+        error(s"Unexpected response from preview authentication request", response)
     }
   }
 
 
   private def doPreviewProxy(request: PreviewProxyRequest) = {
 
-    val protocol: String = Configuration.previewHostForceHTTP match {
+    val protocol: String = previewHostForceHTTP match {
       case true => "http"
       case false => request.protocol
     }
@@ -77,22 +79,23 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     val url = s"${protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Proxy GET to preview: $url")
 
-    def isLoginRedirect(response: ProxyResponse) = {
+    def isLoginRedirect(response: StandaloneWSResponse) = {
       response.status == 303 &&
         response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
     }
 
     val cookies = request.session.asCookies
 
-    proxyClient.get(url, cookies = cookies) {
+    proxyClient.get(url, cookies = cookies).flatMap {
       case response if isLoginRedirect(response) => doPreviewAuth(request)
+      case response => Future.successful(ProxyResultWithBody(response))
     }
 
   }
 
-  private def doPreviewProxyPost(request: PreviewProxyRequest) = {
+  private def doPreviewProxyPost(request: PreviewProxyRequest): Future[ProxyResult] = {
 
-    val protocol: String = Configuration.previewHostForceHTTP match {
+    val protocol: String = previewHostForceHTTP match {
       case true => "http"
       case false => request.protocol
     }
@@ -100,15 +103,16 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     val url = s"${protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Proxy POST to preview: $url")
 
-    def isLoginRedirect(response: ProxyResponse) = {
+    def isLoginRedirect(response: StandaloneWSResponse) = {
       response.status == 303 &&
         response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
     }
 
     val cookies = request.session.asCookies
 
-    proxyClient.post(url, cookies = cookies, body = request.body.getOrElse(Map.empty)) {
+    proxyClient.post(url, cookies = cookies, body = request.body.getOrElse(Map.empty)).flatMap {
       case response if isLoginRedirect(response) => doPreviewAuth(request)
+      case response => Future.successful(ProxyResultWithBody(response))
     }
 
   }
@@ -146,7 +150,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
     val redirectUrlParam = PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request)
     val queryParams = request.requestQueryString.mapValues(_.head).toSeq :+ redirectUrlParam
 
-    def handleResponse(response: ProxyResponse) = {
+    def handleResponse(response: StandaloneWSResponse) = {
 
       val session = PreviewSession.fromResponseHeaders(response)
         .withPlaySessionFrom(request.session)
@@ -166,14 +170,12 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
       case None => error("Preview session not established")
 
       case Some(_) => {
-        val proxyUrl = s"http://${Configuration.previewHost}/oauth2callback"
+        val proxyUrl = s"http://$serviceHost/oauth2callback"
         log.info(s"Proxy preview auth callback to: $proxyUrl")
 
         val cookies = request.session.asCookies
 
-        proxyClient.get(proxyUrl, queryString = queryParams, cookies = cookies) {
-          case r => handleResponse(r)
-        }
+        proxyClient.get(proxyUrl, queryString = queryParams, cookies = cookies).flatMap(handleResponse)
       }
     }
   }
@@ -181,7 +183,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
   private def error(msg: String) =
     Future.failed(ProxyError(msg, None))
 
-  private def error(msg: String, response: ProxyResponse) =
+  private def error(msg: String, response: StandaloneWSResponse) =
     Future.failed(ProxyError(msg, Some(response)))
 
 }

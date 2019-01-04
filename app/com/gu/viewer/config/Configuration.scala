@@ -1,29 +1,20 @@
 package com.gu.viewer.config
 
-import play.api.Play.current
+import play.api.{Configuration => PlayConfiguration}
 import com.gu.viewer.aws.AWS
 
-object Configuration {
+class Configuration(underlying: PlayConfiguration) {
+  val app: String = AWS.readTag("App").getOrElse("viewer")
 
-  // parsed config from application.conf
-  private val config = play.api.Play.configuration
+  val stage: String = AWS.readTag("Stage").getOrElse("DEV")
 
-  private def getConfigString(key: String) =
-    config.getString(key).getOrElse {
-      sys.error(s"Config key required: $key")
-    }
+  val stack: String = AWS.readTag("Stack").getOrElse("flexible")
 
-  lazy val app: String = AWS.readTag("App").getOrElse("viewer")
-
-  lazy val stage: String = AWS.readTag("Stage").getOrElse("DEV")
-
-  lazy val stack: String = AWS.readTag("Stack").getOrElse("flexible")
-
-  val previewHost = getConfigString(s"previewHost.$stage")
-  val liveHost = getConfigString(s"liveHost.$stage")
-  val previewHostForceHTTP = config.getBoolean(s"previewHostForceHTTP.$stage").getOrElse(false)
-  val googleTrackingId = config.getString("google.tracking.id").getOrElse("")
-  val composerReturn = getConfigString(s"composerReturnUri.$stage")
+  val previewHost = underlying.get[String](s"previewHost.$stage")
+  val liveHost = underlying.get[String](s"liveHost.$stage")
+  val previewHostForceHTTP = underlying.get[Option[Boolean]](s"previewHostForceHTTP.$stage").getOrElse(false)
+  val googleTrackingId = underlying.get[Option[String]]("google.tracking.id").getOrElse("")
+  val composerReturn = underlying.get[String](s"composerReturnUri.$stage")
 
   def pandaDomain = {
     if (stage == "PROD") {
