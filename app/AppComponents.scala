@@ -1,0 +1,75 @@
+import com.amazonaws.auth._
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.regions.{Region, Regions}
+import com.amazonaws.services.ec2.{AmazonEC2, AmazonEC2Client, AmazonEC2ClientBuilder}
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
+import com.amazonaws.services.simpleemail.{AmazonSimpleEmailService, AmazonSimpleEmailServiceClient, AmazonSimpleEmailServiceClientBuilder}
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
+import com.gu.viewer.aws.AwsInstanceTags
+import com.gu.viewer.config.AppConfig
+import com.gu.viewer.controllers.{Application, Email, Management, Proxy}
+import com.gu.viewer.logging.{LogStash, RequestLoggingFilter}
+import com.gu.viewer.proxy.{LiveProxy, PreviewProxy, ProxyClient}
+import controllers.AssetsComponents
+import play.api.ApplicationLoader.Context
+import play.api.{BuiltInComponentsFromContext, Mode}
+import play.api.libs.ws.ahc.AhcWSComponents
+import play.api.mvc.EssentialFilter
+import play.api.routing.Router
+import play.filters.HttpFiltersComponents
+import router.Routes
+
+class AppComponents(context: Context)
+  extends BuiltInComponentsFromContext(context)
+    with AssetsComponents
+    with HttpFiltersComponents
+    with AhcWSComponents {
+
+  def creds: AWSCredentialsProvider = new AWSCredentialsProviderChain(
+    new EnvironmentVariableCredentialsProvider,
+    new SystemPropertiesCredentialsProvider,
+    new ProfileCredentialsProvider("composer"),
+    InstanceProfileCredentialsProvider.getInstance()
+  )
+
+  val region: Regions = Regions.EU_WEST_1
+
+  val ec2Client: AmazonEC2 = AmazonEC2ClientBuilder.standard().withRegion(region).withCredentials(creds).build()
+  val s3Client: AmazonS3 = AmazonS3ClientBuilder.standard().withRegion(region).withCredentials(creds).build()
+  val emailClient: AmazonSimpleEmailService =
+    AmazonSimpleEmailServiceClientBuilder.standard().withRegion(region).withCredentials(creds).build()
+
+  val tags = new AwsInstanceTags(ec2Client)
+  val config = new AppConfig(tags, context.initialConfiguration)
+
+  if (context.environment.mode != Mode.Dev) LogStash.init(config, tags, region)
+
+  val requestLoggingFilter = new RequestLoggingFilter(materializer)
+  override def httpFilters: Seq[EssentialFilter] = Seq(requestLoggingFilter) ++ super.httpFilters
+
+  val panDomainSettings: PanDomainAuthSettingsRefresher = new PanDomainAuthSettingsRefresher(
+    domain = config.pandaDomain,
+    system = "viewer",
+    s3Client = s3Client,
+    bucketName = ???,
+    settingsFileKey = ???
+  )
+
+  val proxyClient = new ProxyClient(wsClient, config)
+  val liveProxy = new LiveProxy(proxyClient, config)
+  val previewProxy = new PreviewProxy(proxyClient, config)
+
+  val applicationController = new Application(controllerComponents, config)
+  val managementController = new Management(controllerComponents)
+  val proxyController = new Proxy(controllerComponents, previewProxy, liveProxy)
+  val emailController = new Email(controllerComponents, wsClient, emailClient, config, panDomainSettings)
+
+  override def router: Router = new Routes(
+    httpErrorHandler,
+    applicationController,
+    managementController,
+    proxyController,
+    emailController,
+    assets
+  )
+}
