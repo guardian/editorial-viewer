@@ -1,14 +1,14 @@
 package com.gu.viewer.proxy
 
-import javax.inject.Inject
-import com.gu.viewer.config.Configuration
+import com.gu.viewer.config.AppConfig
 import com.gu.viewer.logging.Loggable
 import play.api.mvc.Cookie
 
+import scala.concurrent.ExecutionContext
 
-class LiveProxy @Inject() (proxyClient: Proxy) extends Loggable {
+class LiveProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: ExecutionContext) extends Loggable {
 
-  val serviceHost = Configuration.liveHost
+  val serviceHost = config.liveHost
 
   def getDefaultCookies(request: LiveProxyRequest): Seq[Cookie] =  {
 
@@ -27,7 +27,6 @@ class LiveProxy @Inject() (proxyClient: Proxy) extends Loggable {
   def proxy(request: LiveProxyRequest) = ProxyResult.resultFrom {
     val url = s"${request.protocol}://$serviceHost/${request.servicePath}"
     log.info(s"Live Proxy to: $url")
-
 
     proxyClient.get(url, cookies = getDefaultCookies(request))()
   }
