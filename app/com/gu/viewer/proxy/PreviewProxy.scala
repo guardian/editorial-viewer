@@ -12,11 +12,11 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
   private val PREVIEW_AUTH_REDIRECT_PARAM = "redirect-url"
 
   val serviceHost = config.previewHost
-  val previewLoginUrl = s"http://$serviceHost/login"
+  val previewLoginUrl = s"https://$serviceHost/login"
 
 
   private def loginCallbackUrl(request: PreviewProxyRequest) =
-    s"${request.protocol}://${request.requestHost}${routes.Proxy.previewAuthCallback()}"
+    s"https://${request.requestHost}${routes.Proxy.previewAuthCallback()}"
 
 
   /**
@@ -67,12 +67,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
 
   private def doPreviewProxy(request: PreviewProxyRequest) = {
 
-    val protocol: String = config.previewHostForceHTTP match {
-      case true => "http"
-      case false => request.protocol
-    }
-
-    val url = s"${protocol}://$serviceHost/${request.servicePath}"
+    val url = s"https://$serviceHost/${request.servicePath}"
     log.info(s"Proxy GET to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {
@@ -90,12 +85,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
 
   private def doPreviewProxyPost(request: PreviewProxyRequest) = {
 
-    val protocol: String = config.previewHostForceHTTP match {
-      case true => "http"
-      case false => request.protocol
-    }
-
-    val url = s"${protocol}://$serviceHost/${request.servicePath}"
+    val url = s"https://$serviceHost/${request.servicePath}"
     log.info(s"Proxy POST to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {

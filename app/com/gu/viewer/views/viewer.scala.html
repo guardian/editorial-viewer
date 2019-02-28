@@ -1,4 +1,5 @@
-@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, googleTrackingId: String)
+@import play.filters.csrf.CSRF.Token
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, googleTrackingId: String, csrfToken: Option[Token])
 
 @main("Viewer", googleTrackingId) {
     <header class="fixed-header">
@@ -64,8 +65,13 @@
         window._baseAppUrl = '/@previewEnv';
         window._previewEnv = "@previewEnv";
         window._actualUrl = "@actualUrl";
-        window._proxyBase = "@proxyBase"
-        window._originalPath = "@path"
-
+        window._proxyBase = "@proxyBase";
+        window._originalPath = "@path";
+        @csrfToken.map { token =>
+            window._csrfToken = {
+                name: "@token.name",
+                value: "@token.value"
+            };
+        }
     </script>
 }

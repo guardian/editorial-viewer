@@ -1,9 +1,9 @@
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.ec2.{AmazonEC2, AmazonEC2Client, AmazonEC2ClientBuilder}
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.ec2.{AmazonEC2, AmazonEC2ClientBuilder}
 import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
-import com.amazonaws.services.simpleemail.{AmazonSimpleEmailService, AmazonSimpleEmailServiceClient, AmazonSimpleEmailServiceClientBuilder}
+import com.amazonaws.services.simpleemail.{AmazonSimpleEmailService, AmazonSimpleEmailServiceClientBuilder}
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
@@ -11,18 +11,18 @@ import com.gu.viewer.controllers.{Application, Email, Management, Proxy}
 import com.gu.viewer.logging.{LogStash, RequestLoggingFilter}
 import com.gu.viewer.proxy.{LiveProxy, PreviewProxy, ProxyClient}
 import controllers.AssetsComponents
-import play.api.ApplicationLoader.Context
 import play.api.{BuiltInComponentsFromContext, Mode}
+import play.api.ApplicationLoader.Context
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc.EssentialFilter
 import play.api.routing.Router
-import play.filters.HttpFiltersComponents
+import play.filters.csrf.CSRFComponents
 import router.Routes
 
 class AppComponents(context: Context)
   extends BuiltInComponentsFromContext(context)
     with AssetsComponents
-    with HttpFiltersComponents
+    with CSRFComponents
     with AhcWSComponents {
 
   def creds: AWSCredentialsProvider = new AWSCredentialsProviderChain(
@@ -45,14 +45,14 @@ class AppComponents(context: Context)
   if (context.environment.mode != Mode.Dev) LogStash.init(config, tags, region)
 
   val requestLoggingFilter = new RequestLoggingFilter(materializer)
-  override def httpFilters: Seq[EssentialFilter] = Seq(requestLoggingFilter) ++ super.httpFilters
+  override def httpFilters: Seq[EssentialFilter] = Seq(requestLoggingFilter, csrfFilter)
 
   val panDomainSettings: PanDomainAuthSettingsRefresher = new PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
     system = "viewer",
     s3Client = s3Client,
-    bucketName = ???,
-    settingsFileKey = ???
+    bucketName = config.pandaBucket,
+    settingsFileKey = config.pandaSettingsFileKey
   )
 
   val proxyClient = new ProxyClient(wsClient, config)

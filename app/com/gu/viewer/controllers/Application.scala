@@ -4,6 +4,7 @@ import com.gu.viewer.config.AppConfig
 import com.gu.viewer.logging.Loggable
 import com.gu.viewer.views.html
 import play.api.mvc._
+import play.filters.csrf.CSRF
 
 class Application(val controllerComponents: ControllerComponents, config: AppConfig)
   extends BaseController with Loggable {
@@ -31,6 +32,6 @@ class Application(val controllerComponents: ControllerComponents, config: AppCon
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = config.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, config.googleTrackingId))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, config.googleTrackingId, CSRF.getToken))
   }
 }
