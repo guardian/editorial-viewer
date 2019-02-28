@@ -1,29 +1,25 @@
 package com.gu.viewer.proxy
 
-import play.api.mvc.{Session, RequestHeader}
+import play.api.mvc.RequestHeader
 
 
-sealed trait ProxyRequest {
-  val isSecure: Boolean
-  val protocol: String = if (isSecure) "https" else "http"
-}
+sealed trait ProxyRequest
 
 object ProxyRequest {
   def apply(service: String, servicePath: String, request: RequestHeader, body: Option[Map[String, Seq[String]]] = None): ProxyRequest = {
     val queryString = if (request.rawQueryString.nonEmpty) s"?${request.rawQueryString}" else ""
 
     service match {
-      case "live" => LiveProxyRequest(request.secure, servicePath + queryString, body)
+      case "live" => LiveProxyRequest(servicePath + queryString, body)
       case "preview" => PreviewProxyRequest(servicePath + queryString, request, body)
       case _ => UnknownProxyRequest
     }
   }
 }
 
-case class LiveProxyRequest(isSecure: Boolean, servicePath: String, body: Option[Map[String, Seq[String]]] = None) extends ProxyRequest
+case class LiveProxyRequest(servicePath: String, body: Option[Map[String, Seq[String]]] = None) extends ProxyRequest
 
-case class PreviewProxyRequest(isSecure: Boolean,
-                               servicePath: String,
+case class PreviewProxyRequest(servicePath: String,
                                requestHost: String,
                                requestUri: String,
                                requestQueryString: Map[String, Seq[String]],
@@ -33,7 +29,7 @@ case class PreviewProxyRequest(isSecure: Boolean,
 
 object PreviewProxyRequest {
   def apply(servicePath: String, request: RequestHeader, body: Option[Map[String, Seq[String]]]): PreviewProxyRequest =
-    PreviewProxyRequest(request.secure, servicePath, request.host, request.uri, request.queryString, PreviewSession(request.session), body)
+    PreviewProxyRequest(servicePath, request.host, request.uri, request.queryString, PreviewSession(request.session), body)
 
   def authCallbackRequest(request: RequestHeader) =
     PreviewProxyRequest("/oauth2callback", request, None)

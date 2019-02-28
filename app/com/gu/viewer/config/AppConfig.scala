@@ -22,6 +22,9 @@ class AppConfig(tags: AwsInstanceTags, config: Configuration) {
   val googleTrackingId = config.getOptional[String]("google.tracking.id").getOrElse("")
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
 
+  val pandaBucket = "pan-domain-auth-settings"
+  val pandaSettingsFileKey = s"$pandaDomain.settings"
+
   def pandaDomain = {
     if (stage == "PROD") {
       "gutools.co.uk"

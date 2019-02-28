@@ -6,6 +6,13 @@ name := "viewer"
 
 version := "0.1-SNAPSHOT"
 
+scalacOptions := Seq(
+  "-unchecked",
+  "-deprecation",
+  "-feature",
+  "-Xfatal-warnings"
+)
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .enablePlugins(SbtWeb)
@@ -20,8 +27,6 @@ lazy val root = (project in file("."))
 
 scalaVersion := "2.12.8"
 
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
-
 val awsVersion = "1.11.507"
 
 libraryDependencies ++= Seq(
@@ -32,7 +37,8 @@ libraryDependencies ++= Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
   "com.gu" % "kinesis-logback-appender" % "1.3.0",
   ws,
-  "com.typesafe.play" %% "play-iteratees" % "2.6.1"
+  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
+  "com.google.guava" % "guava" % "27.0-jre"
 )
 
 // Front-end assets config
