@@ -44,6 +44,6 @@ class Email(val controllerComponents: ControllerComponents, val wsClient: WSClie
       |Android: https://mobile-preview.guardianapis.com/items/$path
       |
       |
-      |If you were not expecting this email please contact: digitalcms.dev@guardian.co.uk""".stripMargin
+      |If you were not expecting this email please contact: editorial.tools.dev@theguardian.com""".stripMargin
   }
 }
