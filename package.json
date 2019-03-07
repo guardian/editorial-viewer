@@ -21,9 +21,8 @@
     "url": "https://github.com/guardian/editorial-viewer/issues"
   },
   "homepage": "https://github.com/guardian/editorial-viewer#readme",
-  "dependencies": {
-    "eslint": "^1.1.0",
-    "jspm": "0.16.32",
+  "devDependencies": {
+    "jspm": "^0.16.53",
     "node-sass": "^3.2.0"
   },
   "jspm": {

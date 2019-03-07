@@ -1,17 +1,16 @@
 package com.gu.viewer.proxy
 
-import javax.inject.{Inject, Singleton}
-import com.gu.viewer.config.Configuration
-import play.api.libs.concurrent.Execution.Implicits._
+import com.gu.viewer.config.AppConfig
 import play.api.libs.ws.WSClient
-import play.api.mvc.{Cookies, Cookie}
+import play.api.mvc.{Cookie, Cookies}
 import play.api.http.HeaderNames.{CONTENT_LENGTH, COOKIE, USER_AGENT}
-import scala.concurrent.Future
 
-@Singleton
-class Proxy @Inject()(ws: WSClient) {
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 
-  private val TIMEOUT = 10000
+class ProxyClient(ws: WSClient, config: AppConfig)(implicit ec: ExecutionContext) {
+
+  private val TIMEOUT = 10000.millis
 
   private def proxy(
              method: String,
@@ -27,7 +26,7 @@ class Proxy @Inject()(ws: WSClient) {
 
     val contentLengthHeader = if (body.nonEmpty) Some(CONTENT_LENGTH -> body.size.toString) else None
 
-    val userAgentHeader = Some(USER_AGENT -> s"gu-viewer ${Configuration.stage}")
+    val userAgentHeader = Some(USER_AGENT -> s"gu-viewer ${config.stage}")
 
     def handleResponse: PartialFunction[ProxyResponse, Future[ProxyResult]] = {
       case response =>
@@ -36,13 +35,13 @@ class Proxy @Inject()(ws: WSClient) {
 
     ws.url(destination)
       .withFollowRedirects(follow = followRedirects)
-      .withHeaders(headers ++ contentLengthHeader ++ userAgentHeader ++ cookieHeader: _*)
-      .withQueryString(queryString: _*)
+      .withHttpHeaders(headers ++ contentLengthHeader ++ userAgentHeader ++ cookieHeader: _*)
+      .withQueryStringParameters(queryString: _*)
       .withRequestTimeout(TIMEOUT)
       .withBody(body)
       .withMethod(method)
       .stream()
-        .map(ProxyResponse.tupled)
+        .map(new ProxyResponse(_))
         .flatMap(handler orElse handleResponse)
   }
 

@@ -1,41 +1,41 @@
 package com.gu.viewer.controllers
 
 import com.amazonaws.services.simpleemail.model._
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
+import com.gu.viewer.config.AppConfig
 import com.gu.viewer.logging.Loggable
-import play.api._
+import play.api.libs.ws.WSClient
 import play.api.mvc._
-import com.gu.viewer.config.Configuration
-import com.gu.viewer.aws.AWS
+
 import scala.util.control.NonFatal
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class Email extends Controller with Loggable with PanDomainAuthActions {
+class Email(val controllerComponents: ControllerComponents, val wsClient: WSClient,
+            emailClient: AmazonSimpleEmailService, val config: AppConfig,
+            val panDomainSettings: PanDomainAuthSettingsRefresher)
+  extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
 
-  def sendEmail(path: String) = CORSWrapper {
-    APIAuthAction { req =>
-      val email = req.user.email
-      var emailList = new java.util.ArrayList[String]()
-      emailList.add(email)
+  def sendEmail(path: String) = APIAuthAction { req =>
+    val email = req.user.email
+    var emailList = new java.util.ArrayList[String]()
+    emailList.add(email)
 
-      val from = "noreply-viewer@guardian.co.uk"
-      val to = new Destination(emailList)
+    val from = "editorial.tools.dev@theguardian.com"
+    val to = new Destination(emailList)
 
-      val message = new Message(
-        new Content(s"Preview URLs for '$path'"),
-        new Body(new Content(formatEmail(path)))
-      )
+    val message = new Message(
+      new Content(s"Preview URLs for '$path'"),
+      new Body(new Content(formatEmail(path)))
+    )
 
-      val emailReq = new SendEmailRequest(from, to, message)
+    val emailReq = new SendEmailRequest(from, to, message)
 
-      try {
-        AWS.emailClient.sendEmail(emailReq)
-        Ok
-      } catch {
-        case NonFatal(e) =>{
-          InternalServerError
-        }
-      }
+    try {
+      emailClient.sendEmail(emailReq)
+      Ok
+    } catch {
+      case NonFatal(e) =>
+        InternalServerError
     }
   }
 
@@ -44,19 +44,6 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
       |Android: https://mobile-preview.guardianapis.com/items/$path
       |
       |
-      |If you were not expecting this email please contact: digitalcms.dev@guardian.co.uk""".stripMargin
+      |If you were not expecting this email please contact: editorial.tools.dev@theguardian.com""".stripMargin
   }
-}
-
-// Wrapper that enables http verisons of viewer to call https versions, required for emailing with panda credentials
-case class CORSWrapper[A](action: Action[A]) extends Action[A] {
-  def apply(request: Request[A]): Future[Result] = {
-    val corsHeader: Seq[(String, String)] = Seq(
-      ("Access-Control-Allow-Origin", "http://viewer." + Configuration.pandaDomain),
-      ("Access-Control-Allow-Credentials", "true")
-    )
-    action(request).map(_.withHeaders(corsHeader : _*))
-  }
-
-  lazy val parser = action.parser
 }

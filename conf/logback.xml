@@ -1,6 +1,6 @@
 <configuration>
 
-  <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
+  <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
 
   <!-- Log only WARN and ERROR to stderr-->
   <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
