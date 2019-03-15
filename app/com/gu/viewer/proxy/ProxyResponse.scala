@@ -1,23 +1,32 @@
 package com.gu.viewer.proxy
 
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
-import play.api.libs.ws.WSResponse
+import play.api.libs.iteratee.{Iteratee, Enumeratee, Enumerator}
+import play.api.libs.ws.WSResponseHeaders
+import play.api.libs.concurrent.Execution.Implicits._
+
+import scala.concurrent.Await
+import scala.concurrent.duration.{Duration, SECONDS}
+import scala.util.control.NonFatal
 
 
-class ProxyResponse(response: WSResponse) {
-  def allHeaders: Map[String, Seq[String]] = response.headers
+case class ProxyResponse(private val headers: WSResponseHeaders, body: Enumerator[Array[Byte]]) {
+  lazy val allHeaders = headers.headers
 
-  val status: Int = response.status
+  lazy val status = headers.status
 
-  def header(name: String): Option[String] =
+  def header(name: String) =
     allHeaders.get(name).map(_.head)
 
-  def bodyAsSource: Source[ByteString, _] = response.bodyAsSource
-
   // Use for logging only
-  def bodyAsString: String = {
-    response.body
+  def bodyAsString = {
+    val bytesToString: Enumeratee[ Array[Byte], String ] = Enumeratee.map[Array[Byte]]{ bytes => new String(bytes) }
+    val consume: Iteratee[String,String] = Iteratee.consume[String]()
+
+    try {
+      Await.result(body |>>> bytesToString &>> consume, Duration(1, SECONDS))
+    } catch {
+      case NonFatal(err) => "<timeout resolving body>"
+    }
   }
 
   override def toString =
