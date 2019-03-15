@@ -150,10 +150,15 @@ function toggleAds() {
 }
 
 function appPreview() {
+    var successMessage = [
+        'An email was sent to your Guardian email address. To preview the page in the app, open the email on your device and follow the instructions.',
+        '<a class="message-bar__button">Ok</a>'
+    ].join(' ')
+
     api.appPreviewRequest()
     .then(overlay.showOverlay.bind(null))
     .fail(function (err, msg) {
-      if (err.status === 419 || err.status === 401) {
+      if (err.status == 419 || err.status == 401) {
         error.showError('You are not authorised, try logging into composer.');
       } else {
         error.showError('Error while sending preview email.');

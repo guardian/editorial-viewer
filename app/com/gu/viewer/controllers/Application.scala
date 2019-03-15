@@ -1,13 +1,16 @@
 package com.gu.viewer.controllers
 
-import com.gu.viewer.config.AppConfig
+import com.amazonaws.services.simpleemail.model._
 import com.gu.viewer.logging.Loggable
-import com.gu.viewer.views.html
+import play.api._
 import play.api.mvc._
-import play.filters.csrf.CSRF
+import com.gu.viewer.config.Configuration
+import com.gu.viewer.views.html
+import com.gu.viewer.aws.AWS
 
-class Application(val controllerComponents: ControllerComponents, config: AppConfig)
-  extends BaseController with Loggable {
+class Application extends Controller with Loggable {
+
+  Loggable.init()
 
   def index = Action {
     Redirect("/live/uk")
@@ -24,14 +27,14 @@ class Application(val controllerComponents: ControllerComponents, config: AppCon
   def viewer(target: String, path: String, previewEnv: String) = Action { implicit request =>
     val protocol = if (request.secure) "https" else "http"
     val viewerHost = target match {
-      case "preview" => config.previewHost
-      case _ => config.liveHost
+      case "preview" => Configuration.previewHost
+      case _ => Configuration.liveHost
     }
     val actualUrl = s"$protocol://$viewerHost/$path"
     val viewerUrl = routes.Proxy.proxy(target, path).path()
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
-    val composerUrl = config.composerReturn + "/" + path
+    val composerUrl = Configuration.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, config.googleTrackingId, CSRF.getToken))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, Configuration.googleTrackingId))
   }
 }

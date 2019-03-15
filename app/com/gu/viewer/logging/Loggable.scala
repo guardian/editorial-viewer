@@ -1,29 +1,33 @@
 package com.gu.viewer.logging
 
-import ch.qos.logback.classic.{Logger => LogbackLogger}
 import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.classic.{Logger => LogbackLogger}
 import com.amazonaws.auth.InstanceProfileCredentialsProvider
-import com.amazonaws.regions.Regions
 import com.gu.logback.appender.kinesis.KinesisAppender
-import com.gu.viewer.aws.AwsInstanceTags
-import com.gu.viewer.config.AppConfig
+import com.gu.viewer.aws.{AWS, AwsInstanceTags}
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.{LoggerFactory, Logger => SLFLogger}
+import play.api.{Logger => PlayLogger}
+
 
 trait Loggable {
   val log = play.api.Logger(getClass)
 }
 
-object LogStash {
-  private val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
+object Loggable extends AwsInstanceTags {
+  val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
 
-  def init(config: AppConfig, tags: AwsInstanceTags, region: Regions): Unit = {
+  import play.api.Play.current
+  val config = play.api.Play.configuration
+  val loggingPrefix = "aws.kinesis.logging"
+
+  def init() = {
     for {
-      stack <- tags.readTag("Stack")
-      app <- tags.readTag("App")
-      stage <- tags.readTag("Stage")
-      stream <- config.logstashKinesisStream
-    } {
+      stack <- readTag("Stack")
+      app <- readTag("App")
+      stage <- readTag("Stage")
+      stream <- config.getString(s"$loggingPrefix.streamName")
+    } yield {
       val context = rootLogger.getLoggerContext
 
       val layout = new LogstashLayout()
@@ -33,7 +37,7 @@ object LogStash {
 
       val appender = new KinesisAppender[ILoggingEvent]()
       appender.setBufferSize(1000)
-      appender.setRegion(region.getName)
+      appender.setRegion(AWS.region.getName)
       appender.setStreamName(stream)
       appender.setContext(context)
       appender.setLayout(layout)
