@@ -18,7 +18,7 @@ class Email extends Controller with Loggable with PanDomainAuthActions {
       var emailList = new java.util.ArrayList[String]()
       emailList.add(email)
 
-      val from = "noreply-viewer@guardian.co.uk"
+      val from = "editorial.tools.dev@theguardian.com"
       val to = new Destination(emailList)
 
       val message = new Message(
