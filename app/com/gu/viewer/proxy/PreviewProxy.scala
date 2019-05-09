@@ -1,24 +1,22 @@
 package com.gu.viewer.proxy
 
-import javax.inject.{Inject, Singleton}
-import com.gu.viewer.config.Configuration
+import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.routes
 import com.gu.viewer.logging.Loggable
 import play.api.mvc.Result
-import scala.concurrent.Future
 
+import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
+class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: ExecutionContext) extends Loggable {
 
   private val PREVIEW_AUTH_REDIRECT_PARAM = "redirect-url"
 
-  val serviceHost = Configuration.previewHost
-  val previewLoginUrl = s"http://$serviceHost/login"
+  val serviceHost = config.previewHost
+  val previewLoginUrl = s"https://$serviceHost/login"
 
 
   private def loginCallbackUrl(request: PreviewProxyRequest) =
-    s"${request.protocol}://${request.requestHost}${routes.Proxy.previewAuthCallback()}"
+    s"https://${request.requestHost}${routes.Proxy.previewAuthCallback()}"
 
 
   /**
@@ -69,12 +67,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
   private def doPreviewProxy(request: PreviewProxyRequest) = {
 
-    val protocol: String = Configuration.previewHostForceHTTP match {
-      case true => "http"
-      case false => request.protocol
-    }
-
-    val url = s"${protocol}://$serviceHost/${request.servicePath}"
+    val url = s"https://$serviceHost/${request.servicePath}"
     log.info(s"Proxy GET to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {
@@ -92,12 +85,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
 
   private def doPreviewProxyPost(request: PreviewProxyRequest) = {
 
-    val protocol: String = Configuration.previewHostForceHTTP match {
-      case true => "http"
-      case false => request.protocol
-    }
-
-    val url = s"${protocol}://$serviceHost/${request.servicePath}"
+    val url = s"https://$serviceHost/${request.servicePath}"
     log.info(s"Proxy POST to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {
@@ -166,7 +154,7 @@ class PreviewProxy @Inject() (proxyClient: Proxy) extends Loggable {
       case None => error("Preview session not established")
 
       case Some(_) => {
-        val proxyUrl = s"http://${Configuration.previewHost}/oauth2callback"
+        val proxyUrl = s"http://${config.previewHost}/oauth2callback"
         log.info(s"Proxy preview auth callback to: $proxyUrl")
 
         val cookies = request.session.asCookies

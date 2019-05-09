@@ -4,10 +4,10 @@ import com.gu.viewer.logging.Loggable
 import com.gu.viewer.views.html
 import play.api.http.HeaderNames._
 import play.api.http.MimeTypes._
-import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Results._
 import play.api.mvc.Result
-import scala.concurrent.Future
+
+import scala.concurrent.{ExecutionContext, Future}
 
 
 sealed trait ProxyResult
@@ -35,7 +35,7 @@ object ProxyResult extends Loggable {
       ).flatten
 
       Status(response.status)
-        .stream(response.body)
+        .chunked(response.bodyAsSource)
         .withHeaders(resultHeaders: _*)
         .as(response.header(CONTENT_TYPE).getOrElse(TEXT))
     }
@@ -55,7 +55,7 @@ object ProxyResult extends Loggable {
   }
 
 
-  def resultFrom(proxyResult: Future[ProxyResult]) = proxyResult
+  def resultFrom(proxyResult: Future[ProxyResult])(implicit ec: ExecutionContext) = proxyResult
     .map(asResult)
     .recover {
       case err @ ProxyError(message, Some(response)) => {

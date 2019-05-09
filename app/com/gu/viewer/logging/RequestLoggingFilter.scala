@@ -1,14 +1,14 @@
 package com.gu.viewer.logging
 
-import play.api.libs.iteratee.{Iteratee, Enumeratee}
+import akka.stream.Materializer
 import play.api.mvc._
-import scala.concurrent.Future
-import scala.util.Success
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-class RequestLoggingFilter extends Filter with Loggable {
+class RequestLoggingFilter(materializer: Materializer)(implicit ec: ExecutionContext) extends Filter with Loggable {
+
+  implicit val mat: Materializer = materializer
 
   def apply(nextFilter: RequestHeader => Future[Result])
            (requestHeader: RequestHeader): Future[Result] = {
@@ -20,12 +20,7 @@ class RequestLoggingFilter extends Filter with Loggable {
       val endTime = System.currentTimeMillis
       val requestTime = endTime - startTime
 
-      def bodyAsString(): Future[String] = {
-        val bytesToString: Enumeratee[ Array[Byte], String ] = Enumeratee.map[Array[Byte]]{ bytes => new String(bytes) }
-        val consume: Iteratee[String,String] = Iteratee.consume[String]()
-
-        result.body |>>> bytesToString &>> consume
-      }
+      def bodyAsString(): Future[String] = result.body.consumeData.map(_.utf8String)
 
       val responseInfo = result.header.status match {
         case 502 => bodyAsString().map { s => s"502 bad gateway: $s" }
