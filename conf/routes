@@ -32,5 +32,7 @@ GET        /assets/*file                  controllers.Assets.versioned(path="/pu
 GET        /robots.txt                    controllers.Assets.at(path="/public", file="robots.txt", aggressiveCaching: Boolean = false)
 
 GET        /*path                         com.gu.viewer.controllers.Proxy.redirectRelative(path)
+
++nocsrf
 POST       /*path                         com.gu.viewer.controllers.Proxy.catchRelativePost(path)
 
