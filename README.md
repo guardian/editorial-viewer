@@ -2,28 +2,11 @@
 
 Mobile first preview of Guardian content. [https://viewer.gutools.co.uk](https://viewer.gutools.co.uk)
 
-# Installation
+## Setup
+Run `./script/setup` from the project root.
 
-## Set up Nginx
-Follow the [dev-nginx README](https://github.com/guardian/dev-nginx). There is an nginx mapping file in `nginx/`.
-
-## Dev configuration
-You'll need the private configuration information from the S3 bucket (`viewer-conf`) and put it `/etc/gu`:
-
-```
-    mkdir -p /etc/gu
-    aws s3 cp s3://viewer-conf/DEV/viewer.private.conf /etc/gu/viewer.private.conf --profile composer
-```
-
-## Install client-side dependencies and build JS/CSS
-```
-$ npm install
-```
-
-## Starting the app
-```
-$ sbt run
-```
+## Running
+Run `./script/start` from the project root.
 
 The app will then be accessible locally at: https://viewer.local.dev-gutools.co.uk/ and articles previews are accessible at the following urls:
 
@@ -35,6 +18,8 @@ For example:
 - ```https://viewer.local.dev-gutools.co.uk/preview/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute```
 - ```https://viewer.local.dev-gutools.co.uk/live/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute```
 
+### Debugging
+Run `./script/start --debug` from the project root to expose port 5005 for debugging.
 
 ## Developing
 
