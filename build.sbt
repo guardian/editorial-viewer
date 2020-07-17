@@ -27,7 +27,7 @@ lazy val root = (project in file("."))
 
 scalaVersion := "2.12.8"
 
-val awsVersion = "1.11.507"
+val awsVersion = "1.11.821"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
