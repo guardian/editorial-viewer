@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ses" % awsVersion,
-  "com.gu" %% "pan-domain-auth-play_2-6" % "0.8.0",
+  "com.gu" %% "pan-domain-auth-play_2-6" % "0.9.1",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
   "com.gu" % "kinesis-logback-appender" % "1.3.0",
   ws,
