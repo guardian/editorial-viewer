@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -e
+
+setupNvm() {
+  export NVM_DIR="$HOME/.nvm"
+  [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+  nvm install
+  nvm use
+}
+
+npmInstall() {
+  echo "##teamcity[compilationStarted compiler='npm install']"
+
+  setupNvm
+
+  # clear old packages first
+  rm -rf node_modules
+
+  npm install
+  # JS build is handled by SBT
+
+  echo "##teamcity[compilationFinished compiler='npm install']"
+}
+
+buildSbt() {
+  echo "##teamcity[compilationStarted compiler='sbt']"
+  sbt clean compile test riffRaffUpload
+  echo "##teamcity[compilationFinished compiler='sbt']"
+}
+
+npmInstall
+buildSbt
