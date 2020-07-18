@@ -57,7 +57,27 @@
 
     <div class="content">
         <div class="viewers">
-            <iframe id="viewer" class="viewer is-mobile-portrait" src="@viewerUrl#noads"></iframe>
+            @*
+                We sandbox the iframe to prevent external cookies being set on the Viewer domain.
+                We don't control the cookies set on theguardian.com.
+                This can be a problem as Play will reject requests where the header exceeds 8k.
+                This results in a slightly cryptic response:
+                    `'431 Request Header Fields Too Large': HTTP header value exceeds the configured limit of 8192 characters`
+
+                Our recommended remediation to this issue is to clear cookies.
+
+                If we prevent the iframe from setting cookies on the Viewer domain,
+                we can be certain that we won't exceed the 8k limit as we only set small auth cookies.
+
+                We _could_ increase the 8k limit, however that's bad as:
+                  - most servers have an 8k limit, so we'd also need to ensure the ELB allows large headers
+                  - 8k is already huge, how high do we go?!
+
+                See https://stackoverflow.com/a/8623061/3868241
+                See https://www.playframework.com/documentation/2.6.x/SettingsAkkaHttp
+                See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
+            *@
+            <iframe id="viewer" sandbox="allow-scripts allow-top-navigation allow-forms" class="viewer is-mobile-portrait" src="@viewerUrl#noads"></iframe>
         </div>
     </div>
 
