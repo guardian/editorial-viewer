@@ -40,7 +40,10 @@ class Email(val controllerComponents: ControllerComponents, val wsClient: WSClie
   }
 
   private def formatEmail(path: String): String = {
-    s"""iOS: https://entry.mobile-apps.guardianapis.com/deeplink/items/$path
+    s"""You requested App preview links whilst previewing an article.
+      |Click a link below from your phone to open the App in preview mode and view the article before it gets published.
+      |
+      |iOS: https://entry.mobile-apps.guardianapis.com/deeplink/items/$path
       |Android: https://mobile-preview.guardianapis.com/items/$path
       |
       |
