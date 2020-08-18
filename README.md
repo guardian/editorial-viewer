@@ -18,6 +18,12 @@ For example:
 - ```https://viewer.local.dev-gutools.co.uk/preview/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute```
 - ```https://viewer.local.dev-gutools.co.uk/live/uk-news/2015/aug/11/london-underground-strike-august-night-tube-dispute```
 
+### Troubleshooting
+Issue: HTTP 1.0 client does not support chunked response
+
+Solution: As outlined [here](https://medium.com/@yatskevich/chunked-responses-with-nginx-and-play-framework-3ffada39ea0c), it's an nginx issue.
+It can be resolved by adding `proxy_http_version 1.1;` to `usr/local/etc/nginx/servers/viewer.conf`
+
 ### Debugging
 Run `./script/start --debug` from the project root to expose port 5005 for debugging.
 
