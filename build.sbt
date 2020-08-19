@@ -75,3 +75,5 @@ debianPackageDependencies := Seq("openjdk-8-jre-headless")
 maintainer := "Digital CMS <digitalcms.dev@guardian.co.uk>"
 packageSummary := "viewer"
 packageDescription := """wrapper over the preview mode to give different platform previews"""
+
+PlayKeys.devSettings += "play.server.akka.max-header-value-length" -> "16k"
