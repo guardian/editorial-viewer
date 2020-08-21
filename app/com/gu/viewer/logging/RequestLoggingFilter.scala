@@ -37,17 +37,18 @@ class RequestLoggingFilter(materializer: Materializer)(implicit ec: ExecutionCon
         log.info(s"${requestHeader.method} ${requestHeader.uri} " +
           s"took ${requestTime}ms and returned $info")
 
-        val headerLength = requestHeader.cookies.foldLeft(0)((acc, cookie) => acc + cookie.value.length + cookie.name.length)
+        val headersLength = requestHeader.headers.toMap.foldLeft(0)((acc, header) => acc + header.toString.length)
 
-        if(headerLength > 8192) {
+        if(headersLength > 8192) {
+          val cookieString = requestHeader.cookies.foldLeft("")((acc, cookie) => acc + s"Name: ${cookie.name} Value: ${cookie.value.length} \n")
           val requestMarkers = Markers.appendEntries(
-            Map("cookies" -> requestHeader.cookies,
+            Map("cookies" -> cookieString,
               "path" -> requestHeader.path,
               "domain" -> requestHeader.domain,
-              "headers" -> requestHeader.headers)
+              "headersLength" -> headersLength)
             .asJava)
 
-          log.warn(s"Request received with excessive header length ${headerLength}")(MarkerContext(requestMarkers))
+          log.warn(s"Request received with excessive header length ${headersLength}")(MarkerContext(requestMarkers))
         }
 
         result.withHeaders("Request-Time" -> requestTime.toString)
