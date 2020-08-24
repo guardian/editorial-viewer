@@ -1,10 +1,14 @@
 package com.gu.viewer.logging
 
 import akka.stream.Materializer
+import net.logstash.logback.marker.Markers
+import play.api.MarkerContext
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
+
+import scala.collection.JavaConverters._
 
 class RequestLoggingFilter(materializer: Materializer)(implicit ec: ExecutionContext) extends Filter with Loggable {
 
@@ -32,6 +36,20 @@ class RequestLoggingFilter(materializer: Materializer)(implicit ec: ExecutionCon
       def doLog(info: String) = {
         log.info(s"${requestHeader.method} ${requestHeader.uri} " +
           s"took ${requestTime}ms and returned $info")
+
+        val headersLength = requestHeader.headers.toMap.foldLeft(0)((acc, header) => acc + header.toString.length)
+
+        if(headersLength > 8192) {
+          val cookieString = requestHeader.cookies.foldLeft("")((acc, cookie) => acc + s"Name: ${cookie.name} Value: ${cookie.value.length} \n")
+          val requestMarkers = Markers.appendEntries(
+            Map("cookies" -> cookieString,
+              "path" -> requestHeader.path,
+              "domain" -> requestHeader.domain,
+              "headersLength" -> headersLength)
+            .asJava)
+
+          log.warn(s"Request received with excessive header length ${headersLength}")(MarkerContext(requestMarkers))
+        }
 
         result.withHeaders("Request-Time" -> requestTime.toString)
       }
