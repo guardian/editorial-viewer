@@ -41,11 +41,15 @@ class RequestLoggingFilter(materializer: Materializer)(implicit ec: ExecutionCon
 
         if(headersLength > 8192) {
           val cookieString = requestHeader.cookies.foldLeft("")((acc, cookie) => acc + s"Name: ${cookie.name} Value: ${cookie.value.length} \n")
+
+          val playSessionValue = requestHeader.cookies.get("PLAY_SESSION").map(_.value)
+
           val requestMarkers = Markers.appendEntries(
             Map("cookies" -> cookieString,
               "path" -> requestHeader.path,
               "domain" -> requestHeader.domain,
-              "headersLength" -> headersLength)
+              "headersLength" -> headersLength,
+              "playSessionValue" -> playSessionValue.getOrElse("empty"))
             .asJava)
 
           log.warn(s"Request received with excessive header length ${headersLength}")(MarkerContext(requestMarkers))
