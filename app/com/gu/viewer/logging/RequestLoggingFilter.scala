@@ -40,7 +40,10 @@ class RequestLoggingFilter(materializer: Materializer)(implicit ec: ExecutionCon
         val headersLength = requestHeader.headers.toMap.foldLeft(0)((acc, header) => acc + header.toString.length)
 
         if(headersLength > 8192) {
-          val cookieString = requestHeader.cookies.foldLeft("")((acc, cookie) => acc + s"Name: ${cookie.name} Value: ${cookie.value.length} \n")
+          val cookieString = requestHeader.cookies.foldLeft("")((acc, cookie) => {
+            val cookieValue = if(cookie.name == "PLAY_SESSION") s"Value: ${cookie.value}" else ""
+            acc + s"Name: ${cookie.name} ValueLength: ${cookie.value.length} Domain: ${cookie.domain} ${cookieValue} \n"
+          })
           val requestMarkers = Markers.appendEntries(
             Map("cookies" -> cookieString,
               "path" -> requestHeader.path,
