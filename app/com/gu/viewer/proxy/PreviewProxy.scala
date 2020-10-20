@@ -3,11 +3,11 @@ package com.gu.viewer.proxy
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.routes
 import com.gu.viewer.logging.Loggable
-import play.api.mvc.Result
+import play.api.mvc.{CookieHeaderEncoding, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: ExecutionContext) extends Loggable {
+class PreviewProxy(proxyClient: ProxyClient, cookieHeaderEncoding: CookieHeaderEncoding, config: AppConfig)(implicit ec: ExecutionContext) extends Loggable {
 
   private val PREVIEW_AUTH_REDIRECT_PARAM = "redirect-url"
 
@@ -42,7 +42,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
 
       // Store new preview session from response
       //  - should we also remove auth cookie from session to ensure its recreated?
-      val session = PreviewSession.fromResponseHeaders(response)
+      val session = PreviewSession.fromResponseHeaders(response, cookieHeaderEncoding)
         .withPlaySessionFrom(request.session)
         .withReturnUrl(Some(returnUrl))
 
@@ -136,7 +136,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
 
     def handleResponse(response: ProxyResponse) = {
 
-      val session = PreviewSession.fromResponseHeaders(response)
+      val session = PreviewSession.fromResponseHeaders(response, cookieHeaderEncoding)
         .withPlaySessionFrom(request.session)
 
       (session.sessionCookie, session.authCookie) match {

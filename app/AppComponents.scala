@@ -14,7 +14,7 @@ import controllers.AssetsComponents
 import play.api.{BuiltInComponentsFromContext, Mode}
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.ahc.AhcWSComponents
-import play.api.mvc.EssentialFilter
+import play.api.mvc.{DefaultCookieHeaderEncoding, EssentialFilter}
 import play.api.routing.Router
 import play.filters.csrf.CSRFComponents
 import router.Routes
@@ -55,9 +55,11 @@ class AppComponents(context: Context)
     settingsFileKey = config.pandaSettingsFileKey
   )
 
-  val proxyClient = new ProxyClient(wsClient, config)
+  val cookieHeaderEncoding = new DefaultCookieHeaderEncoding()
+
+  val proxyClient = new ProxyClient(wsClient, cookieHeaderEncoding, config)
   val liveProxy = new LiveProxy(proxyClient, config)
-  val previewProxy = new PreviewProxy(proxyClient, config)
+  val previewProxy = new PreviewProxy(proxyClient, cookieHeaderEncoding, config)
 
   val applicationController = new Application(controllerComponents, config)
   val managementController = new Management(controllerComponents)

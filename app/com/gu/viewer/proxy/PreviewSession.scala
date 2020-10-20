@@ -1,6 +1,6 @@
 package com.gu.viewer.proxy
 
-import play.api.mvc.{Cookie, Cookies, Session}
+import play.api.mvc.{Cookie, CookieHeaderEncoding, Cookies, Session}
 
 case class PreviewSession(sessionCookie: Option[String] = None,
                           authCookie: Option[String] = None,
@@ -55,7 +55,7 @@ object PreviewSession {
   )
 
 
-  def fromResponseHeaders(response: ProxyResponse) = {
+  def fromResponseHeaders(response: ProxyResponse, cookieHeaderEncoding: CookieHeaderEncoding) = {
 
     def extractCookies(headerName: String, transformer: Option[String] => Cookies) =
       response.allHeaders.get(headerName).map {
@@ -64,8 +64,8 @@ object PreviewSession {
 
     val allCookies = (
 
-      extractCookies("Set-Cookie", Cookies.fromSetCookieHeader) ++
-      extractCookies("Cookie", Cookies.fromCookieHeader)
+      extractCookies("Set-Cookie", cookieHeaderEncoding.fromSetCookieHeader) ++
+      extractCookies("Cookie", cookieHeaderEncoding.fromCookieHeader)
 
     ).flatten.groupBy(_.name).mapValues(_.head.value)
 
