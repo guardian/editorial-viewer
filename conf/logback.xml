@@ -13,15 +13,30 @@
     </encoder>
   </appender>
 
+  <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/viewer.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/viewer.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+      <maxHistory>2</maxHistory>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date [%thread{10}] %-5level %logger{20} - %msg%n MDC[%mdc]%n MARKER[%marker]%n%xException{20}%n</pattern>
+    </encoder>
+  </appender>
+
   <!--
     The logger name is typically the Java/Scala package name.
     This configures the log level to log at for a package and its children packages.
   -->
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
+  <logger name="com.gu.viewer.logging" level="DEBUG" />
 
   <root level="INFO">
     <appender-ref ref="STDERR" />
+    <appender-ref ref="LOGFILE" />
   </root>
 
 </configuration>

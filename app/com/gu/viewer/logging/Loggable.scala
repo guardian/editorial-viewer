@@ -1,5 +1,6 @@
 package com.gu.viewer.logging
 
+import ch.qos.logback.classic.filter.ThresholdFilter
 import ch.qos.logback.classic.{Logger => LogbackLogger}
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.amazonaws.auth.InstanceProfileCredentialsProvider
@@ -31,6 +32,10 @@ object LogStash {
       layout.setCustomFields(s"""{"stack":"$stack","app":"$app","stage":"$stage"}""")
       layout.start()
 
+      val filter = new ThresholdFilter()
+      filter.setLevel("INFO")
+      filter.start()
+
       val appender = new KinesisAppender[ILoggingEvent]()
       appender.setBufferSize(1000)
       appender.setRegion(region.getName)
@@ -38,6 +43,7 @@ object LogStash {
       appender.setContext(context)
       appender.setLayout(layout)
       appender.setCredentialsProvider(InstanceProfileCredentialsProvider.getInstance())
+      appender.addFilter(filter)
       appender.start()
 
       rootLogger.addAppender(appender)

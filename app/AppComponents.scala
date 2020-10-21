@@ -44,9 +44,6 @@ class AppComponents(context: Context)
 
   if (context.environment.mode != Mode.Dev) LogStash.init(config, tags, region)
 
-  val requestLoggingFilter = new RequestLoggingFilter(materializer)
-  override def httpFilters: Seq[EssentialFilter] = Seq(requestLoggingFilter, csrfFilter)
-
   val panDomainSettings: PanDomainAuthSettingsRefresher = new PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
     system = "viewer",
@@ -54,6 +51,9 @@ class AppComponents(context: Context)
     bucketName = config.pandaBucket,
     settingsFileKey = config.pandaSettingsFileKey
   )
+
+  val requestLoggingFilter = new RequestLoggingFilter(materializer, panDomainSettings)
+  override def httpFilters: Seq[EssentialFilter] = Seq(requestLoggingFilter, csrfFilter)
 
   val proxyClient = new ProxyClient(wsClient, config)
   val liveProxy = new LiveProxy(proxyClient, config)
