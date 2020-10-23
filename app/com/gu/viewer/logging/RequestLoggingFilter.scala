@@ -4,14 +4,21 @@ import akka.stream.Materializer
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.service.CookieUtils
+import com.gu.viewer.logging.RequestLoggingFilter.{IsImpactedUser, User}
 import net.logstash.logback.marker.Markers
 import play.api.MarkerContext
+import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import scala.collection.JavaConverters._
 import scala.util.Failure
+
+object RequestLoggingFilter {
+  val User: TypedKey[Option[AuthenticatedUser]] = TypedKey("user")
+  val IsImpactedUser: TypedKey[Boolean] = TypedKey("isImpactedUser")
+}
 
 class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthSettingsRefresher)(implicit ec: ExecutionContext) extends Filter with Loggable {
 
@@ -35,9 +42,11 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
   def apply(nextFilter: RequestHeader => Future[Result])
            (requestHeader: RequestHeader): Future[Result] = {
 
-    val userId = readAuthenticatedUser(requestHeader).map(_.user.email).getOrElse("not logged in")
+    val maybeUser = readAuthenticatedUser(requestHeader)
+    val userId = maybeUser.map(_.user.email).getOrElse("not logged in")
 
-    if (impactedUsers.contains(userId)) {
+    val isImpactedUser = impactedUsers.contains(userId)
+    if (isImpactedUser) {
       val headerStrings = requestHeader.headers.headers.map{case (key, value) => s"$key: $value"}
       val requestMarkers = Markers.appendEntries(
         Map("headers" -> headerStrings.mkString("-H '","' -H '", "'"),
@@ -51,7 +60,7 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
 
     val startTime = System.currentTimeMillis
 
-    val eventualResult = nextFilter(requestHeader)
+    val eventualResult = nextFilter(requestHeader.addAttr(User, maybeUser).addAttr(IsImpactedUser, isImpactedUser))
     eventualResult.onComplete{
       case Failure(exception) =>
         val requestMarkers = Markers.appendEntries(
