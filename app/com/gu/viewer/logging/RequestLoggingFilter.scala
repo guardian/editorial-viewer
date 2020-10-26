@@ -77,22 +77,31 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
       }
 
       def doLog(info: String) = {
+        val headersLength = requestHeader.headers.headers.foldLeft(0){ case (acc, (headerKey, headerValue)) =>
+          // calculate the size of the header, should be the key, plus value plus 4 (the colon, space, CR, LF)
+          val headerSize = headerKey.length + headerValue.length + 4
+          acc + headerSize
+        }
+
+        val markerContext = MarkerContext(Markers.appendEntries(Map(
+          "userId" -> userId,
+          "headersLength" -> headersLength,
+        ).asJava))
+
         log.info(s"${requestHeader.method} ${requestHeader.uri} " +
-          s"took ${requestTime}ms and returned $info")(MarkerContext(Markers.appendEntries(Map("userId" -> userId).asJava)))
+          s"took ${requestTime}ms and returned $info")(markerContext)
 
-        val headersLength = requestHeader.headers.toMap.foldLeft(0)((acc, header) => acc + header.toString.length)
-
-        if(headersLength > 8192) {
+        if(headersLength > 6144) {
           val cookieString = requestHeader.cookies.foldLeft("")((acc, cookie) => acc + s"Name: ${cookie.name} Value: ${cookie.value.length} \n")
-          val requestMarkers = Markers.appendEntries(
-            Map("cookies" -> cookieString,
-              "path" -> requestHeader.path,
-              "domain" -> requestHeader.domain,
-              "headersLength" -> headersLength,
-              "userId" -> userId)
-            .asJava)
+          val requestMarkers = MarkerContext(Markers.appendEntries(Map(
+            "cookies" -> cookieString,
+            "path" -> requestHeader.path,
+            "domain" -> requestHeader.domain,
+            "headersLength" -> headersLength,
+            "userId" -> userId
+          ).asJava))
 
-          log.warn(s"Request received with excessive header length ${headersLength}")(MarkerContext(requestMarkers))
+          log.warn(s"Request received with excessive header length ${headersLength}")(requestMarkers)
         }
 
         result.withHeaders("Request-Time" -> requestTime.toString)
