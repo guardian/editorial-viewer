@@ -86,6 +86,7 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
         val markerContext = MarkerContext(Markers.appendEntries(Map(
           "userId" -> userId,
           "headersLength" -> headersLength,
+          "includesLegacyPandaCookie" -> requestHeader.cookies.get("gutoolsAuth").isDefined
         ).asJava))
 
         log.info(s"${requestHeader.method} ${requestHeader.uri} " +
