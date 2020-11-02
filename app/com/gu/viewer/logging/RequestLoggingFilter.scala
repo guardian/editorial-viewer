@@ -23,31 +23,12 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
 
   def readCookie(request: RequestHeader): Option[Cookie] = request.cookies.get(refresher.settings.cookieSettings.cookieName)
 
-  val impactedUsers = Set(
-    "jonathan.casson@guardian.co.uk",
-    "tash.banks@guardian.co.uk",
-    "tash.reith-banks@guardian.co.uk",
-    "greg.whitmore@guardian.co.uk",
-    "joanna.ruck@guardian.co.uk",
-    "simon.hildrew@guardian.co.uk"
-  )
-
   def apply(nextFilter: RequestHeader => Future[Result])
            (requestHeader: RequestHeader): Future[Result] = {
 
-    val userId = readAuthenticatedUser(requestHeader).map(_.user.email).getOrElse("not logged in")
-
-    if (impactedUsers.contains(userId)) {
-      val headerStrings = requestHeader.headers.headers.map{case (key, value) => s"$key: $value"}
-      val requestMarkers = Markers.appendEntries(
-        Map("headers" -> headerStrings.mkString("-H '","' -H '", "'"),
-          "method" -> requestHeader.method,
-          "uri" -> requestHeader.uri,
-          "domain" -> requestHeader.domain,
-          "userId" -> userId)
-          .asJava)
-      log.debug("Impacted user request details")(MarkerContext(requestMarkers))
-    }
+    val maybeUser = readAuthenticatedUser(requestHeader)
+    val userId = maybeUser.map(_.user.email).getOrElse("not logged in")
+    val authenticatedIn: Set[String] = maybeUser.map(_.authenticatedIn).getOrElse(Set.empty)
 
     val startTime = System.currentTimeMillis
 
@@ -86,7 +67,8 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
         val markerContext = MarkerContext(Markers.appendEntries(Map(
           "userId" -> userId,
           "headersLength" -> headersLength,
-          "includesLegacyPandaCookie" -> requestHeader.cookies.get("gutoolsAuth").isDefined
+          "includesLegacyPandaCookie" -> requestHeader.cookies.get("gutoolsAuth").isDefined,
+          "authenticatedIn" -> authenticatedIn.toList.sorted.mkString(",")
         ).asJava))
 
         log.info(s"${requestHeader.method} ${requestHeader.uri} " +
