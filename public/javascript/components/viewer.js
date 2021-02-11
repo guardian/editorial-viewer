@@ -249,7 +249,7 @@ function disableAdBlock() {
 function addBlankToLinks() {
     var iframe = document.getElementById('viewer');
     var iframeDoc = iframe.contentDocument;
-    var ancs = iframeDoc.querySelectorAll('.js-article__body a');
+    var ancs = iframeDoc.querySelectorAll('.js-article__body a, .article-body-viewer-selector a');
     for (var i = 0; i < ancs.length; i++) {
         // If href doesn't contain gutools or theguardian (i.e: links to guardian pages) add blank
         if (!/gutools|theguardian/.test(ancs[i].origin)) {

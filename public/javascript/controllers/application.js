@@ -55,6 +55,7 @@ function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
     buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
+    buttonUtil.bindClickToAttributeName('redirect-preview', redirectToPreview);
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
     buttonUtil.bindClickToAttributeName('app-preview', appPreview);
 }
@@ -112,6 +113,10 @@ function updateMode(newMode) {
     activeMode = newMode;
 
     updateViews();
+}
+
+function redirectToPreview() {
+    window.location="https://preview.gutools.co.uk/" + window.location.href.split('/preview/')[1] + "#noads"
 }
 
 function toggleDesktop() {
