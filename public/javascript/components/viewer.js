@@ -143,20 +143,29 @@ function enableSocialShare() {
         viewerEl.contentDocument.body.appendChild(twHeader);
 
         /* Twitter card */
-        var twCardType = viewerEl.contentDocument.querySelector('meta[name=\'twitter:card\']');
-        var twImage = viewerEl.contentDocument.querySelector('meta[name=\'twitter:image\']');
-        var twTitle = viewerEl.contentDocument.querySelector('meta[name=\'twitter:title\']');
-        var twDesc = viewerEl.contentDocument.querySelector('meta[name=\'twitter:description\']');
+        const twCardType = viewerEl.contentDocument.querySelector('meta[name=\'twitter:card\']');
+        const twImageEl = viewerEl.contentDocument.querySelector('meta[name=\'twitter:image\']') || ogImage
+        const twTitleEl = viewerEl.contentDocument.querySelector('meta[name=\'twitter:title\']') || ogTitle
+        const twDescEl = viewerEl.contentDocument.querySelector('meta[name=\'twitter:description\']') || ogDesc
+
+        // Twitter tries to ensure that any trails it displays fit across two lines.
+        // In practice, this leads to a trail between roughly 114 - 140 characters in
+        // length. We truncate the description here to provide a conservative
+        // approximation.
+        const twitterTrailLimit = 114
+        const twDesc = twDescEl.content.length > twitterTrailLimit
+          ? (twDescEl.content.slice(0, twitterTrailLimit) + "…")
+          : twDescEl.content
 
         remove(viewerEl, 'twCard');
         var twCard = document.createElement('div');
         twCard.id = 'twCard';
         twCard.className = twCardType.content;
         twCard.innerHTML = '' +
-            '<div class=\'image\'><img src=\'' + (twImage ? twImage.content : ogImage.content) + '\'></img></div>' +
+            '<div class=\'image\'><img src=\'' + twImageEl.content + '\'></img></div>' +
             '<div class=\'header\'>' +
-            '  <div class=\'title\'>' + (twTitle ? twTitle.content : ogTitle.content) + '</div>' +
-            '  <div class=\'desc\'>' + (twDesc ? twDesc.content : ogDesc.content) + '</div>' +
+            '  <div class=\'title\'>' + twTitleEl.content + '</div>' +
+            '  <div class=\'desc\'>' + twDesc + '</div>' +
             '  <div class=\'author\'> theguardian.com </div>' +
             ' </div>';
 
