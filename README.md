@@ -5,6 +5,10 @@ Mobile first preview of Guardian content. [https://viewer.gutools.co.uk](https:/
 ## Setup
 Run `./script/setup` from the project root.
 
+You will need `composer` credentials from Janus to ensure `viewer.private.conf` downloads correctly.
+
+You may need to run `sudo chown -R $(whoami):admin /etc/gu` so that you have access to `/etc/gu`.
+
 ## Running
 Run `./script/start` from the project root.
 
