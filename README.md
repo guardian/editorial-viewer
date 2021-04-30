@@ -50,12 +50,3 @@ To automatically watch for changes and recompile SASS when SCSS sources change, 
 ```
 $ npm run watch
 ```
-
-### Docker in development mode
-[Docker-compose](https://docs.docker.com/compose) can be used with [Docker](https://www.docker.com/) to run a self-contained development environment. If you have both `docker` and `docker-compose` installed locally, you can run:
-
-```
-$ docker-compose up
-```
-
-This will automatically pull down a Java 8 Debian container, install sbt, node js, and then compile and run the application.
