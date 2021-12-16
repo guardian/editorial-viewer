@@ -43,8 +43,8 @@ libraryDependencies ++= Seq(
 
 val jacksonVersion = "2.11.4"
 
+//Necessary to override jackson-databind versions due to AWS and Play incompatibility
 dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
-
 
 // Front-end assets config
 val bundle = taskKey[Pipeline.Stage]("JSPM bundle")
