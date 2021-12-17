@@ -1,6 +1,6 @@
 package com.gu.viewer.proxy
 
-import play.api.mvc.{Cookie, Cookies, Session}
+import play.api.mvc.{Cookie, Cookies, Session, DefaultCookieHeaderEncoding}
 
 case class PreviewSession(sessionCookie: Option[String] = None,
                           authCookie: Option[String] = None,
@@ -37,7 +37,7 @@ case class PreviewSession(sessionCookie: Option[String] = None,
 
 }
 
-object PreviewSession {
+object PreviewSession extends DefaultCookieHeaderEncoding {
   private val COOKIE_PREVIEW_SESSION = "PLAY_SESSION"
   private val COOKIE_PREVIEW_AUTH = "GU_PV_AUTH"
 
@@ -64,8 +64,8 @@ object PreviewSession {
 
     val allCookies = (
 
-      extractCookies("Set-Cookie", Cookies.fromSetCookieHeader) ++
-      extractCookies("Cookie", Cookies.fromCookieHeader)
+      extractCookies("Set-Cookie", fromSetCookieHeader) ++
+      extractCookies("Cookie", fromCookieHeader)
 
     ).flatten.groupBy(_.name).mapValues(_.head.value)
 

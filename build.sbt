@@ -25,21 +25,26 @@ lazy val root = (project in file("."))
      )
   )
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.15"
 
-val awsVersion = "1.11.821"
+val awsVersion = "1.12.129"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ses" % awsVersion,
-  "com.gu" %% "pan-domain-auth-play_2-6" % "0.9.1",
+  "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.4",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
   "com.gu" % "kinesis-logback-appender" % "1.3.0",
   ws,
   "com.typesafe.play" %% "play-iteratees" % "2.6.1",
   "com.google.guava" % "guava" % "27.0-jre"
 )
+
+val jacksonVersion = "2.11.4"
+
+//Necessary to override jackson-databind versions due to AWS and Play incompatibility
+dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
 
 // Front-end assets config
 val bundle = taskKey[Pipeline.Stage]("JSPM bundle")

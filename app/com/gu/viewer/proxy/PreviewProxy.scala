@@ -16,7 +16,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
 
 
   private def loginCallbackUrl(request: PreviewProxyRequest) =
-    s"https://${request.requestHost}${routes.Proxy.previewAuthCallback()}"
+    s"https://${request.requestHost}${routes.Proxy.previewAuthCallback}"
 
 
   /**

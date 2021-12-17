@@ -2,13 +2,16 @@ package com.gu.viewer.proxy
 
 import com.gu.viewer.config.AppConfig
 import play.api.libs.ws.WSClient
-import play.api.mvc.{Cookie, Cookies}
+import play.api.mvc.{Cookie, Cookies, DefaultCookieHeaderEncoding}
 import play.api.http.HeaderNames.{CONTENT_LENGTH, COOKIE, USER_AGENT}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
+import play.api.http.CookiesConfiguration
+import play.api.http.HttpConfiguration
 
-class ProxyClient(ws: WSClient, config: AppConfig)(implicit ec: ExecutionContext) {
+class ProxyClient(ws: WSClient, config: AppConfig)(implicit ec: ExecutionContext) extends DefaultCookieHeaderEncoding {
+
 
   private val TIMEOUT = 10000.millis
 
@@ -22,7 +25,7 @@ class ProxyClient(ws: WSClient, config: AppConfig)(implicit ec: ExecutionContext
              followRedirects: Boolean = false
              )(handler: PartialFunction[ProxyResponse, Future[ProxyResult]] = PartialFunction.empty): Future[ProxyResult] = {
 
-    val cookieHeader = if (cookies.nonEmpty) Some(COOKIE -> Cookies.encodeCookieHeader(cookies)) else None
+    val cookieHeader = if (cookies.nonEmpty) Some(COOKIE -> encodeCookieHeader(cookies)) else None
 
     val contentLengthHeader = if (body.nonEmpty) Some(CONTENT_LENGTH -> body.size.toString) else None
 
