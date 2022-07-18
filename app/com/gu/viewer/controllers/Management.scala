@@ -6,4 +6,8 @@ class Management(val controllerComponents: ControllerComponents) extends BaseCon
   def healthcheck = Action {
     Ok("Healthcheck is OK")
   }
+
+  def disallowRobots = Action {
+    Ok("User-agent: *\nDisallow: /\n")
+  }
 }

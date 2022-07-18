@@ -67,7 +67,7 @@ object PreviewSession extends DefaultCookieHeaderEncoding {
       extractCookies("Set-Cookie", fromSetCookieHeader) ++
       extractCookies("Cookie", fromCookieHeader)
 
-    ).flatten.groupBy(_.name).mapValues(_.head.value)
+    ).flatten.groupBy(_.name).view.mapValues(_.head.value).toMap
 
     PreviewSession(allCookies.get(COOKIE_PREVIEW_SESSION), allCookies.get(COOKIE_PREVIEW_AUTH))
   }
