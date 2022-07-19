@@ -20,12 +20,12 @@ lazy val root = (project in file("."))
   .enablePlugins(JDebPackaging)
   .enablePlugins(SystemdPlugin)
   .settings(
-    javaOptions in Universal ++= Seq(
-          "-Dpidfile.path=/dev/null"
+    Universal / javaOptions ++= Seq(
+      "-Dpidfile.path=/dev/null"
      )
   )
 
-scalaVersion := "2.12.15"
+scalaVersion := "2.12.16"
 
 val awsVersion = "1.12.129"
 
@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ses" % awsVersion,
-  "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.4",
+  "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
   "com.gu" % "kinesis-logback-appender" % "1.3.0",
   ws,
@@ -51,7 +51,7 @@ val bundle = taskKey[Pipeline.Stage]("JSPM bundle")
 
 bundle := { mappings =>
   val log = sLog.value
-  val sourceDir = (resourceDirectory in Assets).value
+  val sourceDir = (Assets / resourceDirectory).value
   log.info("Running JSPM bundle")
   val cmd = Process("npm run bundlejs", baseDirectory.value) !< log
   if (cmd != 0) sys.error(s"Non-zero error code for `npm run bundlejs`: $cmd")
@@ -61,7 +61,7 @@ bundle := { mappings =>
 pipelineStages := Seq(bundle, digest, gzip)
 
 // Config for packing app for deployment
-packageName in Universal := normalizedName.value
+Universal / packageName := normalizedName.value
 
 riffRaffPackageName := s"editorial-tools:${name.value}"
 
@@ -72,7 +72,7 @@ riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 
 riffRaffArtifactResources := Seq(
-  (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
+  (Debian / packageBin).value -> s"${name.value}/${name.value}.deb",
   baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
 )
 
