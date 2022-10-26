@@ -4,7 +4,7 @@ deployments:
   viewer:
     type: autoscaling
     parameters:
-      bucket: composer-dist
+      bucketSsmLookup: true
     dependencies:
       - viewer-ami-update
   viewer-ami-update:
