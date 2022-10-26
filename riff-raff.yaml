@@ -4,7 +4,6 @@ deployments:
   viewer:
     type: autoscaling
     parameters:
-      bucketSsmLookup: true
     dependencies:
       - viewer-ami-update
   viewer-ami-update:
