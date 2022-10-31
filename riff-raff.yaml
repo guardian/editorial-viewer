@@ -4,7 +4,6 @@ deployments:
   viewer:
     type: autoscaling
     parameters:
-      bucket: composer-dist
     dependencies:
       - viewer-ami-update
   viewer-ami-update:
