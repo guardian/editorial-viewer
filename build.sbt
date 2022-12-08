@@ -10,6 +10,7 @@ scalacOptions := Seq(
   "-unchecked",
   "-deprecation",
   "-feature",
+  "-Ywarn-unused",
   "-Xfatal-warnings"
 )
 
