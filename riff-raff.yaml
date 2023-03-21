@@ -10,7 +10,7 @@ deployments:
       type: ami-cloudformation-parameter
       parameters:
         amiTags:
-          Recipe: editorial-tools-focal-java8
+          Recipe: editorial-tools-focal-java8-ARM
           AmigoStage: PROD
           BuiltBy: amigo
         amiEncrypted: true
