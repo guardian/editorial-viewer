@@ -8,6 +8,13 @@ Run `./script/setup` from the project root.
 You will need `composer` credentials from Janus to ensure `viewer.private.conf` downloads correctly.
 
 You may need to run `sudo chown -R $(whoami):admin /etc/gu` so that you have access to `/etc/gu`.
+<!-- I think is this wrong/outdated newer projects no longer put local config files in /etc/gu  - should be ~/.gu or ~/.editorial-viewer ? -->
+<!-- need to update setup script and conf? -->
+
+The javascript bundles need to be built for the frontend to work properly:
+ - install the version of npm specified in [./nvmrc](./nvmrc) - this is best done using nvm : `nvm use`
+ - install the dependencies : `npm i`
+ - run the bundle script: `npm run bundlejs`
 
 ## Running
 Run `./script/start` from the project root.
