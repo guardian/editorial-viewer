@@ -15,3 +15,5 @@ public/build.js.map
 /.settings
 /RUNNING_PID
 .bsp
+/.metals
+/.vscode
