@@ -2,14 +2,17 @@
 
 Mobile first preview of Guardian content. [https://viewer.gutools.co.uk](https://viewer.gutools.co.uk)
 
+**TO DO - review Setup Instructions and Script** 
+ - should *local* config files be in /etc/gu? Newer projects use ~/.gu or ~/.name-of-project
+ - would need to change application.conf to access the file in the correct location when running locally
+
+
 ## Setup
 Run `./script/setup` from the project root.
 
 You will need `composer` credentials from Janus to ensure `viewer.private.conf` downloads correctly.
 
 You may need to run `sudo chown -R $(whoami):admin /etc/gu` so that you have access to `/etc/gu`.
-<!-- I think is this wrong/outdated newer projects no longer put local config files in /etc/gu  - should be ~/.gu or ~/.editorial-viewer ? -->
-<!-- need to update setup script and conf? -->
 
 The javascript bundles need to be built for the frontend to work properly:
  - install the version of npm specified in [./nvmrc](./nvmrc) - this is best done using nvm : `nvm use`
