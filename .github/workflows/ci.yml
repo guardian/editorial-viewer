@@ -33,7 +33,7 @@ jobs:
       - name: CI
         working-directory: cdk
         run: |
-          npm install --frozen-lockfile
+          npm ci
           npm run postinstall
           npm run bundlejs
           npm run sass
