@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  # Run when main gets updated, i.e. PR merge
+  push:
+    branches: ["main"]
+
+  # Run when a PR is opened, and whenever new commits are added to the PR
+  pull_request:
+
+  # Run when manually triggered
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Allow GitHub to request an OIDC JWT ID token, to use with aws-actions/configure-aws-credentials
+      id-token: write
+      contents: read
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v3
+
+        # Get the desired version of Node installed
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+
+      # Execute some tasks from the `package.json` file, using `npm`
+      - name: CI
+        working-directory: cdk
+        run: |
+          npm install --frozen-lockfile
+          npm run postinstall
+          npm run bundlejs
+          npm run sass
+
+    # Get the desired version of Java installed (also comes with the SBT tool)
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'corretto'
+        java-version: '1.8'
+        cache: 'sbt'
+    
+    - name: Build and Test project, Assemble jar, copy to root dir
+      run: |
+        sbt clean compile test Debian/packageBin
+
+    - name: Rename files for easy finding by guardian/actions-riff-raff
+      run: |
+        mv target/scala*/**.jar ./
+
+    - name: AWS Auth
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+        aws-region: eu-west-1
+
+    - name: Upload to riff-raff
+      uses: guardian/actions-riff-raff@v2
+      with:
+        configPath: riff-raff.yaml
+        buildNumberOffset: 308 # This is the last build number from TeamCity
+        projectName: editorial-tools:viewer
+        contentDirectories: |
+          viewer:
+            - viewer_2.12-0.1-SNAPSHOT-javadoc.jar
+            - viewer_2.12-0.1-SNAPSHOT-sans-externalized.jar
+            - viewer_2.12-0.1-SNAPSHOT-sources.jar
+            - viewer_2.12-0.1-SNAPSHOT-web-assets.jar
+            - viewer_2.12-0.1-SNAPSHOT.jar
+
