@@ -51,7 +51,7 @@ jobs:
 
     - name: Rename files for easy finding by guardian/actions-riff-raff
       run: |
-        mv /Users/david_blatcher/code/editorial-viewer/target/viewer_0.1-SNAPSHOT_all.deb ./viewer_0.1-SNAPSHOT_all.deb
+        mv target/viewer_0.1-SNAPSHOT_all.deb viewer.deb
 
     - name: AWS Auth
       uses: aws-actions/configure-aws-credentials@v2
@@ -67,5 +67,5 @@ jobs:
         projectName: editorial-tools:viewer
         contentDirectories: |
           viewer:
-            - viewer_0.1-SNAPSHOT_all.deb
+            - viewer.deb
 
