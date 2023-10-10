@@ -31,7 +31,6 @@ jobs:
 
       # Execute some tasks from the `package.json` file, using `npm`
       - name: CI
-        working-directory: cdk
         run: |
           npm ci
           npm run postinstall
