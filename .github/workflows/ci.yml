@@ -42,12 +42,12 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'corretto'
-        java-version: '1.8'
+        java-version: '8'
         cache: 'sbt'
     
     - name: Build and Test project, Assemble Debian package, copy to root dir
       run: |
-        sbt clean compile test package
+        sbt clean compile test Debian/packageBin
 
     - name: Rename files for easy finding by guardian/actions-riff-raff
       run: |
