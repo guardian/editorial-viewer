@@ -45,13 +45,13 @@ jobs:
         java-version: '1.8'
         cache: 'sbt'
     
-    - name: Build and Test project, Assemble jar, copy to root dir
+    - name: Build and Test project, Assemble Debian package, copy to root dir
       run: |
         sbt clean compile test package
 
     - name: Rename files for easy finding by guardian/actions-riff-raff
       run: |
-        mv target/scala*/**.jar ./
+        mv /Users/david_blatcher/code/editorial-viewer/target/viewer_0.1-SNAPSHOT_all.deb ./viewer_0.1-SNAPSHOT_all.deb
 
     - name: AWS Auth
       uses: aws-actions/configure-aws-credentials@v2
@@ -63,9 +63,9 @@ jobs:
       uses: guardian/actions-riff-raff@v2
       with:
         configPath: riff-raff.yaml
-        buildNumberOffset: 308 # This is the last build number from TeamCity
+        buildNumberOffset: 311 # This is the last build number from TeamCity
         projectName: editorial-tools:viewer
         contentDirectories: |
           viewer:
-            - viewer_2.12-0.1-SNAPSHOT.jar
+            - viewer_0.1-SNAPSHOT_all.deb
 
