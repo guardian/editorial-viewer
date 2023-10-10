@@ -22,7 +22,7 @@ jobs:
 
     steps:
       # Checkout the repository
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
         # Get the desired version of Node installed
       - uses: actions/setup-node@v3
