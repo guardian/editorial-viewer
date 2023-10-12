@@ -16,7 +16,6 @@ scalacOptions := Seq(
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .enablePlugins(SbtWeb)
-  .enablePlugins(RiffRaffArtifact)
   .enablePlugins(JDebPackaging)
   .enablePlugins(SystemdPlugin)
   .settings(
@@ -62,19 +61,6 @@ pipelineStages := Seq(bundle, digest, gzip)
 
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
-
-riffRaffPackageName := s"editorial-tools:${name.value}"
-
-riffRaffManifestProjectName := riffRaffPackageName.value
-
-riffRaffUploadArtifactBucket := Option("riffraff-artifact")
-
-riffRaffUploadManifestBucket := Option("riffraff-builds")
-
-riffRaffArtifactResources := Seq(
-  (Debian / packageBin).value -> s"${name.value}/${name.value}.deb",
-  baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
-)
 
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
 maintainer := "Digital CMS <digitalcms.dev@guardian.co.uk>"

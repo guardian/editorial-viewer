@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  # Run when main gets updated, i.e. PR merge
+  push:
+    branches: ["main"]
+
+  # Run when a PR is opened, and whenever new commits are added to the PR
+  pull_request:
+
+  # Run when manually triggered
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Allow GitHub to request an OIDC JWT ID token, to use with aws-actions/configure-aws-credentials
+      id-token: write
+      contents: read
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Get the desired version of Node installed
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+
+      # Execute some tasks from the `package.json` file, using `npm`
+      - name: CI
+        run: |
+          npm ci
+          npm run postinstall
+          npm run bundlejs
+          npm run sass
+
+      # Get the desired version of Java installed (also comes with the SBT tool)
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '8'
+          cache: 'sbt'
+    
+      - name: Build and Test project, Assemble Debian package, copy to root dir
+        run: |
+          sbt clean compile test Debian/packageBin
+
+      - name: Rename files for easy finding by guardian/actions-riff-raff
+        run: |
+          mv target/viewer_0.1-SNAPSHOT_all.deb viewer.deb
+
+      - name: AWS Auth
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      - name: Upload to riff-raff
+        uses: guardian/actions-riff-raff@v2
+        with:
+          configPath: riff-raff.yaml
+          buildNumberOffset: 311 # This is the last build number from TeamCity
+          projectName: editorial-tools:viewer
+          contentDirectories: |
+            viewer:
+              - viewer.deb
+
