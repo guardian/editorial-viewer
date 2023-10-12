@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/guardian/editorial-viewer#readme",
   "devDependencies": {
-    "jspm": "^0.16.53",
+    "jspm": "^3.0.2",
     "node-sass": "^9.0.0"
   },
   "jspm": {
