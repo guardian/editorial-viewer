@@ -30,6 +30,7 @@ jobs:
           node-version-file: .nvmrc
 
       # Execute some tasks from the `package.json` file, using `npm`
+      # TO DO - postinstall includes bundlejs and sass - do we need them here too?
       - name: CI
         run: |
           npm ci

@@ -10,7 +10,7 @@
     "webpack": "webpack --config webpack.config.js",
     "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
     "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
-    "postinstall": "jspm install -y --lock && npm run sass"
+    "postinstall": "webpack --config webpack.config.js && jspm install -y --lock && npm run sass"
   },
   "repository": {
     "type": "git",
