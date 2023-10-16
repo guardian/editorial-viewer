@@ -45,19 +45,7 @@ val jacksonVersion = "2.11.4"
 //Necessary to override jackson-databind versions due to AWS and Play incompatibility
 dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
 
-// Front-end assets config
-val bundle = taskKey[Pipeline.Stage]("JSPM bundle")
-
-bundle := { mappings =>
-  val log = sLog.value
-  val sourceDir = (Assets / resourceDirectory).value
-  log.info("Running JSPM bundle")
-  val cmd = Process("npm run bundlejs", baseDirectory.value) !< log
-  if (cmd != 0) sys.error(s"Non-zero error code for `npm run bundlejs`: $cmd")
-  mappings ++ ((sourceDir * "build.js*") pair relativeTo(sourceDir))
-}
-
-pipelineStages := Seq(bundle, digest, gzip)
+pipelineStages := Seq(digest, gzip)
 
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
