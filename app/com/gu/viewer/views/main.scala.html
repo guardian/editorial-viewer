@@ -28,27 +28,6 @@
         </script>
         <!-- End GA -->
 
-        <!-- New webpack build -->
         <script src="@routes.Assets.versioned("bundle.js")"></script>
-
-        <!-- JSPM      
-        <script src="@routes.Assets.versioned("jspm_packages/system.js")"></script>
-        <script src="@routes.Assets.versioned("config.js")"></script>
-        <script>
-            if ( System.bundles['build.js'] ) {
-                System.bundles['@routes.Assets.versioned("build.js")'] = System.bundles['build.js'];
-                delete System.bundles['build.js'];
-            }
-        </script>
-        <script>
-          System
-            .import('javascript/main')
-            .catch(function(err){
-              console.error(err);
-            })
-        </script>
-
-        End JSPM -->
-
     </body>
 </html>
