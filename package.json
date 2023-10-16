@@ -8,7 +8,7 @@
     "build": "npm install",
     "webpack": "webpack --config webpack.config.js",
     "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
-    "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
+    "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/ & webpack --config webpack.dev.config.js",
     "postinstall": "webpack --config webpack.config.js && npm run sass"
   },
   "repository": {
