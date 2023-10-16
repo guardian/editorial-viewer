@@ -1,10 +1,10 @@
-var localStorageUtil = require('javascript/utils/localStorage');
-var buttonUtil = require('javascript/utils/button');
-var analyticsCtrl = require('javascript/controllers/analytics');
+var localStorageUtil = require('../utils/localStorage');
+var buttonUtil = require('../utils/button');
+var analyticsCtrl = require('../controllers/analytics');
 var modes = require('../modes');
-var viewer = require('javascript/components/viewer');
+var viewer = require('../components/viewer');
 var error = require('./error')
-var api = require('javascript/utils/api')
+var api = require('../utils/api')
 var overlay = require('./overlay')
 
 var desktopEnabled, activeMode, adsBlocked;
