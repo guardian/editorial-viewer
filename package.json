@@ -6,11 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
-    "bundlejs": "jspm bundle javascript/main --inject --minify",
     "webpack": "webpack --config webpack.config.js",
     "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
     "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/",
-    "postinstall": "webpack --config webpack.config.js && jspm install -y --lock && npm run sass"
+    "postinstall": "webpack --config webpack.config.js && npm run sass"
   },
   "repository": {
     "type": "git",
@@ -23,24 +22,9 @@
   },
   "homepage": "https://github.com/guardian/editorial-viewer#readme",
   "devDependencies": {
-    "jspm": "^0.16.53",
     "node-sass": "^9.0.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
-  },
-  "jspm": {
-    "directories": {
-      "baseURL": "public"
-    },
-    "dependencies": {
-      "localforage": "npm:localforage@^1.2.10",
-      "reqwest": "npm:reqwest@^2.0.5"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.8.22",
-      "babel-runtime": "npm:babel-runtime@^5.8.20",
-      "core-js": "npm:core-js@^1.1.0"
-    }
   },
   "dependencies": {
     "localforage": "^1.10.0",

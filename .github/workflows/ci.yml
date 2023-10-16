@@ -30,12 +30,11 @@ jobs:
           node-version-file: .nvmrc
 
       # Execute some tasks from the `package.json` file, using `npm`
-      # TO DO - postinstall includes bundlejs and sass - do we need them here too?
+      # TO DO - postinstall includes sass - do we need it twice?
       - name: CI
         run: |
           npm ci
           npm run postinstall
-          npm run bundlejs
           npm run sass
 
       # Get the desired version of Java installed (also comes with the SBT tool)
