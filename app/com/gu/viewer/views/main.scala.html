@@ -28,6 +28,10 @@
         </script>
         <!-- End GA -->
 
+        <!-- New webpack build -->
+        <script src="@routes.Assets.versioned("bundle.js")"></script>
+
+        <!-- JSPM -->
         <script src="@routes.Assets.versioned("jspm_packages/system.js")"></script>
         <script src="@routes.Assets.versioned("config.js")"></script>
         <script>
@@ -43,7 +47,7 @@
               console.error(err);
             })
         </script>
-
+        <!-- End JSPM -->
 
     </body>
 </html>
