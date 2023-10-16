@@ -1,6 +1,6 @@
 var localStorageUtil = require('../utils/localStorage');
 var buttonUtil = require('../utils/button');
-var analyticsCtrl = require('../controllers/analytics');
+var analyticsCtrl = require('./analytics');
 var modes = require('../modes');
 var viewer = require('../components/viewer');
 var error = require('./error')

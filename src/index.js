@@ -1,7 +1,7 @@
-import * as applicationCtrl from "../public/javascript/controllers/application";
-import * as analyticsCtrl from "../public/javascript/controllers/analytics";
-import * as historyCtrl from "../public/javascript/controllers/history";
-import * as keyboardController from "../public/javascript/controllers/keyboard";
+import * as applicationCtrl from "./modules/controllers/application";
+import * as analyticsCtrl from "./modules/controllers/analytics";
+import * as historyCtrl from "./modules/controllers/history";
+import * as keyboardController from "./modules/controllers/keyboard";
 
 //Initialize Controllers
 applicationCtrl.init();
