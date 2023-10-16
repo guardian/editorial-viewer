@@ -16,4 +16,6 @@ public/bundle.js.LICENSE.txt
 .bsp
 
 /.metals
+**/metals.sbt
 /.vscode
+/**/.bloop
