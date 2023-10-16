@@ -8,6 +8,7 @@ public/styles/index.css
 public/build.js
 public/build.js.map
 public/bundle.js
+public/bundle.js.LICENSE.txt
 
 /.idea
 /.idea_modules
