@@ -33,8 +33,7 @@ jobs:
       - name: CI
         run: |
           npm ci
-          npm run postinstall
-          npm run bundlejs
+          npm run webpack
           npm run sass
 
       # Get the desired version of Java installed (also comes with the SBT tool)
