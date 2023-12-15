@@ -8,7 +8,7 @@ import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.{Application, Email, Management, Proxy}
-import com.gu.viewer.logging.{LogStash, RequestLoggingFilter}
+import com.gu.viewer.logging.RequestLoggingFilter
 import com.gu.viewer.proxy.{LiveProxy, PreviewProxy, ProxyClient}
 import controllers.AssetsComponents
 import play.api.{BuiltInComponentsFromContext, Mode}
@@ -41,8 +41,6 @@ class AppComponents(context: Context)
 
   val tags = new AwsInstanceTags(ec2Client)
   val config = new AppConfig(tags, context.initialConfiguration)
-
-  if (context.environment.mode != Mode.Dev) LogStash.init(config, tags, region)
 
   val panDomainSettings: PanDomainAuthSettingsRefresher = new PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
