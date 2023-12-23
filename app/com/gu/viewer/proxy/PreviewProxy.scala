@@ -132,7 +132,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
   def previewAuthCallback(request: PreviewProxyRequest) = ProxyResult.resultFrom {
 
     val redirectUrlParam = PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request)
-    val queryParams = request.requestQueryString.mapValues(_.head).toSeq :+ redirectUrlParam
+    val queryParams = request.requestQueryString.view.mapValues(_.head).toSeq :+ redirectUrlParam
 
     def handleResponse(response: ProxyResponse) = {
 

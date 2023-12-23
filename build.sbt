@@ -10,6 +10,7 @@ scalacOptions := Seq(
   "-unchecked",
   "-deprecation",
   "-feature",
+  "-Ywarn-unused",
   "-Xfatal-warnings"
 )
 
@@ -24,7 +25,7 @@ lazy val root = (project in file("."))
      )
   )
 
-scalaVersion := "2.12.16"
+scalaVersion := "2.13.8"
 
 val awsVersion = "1.12.129"
 
@@ -35,7 +36,6 @@ libraryDependencies ++= Seq(
   "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   ws,
-  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
   "com.google.guava" % "guava" % "27.0-jre"
 )
 

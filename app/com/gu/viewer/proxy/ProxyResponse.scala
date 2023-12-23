@@ -3,6 +3,7 @@ package com.gu.viewer.proxy
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import play.api.libs.ws.WSResponse
+import scala.collection.Seq
 
 
 class ProxyResponse(response: WSResponse) {

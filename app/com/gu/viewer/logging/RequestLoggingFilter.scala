@@ -10,7 +10,7 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.Failure
 
 class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthSettingsRefresher)(implicit ec: ExecutionContext) extends Filter with Loggable {
