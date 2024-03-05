@@ -49,7 +49,7 @@ pipelineStages := Seq(digest, gzip)
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
 
-debianPackageDependencies := Seq("openjdk-8-jre-headless")
+debianPackageDependencies := Seq("openjdk-11-jre-headless")
 maintainer := "Digital CMS <digitalcms.dev@guardian.co.uk>"
 packageSummary := "viewer"
 packageDescription := """wrapper over the preview mode to give different platform previews"""
