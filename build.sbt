@@ -28,6 +28,9 @@ scalaVersion := "2.12.16"
 
 val awsVersion = "1.12.129"
 
+// Until all dependencies are on scala-java8-compat v1.x, this avoids unnecessary fatal eviction errors
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always
+
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
