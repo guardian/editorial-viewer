@@ -129,10 +129,10 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
    * Proxy all request params and Preview session cookie to Preview authentication callback.
    * Store response cookies into Viewer's play session.
    */
-  def previewAuthCallback(request: PreviewProxyRequest) = ProxyResult.resultFrom {
+  def previewAuthCallback(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
 
     val redirectUrlParam = PREVIEW_AUTH_REDIRECT_PARAM -> loginCallbackUrl(request)
-    val queryParams = request.requestQueryString.mapValues(_.head).toSeq :+ redirectUrlParam
+    val queryParams = request.requestQueryString.view.mapValues(_.head).toSeq :+ redirectUrlParam
 
     def handleResponse(response: ProxyResponse) = {
 
