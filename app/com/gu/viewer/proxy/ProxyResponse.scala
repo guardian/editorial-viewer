@@ -6,7 +6,7 @@ import play.api.libs.ws.WSResponse
 
 
 class ProxyResponse(response: WSResponse) {
-  def allHeaders: Map[String, Seq[String]] = response.headers
+  def allHeaders: Map[String, scala.collection.Seq[String]] = response.headers
 
   val status: Int = response.status
 
