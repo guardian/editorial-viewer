@@ -15,7 +15,7 @@ scalacOptions := Seq(
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
-  // .enablePlugins(SbtWeb)  -- TO DO - restore packaging plugins when app upgraded 
+  // .enablePlugins(SbtWeb)  -- TO DO - restore packaging plugins when app upgraded
   .enablePlugins(JDebPackaging)
   .enablePlugins(SystemdPlugin)
   .settings(
@@ -41,12 +41,8 @@ libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "27.0-jre"
 )
 
-val jacksonVersion = "2.11.4"
 
-//Necessary to override jackson-databind versions due to AWS and Play incompatibility
-dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
-
-// pipelineStages := Seq(digest, gzip) -- TO DO - restore packaging plugins when app upgraded 
+// pipelineStages := Seq(digest, gzip) -- TO DO - restore packaging plugins when app upgraded
 
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
