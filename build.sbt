@@ -15,7 +15,7 @@ scalacOptions := Seq(
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
-  .enablePlugins(SbtWeb)
+  // .enablePlugins(SbtWeb)  -- TO DO - restore packaging plugins when app upgraded 
   .enablePlugins(JDebPackaging)
   .enablePlugins(SystemdPlugin)
   .settings(
@@ -24,7 +24,7 @@ lazy val root = (project in file("."))
      )
   )
 
-scalaVersion := "2.12.16"
+scalaVersion := "2.13.0"
 
 val awsVersion = "1.12.129"
 
@@ -38,7 +38,6 @@ libraryDependencies ++= Seq(
   "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.6",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   ws,
-  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
   "com.google.guava" % "guava" % "27.0-jre"
 )
 
@@ -47,7 +46,7 @@ val jacksonVersion = "2.11.4"
 //Necessary to override jackson-databind versions due to AWS and Play incompatibility
 dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
 
-pipelineStages := Seq(digest, gzip)
+// pipelineStages := Seq(digest, gzip) -- TO DO - restore packaging plugins when app upgraded 
 
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
