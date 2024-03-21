@@ -52,4 +52,5 @@ maintainer := "Digital CMS <digitalcms.dev@guardian.co.uk>"
 packageSummary := "viewer"
 packageDescription := """wrapper over the preview mode to give different platform previews"""
 
-PlayKeys.devSettings += "play.server.akka.max-header-value-length" -> "16k"
+PlayKeys.devSettings += "play.server.pekko.max-header-size" -> "16k"
+

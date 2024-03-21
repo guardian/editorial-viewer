@@ -1,6 +1,6 @@
 package com.gu.viewer.logging
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.service.CookieUtils

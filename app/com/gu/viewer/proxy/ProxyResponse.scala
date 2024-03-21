@@ -1,7 +1,7 @@
 package com.gu.viewer.proxy
 
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
 import play.api.libs.ws.WSResponse
 
 
