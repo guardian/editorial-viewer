@@ -41,14 +41,12 @@ libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "27.0-jre"
 )
 
-//java11-runtime-headless
-
  pipelineStages := Seq(digest, gzip)
 
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
 
-debianPackageDependencies := Seq("openjdk-11-jre-headless")
+debianPackageDependencies := Seq("java11-runtime-headless")
 maintainer := "Digital CMS <digitalcms.dev@guardian.co.uk>"
 packageSummary := "viewer"
 packageDescription := """wrapper over the preview mode to give different platform previews"""
