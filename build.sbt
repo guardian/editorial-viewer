@@ -41,8 +41,9 @@ libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "27.0-jre"
 )
 
+//java11-runtime-headless
 
-// pipelineStages := Seq(digest, gzip) -- TO DO - restore packaging plugins when app upgraded
+ pipelineStages := Seq(digest, gzip)
 
 // Config for packing app for deployment
 Universal / packageName := normalizedName.value
