@@ -15,7 +15,6 @@ scalacOptions := Seq(
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
-  // .enablePlugins(SbtWeb)  -- TO DO - restore packaging plugins when app upgraded
   .enablePlugins(JDebPackaging)
   .enablePlugins(SystemdPlugin)
   .settings(
