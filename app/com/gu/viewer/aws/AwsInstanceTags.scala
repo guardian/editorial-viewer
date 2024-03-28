@@ -6,7 +6,7 @@ import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
 import com.amazonaws.services.simpleemail._
 import com.amazonaws.util.EC2MetadataUtils
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class AwsInstanceTags(ec2: AmazonEC2) {
   lazy val instanceId = Option(EC2MetadataUtils.getInstanceId)

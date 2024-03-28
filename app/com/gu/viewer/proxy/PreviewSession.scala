@@ -12,7 +12,7 @@ case class PreviewSession(sessionCookie: Option[String] = None,
     sessionCookie.map(Cookie(PreviewSession.COOKIE_PREVIEW_SESSION, _))
   ).flatten
 
-  def asSessionPairs = {
+  def asSessionPairs: Seq[(String, Option[String])] = {
     import PreviewSession._
     Seq(
       SESSION_KEY_PREVIEW_SESSION -> sessionCookie,
@@ -28,11 +28,11 @@ case class PreviewSession(sessionCookie: Option[String] = None,
       }
     }
 
-  def withPlaySessionFrom(other: PreviewSession) = copy(playSession = other.playSession)
+  def withPlaySessionFrom(other: PreviewSession): PreviewSession = copy(playSession = other.playSession)
 
-  def withReturnUrl(returnUrl: Option[String]) = copy(returnUrl = returnUrl)
+  def withReturnUrl(returnUrl: Option[String]): PreviewSession = copy(returnUrl = returnUrl)
 
-  def withoutReturnUrl =
+  def withoutReturnUrl: PreviewSession =
     copy(returnUrl = None)
 
 }
@@ -55,7 +55,7 @@ object PreviewSession extends DefaultCookieHeaderEncoding {
   )
 
 
-  def fromResponseHeaders(response: ProxyResponse) = {
+  def fromResponseHeaders(response: ProxyResponse): PreviewSession = {
 
     def extractCookies(headerName: String, transformer: Option[String] => Cookies) =
       response.allHeaders.get(headerName).map {
@@ -67,7 +67,7 @@ object PreviewSession extends DefaultCookieHeaderEncoding {
       extractCookies("Set-Cookie", fromSetCookieHeader) ++
       extractCookies("Cookie", fromCookieHeader)
 
-    ).flatten.groupBy(_.name).mapValues(_.head.value)
+    ).flatten.groupBy(_.name).view.mapValues(_.head.value)
 
     PreviewSession(allCookies.get(COOKIE_PREVIEW_SESSION), allCookies.get(COOKIE_PREVIEW_AUTH))
   }

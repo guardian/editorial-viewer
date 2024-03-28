@@ -1,7 +1,6 @@
-libraryDependencies += "org.vafer" % "jdeb" % "1.6" artifacts (Artifact("jdeb", "jar", "jar"))
+libraryDependencies += "org.vafer" % "jdeb" % "1.7" artifacts Artifact("jdeb", "jar", "jar")
 // The Play plugin
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.11")
-addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.4.4")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.3")
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.2")
-addSbtCoursier
+
