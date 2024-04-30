@@ -7,13 +7,17 @@ import play.api.mvc.{Action, BaseController, BaseControllerHelpers, ControllerCo
 import scala.concurrent.Future
 
 
-class Proxy(val controllerComponents: ControllerComponents,
-            previewProxy: PreviewProxy, liveProxy: LiveProxy) extends BaseController with Loggable {
+class Proxy(
+  val controllerComponents: ControllerComponents,
+  previewProxy: PreviewProxy,
+  liveProxy: LiveProxy,
+  pandaCookieName: String
+) extends BaseController with Loggable {
 
   def proxy(service: String, path: String) = Action.async { implicit request =>
 
     ProxyRequest(service, path, request) match {
-      case r: PreviewProxyRequest => previewProxy.proxy(r)
+      case r: PreviewProxyRequest => previewProxy.proxy(r.copy(maybePandaCookieToForward = request.cookies.get(pandaCookieName)))
       case r: LiveProxyRequest => liveProxy.proxy(r)
       case UnknownProxyRequest => Future.successful(BadRequest(s"Unknown proxy service: $service"))
     }

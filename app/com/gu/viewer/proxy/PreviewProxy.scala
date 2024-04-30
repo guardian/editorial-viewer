@@ -71,11 +71,10 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
     log.info(s"Proxy GET to preview: $url")
 
     def isLoginRedirect(response: ProxyResponse) = {
-      response.status == 303 &&
-        response.header("Location").exists(l => l == previewLoginUrl || l == "/login")
+      response.status == 303 && response.header("Location").isDefined
     }
 
-    val cookies = request.session.asCookies
+    val cookies = request.session.asCookies ++ request.maybePandaCookieToForward.toSeq
 
     proxyClient.get(url, cookies = cookies) {
       case response if isLoginRedirect(response) => doPreviewAuth(request)
@@ -107,19 +106,12 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
    */
   def proxy(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
     log.info(s"Received proxy request for: ${request.requestUri}")
-    request.session.sessionCookie -> request.session.authCookie match {
-      case (Some(_), Some(_)) => doPreviewProxy(request)
-      case _ => doPreviewAuth(request)
-    }
+    doPreviewProxy(request)
   }
 
   def proxyPost(request: PreviewProxyRequest): Future[Result] = ProxyResult.resultFrom {
     log.info(s"Received proxy POST request for: ${request.requestUri}")
-
-    request.session.sessionCookie -> request.session.authCookie match {
-      case (Some(_), Some(_)) => doPreviewProxyPost(request)
-      case _ => doPreviewAuth(request)
-    }
+    doPreviewProxyPost(request)
   }
 
 

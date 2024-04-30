@@ -28,6 +28,7 @@ class Application(val controllerComponents: ControllerComponents, config: AppCon
       case _ => config.liveHost
     }
     val actualUrl = s"$protocol://$viewerHost/$path"
+    // TODO rename viewerUrl to iframeSrc and ideally eliminate the proxy all together for preview (following https://github.com/guardian/frontend/pull/27012)
     val viewerUrl = routes.Proxy.proxy(target, path).path()
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = config.composerReturn + "/" + path

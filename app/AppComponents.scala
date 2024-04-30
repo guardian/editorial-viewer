@@ -49,6 +49,7 @@ class AppComponents(context: Context)
     bucketName = config.pandaBucket,
     settingsFileKey = config.pandaSettingsFileKey
   )
+  val pandaCookieName = panDomainSettings.settings.cookieSettings.cookieName
 
   val requestLoggingFilter = new RequestLoggingFilter(materializer, panDomainSettings)
   override def httpFilters: Seq[EssentialFilter] = Seq(requestLoggingFilter, csrfFilter)
@@ -59,7 +60,7 @@ class AppComponents(context: Context)
 
   val applicationController = new Application(controllerComponents, config)
   val managementController = new Management(controllerComponents)
-  val proxyController = new Proxy(controllerComponents, previewProxy, liveProxy)
+  val proxyController = new Proxy(controllerComponents, previewProxy, liveProxy, pandaCookieName)
   val emailController = new Email(controllerComponents, wsClient, emailClient, config, panDomainSettings)
 
   override def router: Router = new Routes(
