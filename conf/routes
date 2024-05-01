@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# auth
+GET         /oauthCallback                com.gu.viewer.controllers.Application.oauthCallback
+
 # Home page
 GET        /                              com.gu.viewer.controllers.Application.index
 GET        /management/healthcheck        com.gu.viewer.controllers.Management.healthcheck
