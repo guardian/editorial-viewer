@@ -10,10 +10,13 @@ import play.api.mvc._
 
 import scala.util.control.NonFatal
 
-class Email(val controllerComponents: ControllerComponents, val wsClient: WSClient,
-            emailClient: AmazonSimpleEmailService, val config: AppConfig,
-            val panDomainSettings: PanDomainAuthSettingsRefresher)
-  extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
+class Email(
+  val controllerComponents: ControllerComponents,
+  val wsClient: WSClient,
+  emailClient: AmazonSimpleEmailService,
+  val config: AppConfig,
+  val panDomainSettings: PanDomainAuthSettingsRefresher
+) extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
 
   def sendEmail(path: String) = APIAuthAction { req =>
     val email = req.user.email

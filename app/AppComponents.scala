@@ -57,9 +57,9 @@ class AppComponents(context: Context)
   val liveProxy = new LiveProxy(proxyClient, config)
   val previewProxy = new PreviewProxy(proxyClient, config)
 
-  val applicationController = new Application(controllerComponents, config)
+  val applicationController = new Application(controllerComponents, wsClient, config, panDomainSettings)
   val managementController = new Management(controllerComponents)
-  val proxyController = new Proxy(controllerComponents, previewProxy, liveProxy)
+  val proxyController = new Proxy(controllerComponents, wsClient, previewProxy, liveProxy, config, panDomainSettings)
   val emailController = new Email(controllerComponents, wsClient, emailClient, config, panDomainSettings)
 
   override def router: Router = new Routes(

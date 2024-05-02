@@ -1,6 +1,6 @@
 package com.gu.viewer.proxy
 
-import play.api.mvc.RequestHeader
+import play.api.mvc.{Cookie, RequestHeader}
 
 
 sealed trait ProxyRequest
@@ -19,13 +19,15 @@ object ProxyRequest {
 
 case class LiveProxyRequest(servicePath: String, body: Option[Map[String, Seq[String]]] = None) extends ProxyRequest
 
-case class PreviewProxyRequest(servicePath: String,
-                               requestHost: String,
-                               requestUri: String,
-                               requestQueryString: Map[String, Seq[String]],
-                               session: PreviewSession,
-                               body: Option[Map[String, Seq[String]]] = None
-                              ) extends ProxyRequest
+case class PreviewProxyRequest(
+  servicePath: String,
+  requestHost: String,
+  requestUri: String,
+  requestQueryString: Map[String, Seq[String]],
+  session: PreviewSession,
+  body: Option[Map[String, Seq[String]]] = None,
+  maybePandaCookieToForward: Option[Cookie] = None
+) extends ProxyRequest
 
 object PreviewProxyRequest {
   def apply(servicePath: String, request: RequestHeader, body: Option[Map[String, Seq[String]]]): PreviewProxyRequest =
