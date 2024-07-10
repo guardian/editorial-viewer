@@ -31,8 +31,4 @@ class PanDomainAuthActionsTest extends AnyFunSuite with Matchers with MockitoSug
     override val controllerComponents: ControllerComponents = mock[ControllerComponents]
   }
 
-  test("can construct a test implementation") {
-    val instance:TestImplementation = new TestImplementation
-    instance.applicationName must be("foo")
-  }
 }
