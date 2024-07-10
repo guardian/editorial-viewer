@@ -15,13 +15,18 @@ class AppConfigTest extends AnyFunSuite with Matchers with MockitoSugar {
     "composerReturnUri.DEV" -> "bar"
   )
 
-  var mockTags: AwsInstanceTags = mock[AwsInstanceTags]
-  var devConfig: Configuration = Configuration.from(devConfigValues)
+
 
   test ("can construct with DEV stage") {
+
+    var mockTags: AwsInstanceTags = mock[AwsInstanceTags]
+    var devConfig: Configuration = Configuration.from(devConfigValues)
+
     when(mockTags.readTag("Stage")).thenReturn(None)
     when(mockTags.readTag("App")).thenReturn(None)
+
     val instance: AppConfig = new AppConfig(mockTags,devConfig)
+
     instance.app must be ("viewer")
     instance.pandaDomain must be ("local.dev-gutools.co.uk")
     instance.pandaAuthCallback must be ("https://viewer.local.dev-gutools.co.uk/oauthCallback")
