@@ -7,24 +7,24 @@ import org.mockito.MockitoSugar
 import play.api.Configuration
 
 trait ConfigHelpers extends Matchers with MockitoSugar   {
-  val devConfigValues: Map[String, Any] = Map.apply(
+  private val devConfigValues: Map[String, Any] = Map.apply(
     "Stage" -> "DEV",
-    "previewHost.DEV" -> "bar",
-    "liveHost.DEV" -> "bar",
+    "previewHost.DEV" -> "preview.dev-host",
+    "liveHost.DEV" -> "live.dev-host",
     "composerReturnUri.DEV" -> "bar"
   )
 
-  val prodConfigValues: Map[String, Any] = Map.apply(
+  private val prodConfigValues: Map[String, Any] = Map.apply(
     "Stage" -> "PROD",
-    "previewHost.DEV" -> "bar",
-    "liveHost.DEV" -> "bar",
+    "previewHost.DEV" -> "preview.dev-host",
+    "liveHost.DEV" -> "live.dev-host",
     "composerReturnUri.DEV" -> "bar",
     "previewHost.PROD" -> "bar",
     "liveHost.PROD" -> "bar",
     "composerReturnUri.PROD" -> "bar"
   )
 
-  def mockTags(configValues: Map[String, Any]): AwsInstanceTags = {
+ private def mockTags(configValues: Map[String, Any]): AwsInstanceTags = {
     val mockTags: AwsInstanceTags = mock[AwsInstanceTags]
     when(mockTags.readTag("Stage")).thenReturn(configValues.get("Stage") match {
       case Some(value: String) => Some(value)
@@ -34,11 +34,11 @@ trait ConfigHelpers extends Matchers with MockitoSugar   {
     mockTags
   }
 
-  def ProdAppConfig:AppConfig = {
+  def prodAppConfig:AppConfig = {
     new AppConfig(mockTags(prodConfigValues), Configuration.from(prodConfigValues))
   }
 
-  def DevAppConfig:AppConfig = {
+  def devAppConfig:AppConfig = {
     new AppConfig(mockTags(devConfigValues),Configuration.from(devConfigValues))
   }
 }
