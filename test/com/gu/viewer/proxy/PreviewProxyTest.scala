@@ -10,10 +10,11 @@ import play.api.test.Helpers.GET
 
 import scala.concurrent.ExecutionContext
 
-class PreviewProxyTest extends AsyncFunSuite with Matchers with MockitoSugar with ConfigHelpers {
+class PreviewProxyTest extends AsyncFunSuite with Matchers with MockitoSugar with ConfigHelpers{
 
   val supportedServicePath = "item/42"
   val requestHost = "example.com"
+
   val supportedProxyUrl = s"https://$devAppConfig.previewHost/$supportedServicePath"
   val loginUrl = s"https://$devAppConfig.previewHost/login"
 
@@ -56,5 +57,14 @@ class PreviewProxyTest extends AsyncFunSuite with Matchers with MockitoSugar wit
   test("can construct login url") {
     val instance = createPreviewProxy
     instance.previewLoginUrl must be(loginUrl)
+  }
+
+  test("will proxy requests to the configured preview host") {
+    val instance = createPreviewProxy
+    val request = createRequest(supportedServicePath)
+
+    instance.proxy(request) map {
+      result => assert(result.header.status === 200)
+    }
   }
 }
