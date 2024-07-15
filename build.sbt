@@ -28,10 +28,11 @@ scalaVersion := "2.13.0"
 val awsVersion = "1.12.129"
 
 val testDependencies = Seq(
+  "org.scala-lang" %% "toolkit-test" % "0.1.7" % Test,
   "org.scalatest" %% "scalatest" % "3.2.13" % "test",
   "org.scalatestplus" %% "mockito-4-6" % "3.2.13.0" % "test",
   "org.mockito" %% "mockito-scala" % "1.17.12" % Test,
-  "com.softwaremill.diffx" %% "diffx-scalatest-should" % "0.9.0" % Test
+  "com.softwaremill.diffx" %% "diffx-scalatest-should" % "0.9.0" % Test,
 )
 
 libraryDependencies ++= Seq(
@@ -42,7 +43,7 @@ libraryDependencies ++= Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   ws,
   "com.google.guava" % "guava" % "27.0-jre",
-  "org.scala-lang" %% "toolkit-test" % "0.1.7" % Test
+  "de.leanovate.play-mockws" %% "play-mockws-3-0" % "3.0.3" % Test
   )
 
 libraryDependencies ++= testDependencies

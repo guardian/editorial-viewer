@@ -4,19 +4,31 @@ import lib.ConfigHelpers
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AsyncFunSuite
 import org.scalatest.matchers.must.Matchers
+import play.api.mvc.Results._
 import play.api.mvc.Session
+import play.api.test.Helpers.GET
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PreviewProxyTest extends AsyncFunSuite with Matchers with MockitoSugar with ConfigHelpers {
 
-  val testInstance:PreviewProxy = {
-    // to do - proper mock client
-    var mockProxyClient = mock[ProxyClient]
+  val supportedServicePath = "item/42"
+  val requestHost = "example.com"
 
-    new PreviewProxy (
-     mockProxyClient,
-     devAppConfig,
+  val createPreviewProxy: PreviewProxy = {
+    val supportedProxyUrl = s"https://${devAppConfig.previewHost}/${supportedServicePath}"
+    val mockProxyClient = makeProxyClient {
+      case (GET, userUrl) => Action {
+        userUrl match {
+          case supportedProxyUrl => Ok
+          case _ => NotFound
+        }
+      }
+    }
+
+    new PreviewProxy(
+      mockProxyClient,
+      devAppConfig,
     )(ExecutionContext.Implicits.global)
   }
 
@@ -28,27 +40,28 @@ class PreviewProxyTest extends AsyncFunSuite with Matchers with MockitoSugar wit
       playSession = new Session
     )
   }
-  def createRequest: PreviewProxyRequest  = {
+
+  def createRequest(path: String): PreviewProxyRequest = {
     new PreviewProxyRequest(
-      servicePath = "item/42",
-      requestHost = "content.source.com",
-      requestUri = "https://content.source.com/item/42",
+      servicePath = path,
+      requestHost = requestHost,
+      requestUri = s"https://${requestHost}/${path}",
       requestQueryString = Map.empty,
       session = createSession
     )
   }
 
   test("can construct login url") {
-    val instance = testInstance
-    instance.previewLoginUrl must be ("https://preview.dev-host/login")
+    val instance = createPreviewProxy
+    instance.previewLoginUrl must be("https://preview.dev-host/login")
   }
 
-//  test("can proxy get request") {
-//    val  instance = testInstance
-//    val request = createRequest
-//    instance.proxy(request) map {
-//      result => assert(result.toString() === "foo")
-//    }
-//  }
+  test("will proxy requests to the configured preview host") {
+    val instance = createPreviewProxy
+    val request = createRequest(supportedServicePath)
 
+    instance.proxy(request) map {
+      result => assert(result.header.status === 200)
+    }
+  }
 }

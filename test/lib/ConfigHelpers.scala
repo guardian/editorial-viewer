@@ -2,11 +2,15 @@ package lib
 
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
-import org.scalatest.matchers.must.Matchers
+import com.gu.viewer.proxy.ProxyClient
+import mockws.{MockWS, MockWSHelpers}
 import org.mockito.MockitoSugar
+import org.scalatest.matchers.must.Matchers
 import play.api.Configuration
 
-trait ConfigHelpers extends Matchers with MockitoSugar   {
+import scala.concurrent.ExecutionContext
+
+trait ConfigHelpers extends Matchers with MockitoSugar with MockWSHelpers  {
   private val devConfigValues: Map[String, Any] = Map.apply(
     "Stage" -> "DEV",
     "previewHost.DEV" -> "preview.dev-host",
@@ -41,4 +45,7 @@ trait ConfigHelpers extends Matchers with MockitoSugar   {
   def devAppConfig:AppConfig = {
     new AppConfig(mockTags(devConfigValues),Configuration.from(devConfigValues))
   }
+
+  def makeProxyClient(routes: MockWS.Routes, config: AppConfig = devAppConfig): ProxyClient =
+    new ProxyClient(MockWS.apply(routes), config)(ExecutionContext.Implicits.global)
 }
