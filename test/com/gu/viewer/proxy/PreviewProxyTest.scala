@@ -47,7 +47,7 @@ class PreviewProxyTest extends AsyncFunSuite with Matchers with MockitoSugar wit
     new PreviewProxyRequest(
       servicePath = path,
       requestHost = requestHost,
-      requestUri = s"https://${requestHost}/${path}",
+      requestUri = s"https://$requestHost/$path",
       requestQueryString = Map.empty,
       session = createSession
     )
