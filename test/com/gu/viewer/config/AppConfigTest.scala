@@ -13,6 +13,7 @@ class AppConfigTest extends AnyFunSuite with Matchers with MockitoSugar with Con
     instance.pandaDomain must be ("local.dev-gutools.co.uk")
     instance.pandaSettingsFileKey must be("local.dev-gutools.co.uk.settings")
     instance.pandaAuthCallback must be ("https://viewer.local.dev-gutools.co.uk/oauthCallback")
+    instance.stage must be ("DEV")
   }
 
   test("can construct with PROD stage") {
@@ -21,6 +22,7 @@ class AppConfigTest extends AnyFunSuite with Matchers with MockitoSugar with Con
     instance.pandaDomain must be("gutools.co.uk")
     instance.pandaSettingsFileKey must be("gutools.co.uk.settings")
     instance.pandaAuthCallback must be("https://viewer.gutools.co.uk/oauthCallback")
+    instance.stage must be ("PROD")
   }
 }
 
