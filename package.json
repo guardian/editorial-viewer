@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
     "webpack": "webpack --config webpack.config.js",
-    "sass": "node-sass ./public/styles/index.scss -o ./public/styles/ --include-path ",
-    "watch": "node-sass ./public/styles/index.scss -o ./public/styles/ --watch ./public/styles/ & webpack --config webpack.dev.config.js",
+    "sass": "sass ./public/styles/index.scss ./public/styles/index.css",
+    "watch": "sass ./public/styles/index.scss ./public/styles/index.css --watch ./public/styles/ & webpack --config webpack.dev.config.js",
     "postinstall": "webpack --config webpack.config.js && npm run sass"
   },
   "repository": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/guardian/editorial-viewer#readme",
   "devDependencies": {
-    "node-sass": "^9.0.0",
+    "sass": "1.77.8",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },
