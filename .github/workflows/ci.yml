@@ -36,13 +36,9 @@ jobs:
           npm run webpack
           npm run sass
 
-      # Get the desired version of Java installed (also comes with the SBT tool)
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'corretto'
-          java-version: '11'
-          cache: 'sbt'
-    
+      - name: Setup Scala
+        uses: guardian/setup-scala@v1
+
       - name: Build and Test project, Assemble Debian package, copy to root dir
         run: |
           sbt clean compile test Debian/packageBin

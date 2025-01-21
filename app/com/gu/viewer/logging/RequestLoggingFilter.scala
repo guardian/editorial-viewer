@@ -17,8 +17,8 @@ class RequestLoggingFilter(materializer: Materializer, refresher: PanDomainAuthS
 
   implicit val mat: Materializer = materializer
 
-  def readAuthenticatedUser(request: RequestHeader): Option[AuthenticatedUser] = readCookie(request) map { cookie =>
-    CookieUtils.parseCookieData(cookie.value, refresher.settings.publicKey)
+  def readAuthenticatedUser(request: RequestHeader): Option[AuthenticatedUser] = readCookie(request) flatMap { cookie =>
+    CookieUtils.parseCookieData(cookie.value, refresher.settings.signingAndVerification).toOption
   }
 
   def readCookie(request: RequestHeader): Option[Cookie] = request.cookies.get(refresher.settings.cookieSettings.cookieName)
