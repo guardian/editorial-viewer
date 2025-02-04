@@ -23,7 +23,7 @@ lazy val root = (project in file("."))
      )
   )
 
-scalaVersion := "2.13.0"
+scalaVersion := "2.13.9"
 
 val awsVersion = "1.12.129"
 
