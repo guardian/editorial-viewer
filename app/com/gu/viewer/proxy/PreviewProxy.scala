@@ -17,10 +17,10 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
   /**
    * Get a cookie that disables the consent management platform banner for theguardian.com.
    */
-  private def getDisableCmpCookie(domain: String) = Cookie(
+  private def disableCmpCookie = Cookie(
     name = "gu-cmp-disabled",
     value = "true",
-    domain = Some(domain),
+    domain = Some(serviceHost),
   )
 
   private def loginCallbackUrl(request: PreviewProxyRequest) =
@@ -81,12 +81,13 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
       response.status == 303 && response.header("Location").isDefined
     }
 
-    val cookies = request.session.asCookies ++ request.maybePandaCookieToForward.toSeq :+ getDisableCmpCookie(request.requestHost)
+    val cookies = request.session.asCookies ++ request.maybePandaCookieToForward.toSeq
 
     proxyClient.get(url, cookies = cookies) {
       case response if isLoginRedirect(response) => doPreviewAuth(request)
+      // Add the cookie to disable the consent management platform for GET requests
+      case response => Future.successful(ProxyResultWithBody(response, List(disableCmpCookie)))
     }
-
   }
 
   private def doPreviewProxyPost(request: PreviewProxyRequest) = {
