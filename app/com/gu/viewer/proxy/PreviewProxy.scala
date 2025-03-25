@@ -3,7 +3,7 @@ package com.gu.viewer.proxy
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.routes
 import com.gu.viewer.logging.Loggable
-import play.api.mvc.Result
+import play.api.mvc.{Cookie, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,10 +14,17 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
   val serviceHost = config.previewHost
   val previewLoginUrl = s"https://$serviceHost/login"
 
+  /**
+   * Get a cookie that disables the consent management platform banner for theguardian.com.
+   */
+  private def getDisableCmpCookie(domain: String) = Cookie(
+    name = "gu-cmp-disabled",
+    value = "true",
+    domain = Some(domain),
+  )
 
   private def loginCallbackUrl(request: PreviewProxyRequest) =
     s"https://${request.requestHost}${routes.Proxy.previewAuthCallback}"
-
 
   /**
    * Transform proxy server relative URI to viewer URI.
@@ -74,7 +81,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
       response.status == 303 && response.header("Location").isDefined
     }
 
-    val cookies = request.session.asCookies ++ request.maybePandaCookieToForward.toSeq
+    val cookies = request.session.asCookies ++ request.maybePandaCookieToForward.toSeq :+ getDisableCmpCookie(request.requestHost)
 
     proxyClient.get(url, cookies = cookies) {
       case response if isLoginRedirect(response) => doPreviewAuth(request)
