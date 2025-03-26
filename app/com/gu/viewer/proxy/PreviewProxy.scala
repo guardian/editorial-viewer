@@ -21,6 +21,7 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
     name = "gu-cmp-disabled",
     value = "true",
     domain = Some(domain),
+    httpOnly = false
   )
 
   private def loginCallbackUrl(request: PreviewProxyRequest) =
