@@ -2,18 +2,17 @@ package com.gu.viewer.proxy
 
 import com.gu.viewer.logging.Loggable
 import com.gu.viewer.views.html
-import play.api.http.CookiesConfiguration
 import play.api.http.HeaderNames._
 import play.api.http.MimeTypes._
 import play.api.mvc.Results._
-import play.api.mvc.{Cookie, CookieHeaderEncoding, Cookies, Result}
+import play.api.mvc.Result
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
 sealed trait ProxyResult
 
-case class ProxyResultWithBody(response: ProxyResponse, CookiesToSet: List[Cookie] = List.empty) extends ProxyResult
+case class ProxyResultWithBody(response: ProxyResponse) extends ProxyResult
 
 case class RedirectProxyResult(location: String) extends ProxyResult
 
@@ -22,18 +21,17 @@ case class RedirectProxyResultWithSession(location: String, session: PreviewSess
 case class PreviewAuthRedirectProxyResult(location: String, session: PreviewSession) extends ProxyResult
 
 
-object ProxyResult extends Loggable with CookieHeaderEncoding {
-  protected def config: CookiesConfiguration = CookiesConfiguration(strict = true)
+object ProxyResult extends Loggable {
 
   /**
    * Convert ProxyResult to a Play Result
    */
-  private def asResult(proxyResult: ProxyResult): Result = proxyResult match {
+  def asResult(proxyResult: ProxyResult): Result = proxyResult match {
+
     // Stream body result
-    case ProxyResultWithBody(response, cookiesToSet) => {
+    case ProxyResultWithBody(response) => {
       val resultHeaders = Seq(
-        response.header(CONTENT_LENGTH).map(CONTENT_LENGTH -> _),
-        Some(SET_COOKIE -> encodeSetCookieHeader(cookiesToSet))
+        response.header(CONTENT_LENGTH).map(CONTENT_LENGTH -> _)
       ).flatten
 
       Status(response.status)
