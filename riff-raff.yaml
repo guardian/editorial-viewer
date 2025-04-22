@@ -10,7 +10,7 @@ deployments:
       type: ami-cloudformation-parameter
       parameters:
         amiTags:
-          Recipe: editorial-tools-focal-java11-ARM-WITH-cdk-base
+          Recipe: editorial-tools-jammy-java11
           AmigoStage: PROD
           BuiltBy: amigo
         amiEncrypted: true
