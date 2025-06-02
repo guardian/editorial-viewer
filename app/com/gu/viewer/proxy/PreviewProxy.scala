@@ -3,7 +3,7 @@ package com.gu.viewer.proxy
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.routes
 import com.gu.viewer.logging.Loggable
-import play.api.mvc.Result
+import play.api.mvc.{Cookie, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,7 +14,16 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
   val serviceHost = config.previewHost
   val previewLoginUrl = s"https://$serviceHost/login"
 
-
+  /**
+   * Get a cookie that sets the country code to TCFV2 country not using Consent or Pay.
+   */
+  private def getCountryCodeCookie(domain: String) = Cookie(
+    name = "GU_country",
+    value = "CA", // TCFV2 country code for Canada
+    domain = Some(domain),
+    httpOnly = false
+  )
+  
   private def loginCallbackUrl(request: PreviewProxyRequest) =
     s"https://${request.requestHost}${routes.Proxy.previewAuthCallback}"
 
@@ -78,6 +87,8 @@ class PreviewProxy(proxyClient: ProxyClient, config: AppConfig)(implicit ec: Exe
 
     proxyClient.get(url, cookies = cookies) {
       case response if isLoginRedirect(response) => doPreviewAuth(request)
+      // Add the cookie to set the country code for GET requests
+      case response => Future.successful(ProxyResultWithBody(response, List(getCountryCodeCookie(request.requestHost))))
     }
 
   }
