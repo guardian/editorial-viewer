@@ -1,24 +1,24 @@
 .viewers {
-    text-align: center;
+    display: flex;
+    align-items: center;
 }
 
 .viewer {
-
-    margin: 20px;
-    vertical-align: top;
-
-    border-radius: 20px;
-    border-style: solid;
-    border-color: #F0F0F0;
+    &.is-mobile-portrait, &.is-mobile-landscape {
+        border-width: 20px;
+        border-radius: 20px;
+        border-style: solid;
+        border-color: #F0F0F0;
+        margin: 20px;
+        flex-shrink: 0;
+    }
 
     &.is-mobile-portrait {
-        border-width: 30px 20px 60px 20px;
         width: 335px;
         height: 568px;
     }
 
     &.is-mobile-landscape {
-        border-width: 20px 60px 30px 30px;
         width: 568px;
         height: 320px;
     }
@@ -32,22 +32,18 @@
 
     &.is-desktop,
     &.is-reader {
-        position: fixed;
-        top: 51px;
-        left: 0;
-
-        width:100%;
         min-width: 800px;
-        height: calc(100% - 51px);
+        height: calc(100vh - 50px);
+        flex-grow: 1;
+    }
 
-        margin: 0;
-        border-width: 0;
-        border-radius: 0;
-
+    &.is-desktop,
+    &.is-reader,
+    &.is-social-share {
+        border: none;
     }
 
     &.is-animated {
         transition: 0.5s all;
     }
-
 }

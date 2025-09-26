@@ -2,7 +2,7 @@
 @(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, csrfToken: Option[Token])
 
 @main("Viewer") {
-    <header class="fixed-header">
+    <header>
         <div class="top-toolbar">
             <div class="top-toolbar__logo">
                 <a class="top-toolbar__logo-link" href="@composerUrl" title="Return to composer"></a>
@@ -58,7 +58,8 @@
 
     <div class="content">
         <div class="viewers">
-            <iframe id="viewer" class="viewer is-mobile-portrait" src="@viewerUrl#noads"></iframe>
+            <iframe id="viewer" class="viewer is-desktop" src="@viewerUrl#noads"></iframe>
+            <iframe id="viewer" class="viewer is-desktop" src="@viewerUrl#noads"></iframe>
         </div>
     </div>
 

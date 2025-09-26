@@ -1,19 +1,4 @@
-$header-height: 90px;
-
 $infobar-color: #DDEDF7;
-
-body {
-    margin-top: $header-height;
-}
-
-.fixed-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-
-    z-index: 2;
-}
 
 .show-reader-mode {
     display: none !important;
