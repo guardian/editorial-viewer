@@ -1,6 +1,5 @@
 var localStorageUtil = require('../utils/localStorage');
 var buttonUtil = require('../utils/button');
-var analyticsCtrl = require('./analytics');
 var modes = require('../modes');
 var viewer = require('../components/viewer');
 var error = require('./error')
@@ -83,32 +82,12 @@ function updateClasses() {
     document.body.className = className;
 }
 
-function triggerAnalytics(oldMode, newMode) {
-    if ((oldMode !== newMode) && modes[oldMode].isMobile && modes[newMode].isMobile) {
-        analyticsCtrl.recordOrientationChange();
-    }
-
-    if ((oldMode !== 'desktop') && (newMode === 'desktop')) {
-        analyticsCtrl.recordDesktopViewed();
-    }
-
-    if ((oldMode !== 'reader') && (newMode === 'reader')) {
-        analyticsCtrl.recordReaderMode();
-    }
-
-    if ((oldMode !== newMode) && !modes[oldMode].isMobile && modes[newMode].isMobile) {
-        analyticsCtrl.recordMobileViewed();
-    }
-}
-
 function updateMode(newMode) {
     var oldMode = activeMode;
 
     if (newMode === 'desktop' && !desktopEnabled && window._previewEnv !== 'live') {
         return;
     }
-
-    triggerAnalytics(oldMode, newMode);
 
     activeMode = newMode;
 
@@ -129,7 +108,6 @@ function toggleDesktop() {
     } else {
         desktopEnabled = true;
         localStorageUtil.addEnabledHref(window.location.href);
-        analyticsCtrl.recordDesktopEnabled();
     }
 
     updateClasses();
@@ -148,7 +126,6 @@ function toggleAds() {
         viewer.enableAdBlock();
         localStorageUtil.saveAdBlockDisabledUntil(false);
         adsBlocked = true;
-        analyticsCtrl.recordAdsDisabled();
     }
 
     updateClasses();
