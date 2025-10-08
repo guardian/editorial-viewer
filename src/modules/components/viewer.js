@@ -1,4 +1,3 @@
-var analyticsCtrl = require('../controllers/analytics.js');
 var viewerEl = document.getElementById('viewer');
 var currentViewerUrl = viewerEl.src;
 
@@ -64,7 +63,6 @@ function updateUrl(url) {
 function printViewer() {
     try {
         viewerEl.contentWindow.print();
-        analyticsCtrl.recordPrint();
     } catch (e) {
         console.log('Can\'t communicate with iframe ', e);
     }
