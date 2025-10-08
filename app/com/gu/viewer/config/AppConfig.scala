@@ -19,7 +19,6 @@ class AppConfig(tags: AwsInstanceTags, config: Configuration) {
   val previewHost = getConfigString(s"previewHost.$stage")
   val liveHost = getConfigString(s"liveHost.$stage")
   val previewHostForceHTTP = config.getOptional[Boolean](s"previewHostForceHTTP.$stage").getOrElse(false)
-  val googleTrackingId = config.getOptional[String]("google.tracking.id").getOrElse("")
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
 
   val pandaBucket = "pan-domain-auth-settings"

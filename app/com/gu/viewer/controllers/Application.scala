@@ -44,6 +44,6 @@ class Application(
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = config.composerReturn + "/" + path
 
-    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, config.googleTrackingId, CSRF.getToken))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, CSRF.getToken))
   }
 }
