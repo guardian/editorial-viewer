@@ -4,6 +4,7 @@ node_modules
 *.log
 
 public/styles/index.css
+public/styles/index.css.map
 public/bundle.js
 public/bundle.js.LICENSE.txt
 
