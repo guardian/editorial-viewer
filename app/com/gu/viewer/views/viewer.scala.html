@@ -1,7 +1,7 @@
 @import play.filters.csrf.CSRF.Token
-@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, googleTrackingId: String, csrfToken: Option[Token])
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, csrfToken: Option[Token])
 
-@main("Viewer", googleTrackingId) {
+@main("Viewer") {
     <header class="fixed-header">
         <div class="top-toolbar">
             <div class="top-toolbar__logo">
