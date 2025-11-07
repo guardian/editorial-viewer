@@ -33,8 +33,7 @@ jobs:
       - name: CI
         run: |
           npm ci
-          npm run webpack
-          npm run sass
+          npm run build
 
       - name: Setup Scala
         uses: guardian/setup-scala@v1

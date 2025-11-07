@@ -1,52 +1,52 @@
-var viewer = require('../components/viewer');
-var applicationController = require('./application');
-var alreadyRan = false;
+import viewer from '../components/viewer';
+import applicationController from './application'
+let alreadyRan = false;
 
-function onKeyPress(e) {
+function onKeyPress(e: KeyboardEvent) {
 
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.keyIdentifier === 'U+0050')) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'U+0050')) {
       viewer.printViewer();
       e.preventDefault();
     }
 
-    if (e.key === 'ArrowUp' || e.keyIdentifier === "Up") {
+    if (e.key === 'ArrowUp' || e.key === "Up") {
       viewer.scrollViewerUp();
       e.preventDefault();
     }
 
-    if (e.key === 'ArrowDown' || e.keyIdentifier === "Down") {
+    if (e.key === 'ArrowDown' || e.key === "Down") {
       viewer.scrollViewerDown();
       e.preventDefault();
     }
 
-    if (e.key === '1' || e.keyIdentifier === 'U+0031') {
+    if (e.key === '1' || e.key === 'U+0031') {
         applicationController.setMode('mobile-portrait');
         e.preventDefault();
     }
 
-    if (e.key === '2' || e.keyIdentifier === 'U+0032') {
+    if (e.key === '2' || e.key === 'U+0032') {
         applicationController.setMode('mobile-landscape');
         e.preventDefault();
     }
 
-    if (e.key === '3' || e.keyIdentifier === 'U+0033') {
+    if (e.key === '3' || e.key === 'U+0033') {
         applicationController.setMode('reader');
         e.preventDefault();
     }
-    
-    if (e.key === '4' || e.keyIdentifier === 'U+0035') {
+
+    if (e.key === '4' || e.key === 'U+0035') {
         applicationController.setMode('social-share');
         e.preventDefault();
     }
 
-    if (e.key === '5' || e.keyIdentifier === 'U+0034') {
+    if (e.key === '5' || e.key === 'U+0034') {
         applicationController.setMode('desktop');
         e.preventDefault();
     }
 
 }
 
-function init() {
+export function init() {
     if (alreadyRan) {
         console.log("Already init'd keyboardController");
         return;
@@ -56,7 +56,3 @@ function init() {
 
     alreadyRan = true;
 }
-
-module.exports = {
-    init: init
-};

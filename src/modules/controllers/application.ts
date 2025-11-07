@@ -1,16 +1,18 @@
-var localStorageUtil = require('../utils/localStorage');
-var buttonUtil = require('../utils/button');
-var modes = require('../modes');
-var viewer = require('../components/viewer');
-var error = require('./error')
-var api = require('../utils/api')
-var overlay = require('./overlay')
+import localStorageUtil from '../utils/localStorage';
+import buttonUtil from '../utils/button';
+import { modes } from '../modes';
+import type { Mode } from '../modes';
+import viewer from '../components/viewer';
+import error from './error';
+import api from '../utils/api';
+import overlay from './overlay';
 
-var desktopEnabled, activeMode, adsBlocked;
-var defaultMode = 'mobile-portrait';
+let desktopEnabled = false
+const defaultMode = 'mobile-portrait';
+let activeMode: Mode = defaultMode;
+let adsBlocked = false;
 
-function init(options) {
-
+function init() {
     activeMode = defaultMode;
 
     viewer.init();
@@ -39,7 +41,7 @@ function checkDesktopEnabled() {
 
 function checkAdBlockStatus() {
     localStorageUtil.getAdBlockStatus().then(function(adsBlockedDisabledUntil) {
-        if (adsBlockedDisabledUntil && Date.now() < adsBlockedDisabledUntil) {
+        if (adsBlockedDisabledUntil && Date.now() < +adsBlockedDisabledUntil) {
             adsBlocked = false;
             viewer.disableAdBlock();
         } else {
@@ -53,7 +55,7 @@ function checkAdBlockStatus() {
 function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
     buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
-    buttonUtil.bindClickToModeUpdate('switchmode', updateMode);
+    buttonUtil.bindClickToModeUpdate('switchmode', setMode);
     buttonUtil.bindClickToAttributeName('redirect-preview', redirectToPreview);
     buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
     buttonUtil.bindClickToAttributeName('app-preview', appPreview);
@@ -61,7 +63,6 @@ function bindClicks() {
 
 
 function updateViews() {
-
     updateClasses();
 
     viewer.updateViewer(activeMode, modes[activeMode]);
@@ -82,9 +83,7 @@ function updateClasses() {
     document.body.className = className;
 }
 
-function updateMode(newMode) {
-    var oldMode = activeMode;
-
+function setMode(newMode: Mode) {
     if (newMode === 'desktop' && !desktopEnabled && window._previewEnv !== 'live') {
         return;
     }
@@ -95,7 +94,7 @@ function updateMode(newMode) {
 }
 
 function redirectToPreview() {
-    window.location="https://preview.gutools.co.uk/" + window.location.href.split('/preview/')[1] + "#noads"
+    window.location.href = `https://preview.gutools.co.uk/${window.location.href.split('/preview/')[1]}#noads`;
 }
 
 function toggleDesktop() {
@@ -131,20 +130,22 @@ function toggleAds() {
     updateClasses();
 }
 
-function appPreview() {
-    api.appPreviewRequest()
-    .then(overlay.showOverlay.bind(null))
-    .fail(function (err, msg) {
-      if (err.status === 419 || err.status === 401) {
-        error.showError('You are not authorised, try logging into composer.');
-      } else {
+async function appPreview() {
+    try {
+        const request = api.appPreviewRequest();
+        const response = await request;
+        if ([401, 419].includes(response.status)) {
+            error.showError('You are not authorised, try logging into composer.');
+        }
+    } catch {
         error.showError('Error while sending preview email.');
-      }
-    });
+    }
+
+    overlay.showOverlay();
 }
 
-module.exports = {
-    init:                init,
-    checkDesktopEnabled: checkDesktopEnabled,
-    setMode:             updateMode
+export default {
+    init,
+    checkDesktopEnabled,
+    setMode,
 };
