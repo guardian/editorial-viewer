@@ -1,8 +1,7 @@
 import localStorageUtil from '../utils/localStorage';
 import buttonUtil from '../utils/button';
-import { modes } from '../modes';
 import type { Mode } from '../modes';
-import viewer from '../components/viewer';
+import viewers from '../components/viewers';
 import error from './error';
 import api from '../utils/api';
 import overlay from './overlay';
@@ -15,7 +14,7 @@ let adsBlocked = false;
 function init() {
     activeMode = defaultMode;
 
-    viewer.init();
+    viewers.init();
 
     bindClicks();
     updateViews();
@@ -43,7 +42,7 @@ function checkAdBlockStatus() {
     localStorageUtil.getAdBlockStatus().then(function(adsBlockedDisabledUntil) {
         if (adsBlockedDisabledUntil && Date.now() < +adsBlockedDisabledUntil) {
             adsBlocked = false;
-            viewer.disableAdBlock();
+            viewers.disableAdBlock();
         } else {
             adsBlocked = true;
         }
@@ -57,7 +56,7 @@ function bindClicks() {
     buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', setMode);
     buttonUtil.bindClickToAttributeName('redirect-preview', redirectToPreview);
-    buttonUtil.bindClickToAttributeName('print', viewer.printViewer);
+    buttonUtil.bindClickToAttributeName('print', viewers.printViewer);
     buttonUtil.bindClickToAttributeName('app-preview', appPreview);
 }
 
@@ -65,7 +64,7 @@ function bindClicks() {
 function updateViews() {
     updateClasses();
 
-    viewer.updateViewer(activeMode, modes[activeMode]);
+    viewers.updateViewers(activeMode);
     buttonUtil.markSelected('switchmode', activeMode);
 }
 
@@ -119,10 +118,10 @@ function toggleAds() {
 
 
         adsBlocked = false;
-        viewer.disableAdBlock();
+        viewers.disableAdBlock();
 
     } else {
-        viewer.enableAdBlock();
+        viewers.enableAdBlock();
         localStorageUtil.saveAdBlockDisabledUntil(false);
         adsBlocked = true;
     }

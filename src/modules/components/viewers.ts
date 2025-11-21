@@ -1,16 +1,18 @@
 import errorController from '../controllers/error';
+import * as scrollController from '../controllers/scroll';
 import type { Mode, ViewportConfig } from '../modes';
+import { modeToConfigMap } from '../modes';
 
-const viewerEl = document.getElementById('viewer') as HTMLIFrameElement;
-let currentViewerUrl = viewerEl.src;
-
+const viewersContainer = document.getElementsByClassName('viewers')[0];
+const viewerEls = [...document.getElementsByClassName('viewer')] as HTMLIFrameElement[];
+let currentViewerUrl = viewerEls[0].src;
 
 let currentViewPortConfig: ViewportConfig | null = null;
 let currentViewPortName = 'mobile-portrait';
 let adBlockDisabled = false;
 
-function updateViewer(viewportName: Mode, viewportConfig: ViewportConfig) {
-
+function updateViewers(mode: Mode) {
+    const viewportConfig = modeToConfigMap[mode];
     var isAnimated = false;
     var preventRefresh = false;
 
@@ -18,6 +20,25 @@ function updateViewer(viewportName: Mode, viewportConfig: ViewportConfig) {
         // We have a change of viewport, test for special cases where we can animate
         if (viewportConfig.isMobile && currentViewPortConfig.isMobile) {
             isAnimated = true;
+        }
+    }
+
+    if (viewportConfig.isReader || viewportConfig.isSocial) {
+        preventRefresh = true;
+
+        if (viewerEls.length === 2) {
+            viewersContainer.removeChild(viewerEls[1]);
+            viewerEls.pop();
+            scrollController.updateViewers(viewerEls);
+        }
+    } else {
+        if (viewerEls.length === 1) {
+            const newViewer = window.document.createElement('iframe');
+            newViewer.className = 'viewer is-desktop';
+            newViewer.src = generateUrl(currentViewerUrl);
+            viewersContainer.appendChild(newViewer);
+            viewerEls.push(newViewer);
+            scrollController.updateViewers(viewerEls);
         }
     }
 
@@ -32,7 +53,7 @@ function updateViewer(viewportName: Mode, viewportConfig: ViewportConfig) {
     }
 
     currentViewPortConfig = viewportConfig;
-    currentViewPortName = viewportName;
+    currentViewPortName = mode;
 
     restyleViewer(isAnimated, preventRefresh);
 }
@@ -42,34 +63,36 @@ function reloadiFrame() {
     updateUrl(currentViewerUrl);
 }
 
+function generateUrl(baseUrl: string) {
+    return `${baseUrl}#${adBlockDisabled ? 'noads' : ''}`
+}
+
 function updateUrl(url: string) {
     currentViewerUrl = url;
 
-    var newiFrameUrl = url;
+    var newiFrameUrl = generateUrl(url);
 
-    if (adBlockDisabled) {
-        newiFrameUrl += '#';
-    } else {
-        newiFrameUrl += '#noads';
-    }
+    viewerEls.forEach(viewerEl => {
+        viewerEl.src = 'about:blank';
 
-    viewerEl.src = 'about:blank';
-
-    setTimeout(function() {
-        viewerEl.src = newiFrameUrl;
-    }, 100);
-
+        setTimeout(function() {
+            viewerEl.src = newiFrameUrl;
+        }, 100);
+    })
 }
 
 function printViewer() {
     try {
-        viewerEl.contentWindow?.print();
+        viewerEls[0].contentWindow?.print();
     } catch (e) {
         console.log("Can't communicate with iframe ", e);
     }
 }
 
 function enableReader() {
+    // TODO: need to render only one iframe
+    const viewerEl = viewerEls[0];
+
     if (!viewerEl.contentDocument) {
         console.log("Can't enable Reader mode, viewer content document is inaccessible");
         return;
@@ -95,6 +118,9 @@ function enableReader() {
 }
 
 function enableSocialShare() {
+    // TODO: need to render only one iframe
+    const viewerEl = viewerEls[0];
+
     if (!viewerEl.contentDocument) {
         console.log("Can't enable Social share mode, viewer content document is inaccessible");
         return;
@@ -196,6 +222,9 @@ function remove(frame: HTMLIFrameElement, id: string) {
 }
 
 function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
+    // TODO: this should select the mobile viewer, is that the only one we need to restyle?
+    const viewerEl = viewerEls[0];
+
     var transitionEndHandler = function() {
         viewerEl.removeEventListener('transitionend', transitionEndHandler);
         viewerEl.classList.remove('is-animated');
@@ -218,15 +247,17 @@ function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
 }
 
 function scrollViewer(scrollByAmount: number) {
-    viewerEl?.contentWindow?.scrollBy(0, scrollByAmount);
+    viewerEls.forEach(viewerEl => {
+        viewerEl.contentWindow?.scrollBy(0, scrollByAmount * viewerEl.clientHeight / 1.5);
+    });
 }
 
 function scrollViewerDown() {
-    scrollViewer(viewerEl.clientHeight / 1.5);
+    scrollViewer(1);
 }
 
 function scrollViewerUp() {
-    scrollViewer(-1 * viewerEl.clientHeight / 1.5);
+    scrollViewer(-1);
 }
 
 function onViewerLoad(e: Event) {
@@ -249,7 +280,7 @@ function detectMobileAndRedirect() {
         if (window._actualUrl) {
             window.location.href = window._actualUrl;
         } else {
-            window.location.href = viewerEl.src;
+            window.location.href = viewerEls[0].src;
         }
     }
 }
@@ -281,18 +312,16 @@ function addBlankToLinks() {
 
 function init() {
     detectMobileAndRedirect();
-    viewerEl.addEventListener('load', onViewerLoad);
+    viewerEls[0].addEventListener('load', onViewerLoad);
 }
 
 export default {
-    updateViewer,
+    updateViewers,
     updateUrl,
     disableAdBlock,
     enableAdBlock,
     printViewer,
     scrollViewerUp,
     scrollViewerDown,
-    enableReader,
-    enableSocialShare,
     init,
 };

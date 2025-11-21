@@ -5,6 +5,7 @@
 
 
 .content {
+    flex-grow: 1;
     position: relative;
 }
 
@@ -21,8 +22,12 @@
 
 html {
     font-size: 10px;
+    height: 100%;
 }
 body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     @extend %f-data;
     @extend %fs-data-4;
 }

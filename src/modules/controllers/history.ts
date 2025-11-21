@@ -1,4 +1,4 @@
-import viewer from '../components/viewer';
+import viewers from '../components/viewers';
 import applicationController from './application';
 import errorController from './error';
 
@@ -25,21 +25,21 @@ export function init() {
         //If we get a browser error page, then don't replaceLocationHistory
         if (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1) {
             //Needs to be replace (not push) as the iframe has added it's own history entry (shakes fist).
-            updateUrl(iframeLocation);
+            replaceLocationHistory(iframeLocation);
         }
     });
 }
 
 function onPopState(e: PopStateEvent) {
     if (e.state && e.state.viewerHref) {
-        viewer.updateUrl(e.state.viewerHref);
+        viewers.updateUrl(e.state.viewerHref);
     } else {
         var initialHref = window._proxyBase + window._originalPath;
-        viewer.updateUrl(initialHref);
+        viewers.updateUrl(initialHref);
     }
 }
 
-export function updateUrl(iFrameLocation: Location) {
+function replaceLocationHistory(iFrameLocation: Location) {
 
     //Check if it's a proxy URL (Although shouldn't get here with Same Origin)
     if (iFrameLocation.href.indexOf(window._proxyBase) === -1) {
