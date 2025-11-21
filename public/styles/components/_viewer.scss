@@ -32,7 +32,6 @@
 
     &.is-desktop,
     &.is-reader {
-        min-width: 800px;
         height: calc(100vh - 50px);
         flex-grow: 1;
     }

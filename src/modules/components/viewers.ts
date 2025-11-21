@@ -39,6 +39,7 @@ function updateViewers(mode: Mode) {
             newViewer.src = generateUrl(currentViewerUrl);
             viewersContainer.appendChild(newViewer);
             viewerEls.push(newViewer);
+            updateVisibleViewers();
             scrollController.updateViewers(viewerEls);
         }
 
@@ -214,8 +215,7 @@ function enableSocialShare() {
             ' </div>';
 
         viewerEl.contentDocument.body.appendChild(twCard);
-
-        Object.assign(viewerEl.contentDocument.body.style, { margin: '20px' });
+        viewerEl.contentDocument.body.style.margin = '20px';
     } catch (e) {
         console.log("Can't enable Social share mode: ", e);
     }
@@ -320,9 +320,28 @@ function addBlankToLinks() {
     }
 }
 
+function updateVisibleViewers() {
+    requestAnimationFrame(() => {
+        if (viewerEls.length === 1) {
+            // No further action required
+            return;
+        }
+
+        if (window.innerWidth < 1120) {
+            viewerEls[1].style.display = 'none';
+        } else {
+            viewerEls[1].style.display = '';
+        }
+    });
+}
+
 function init() {
     detectMobileAndRedirect();
     viewerEls[0].addEventListener('load', onViewerLoad);
+    updateVisibleViewers();
+    window.addEventListener('resize', () => {
+        updateVisibleViewers();
+    });
 }
 
 export default {
