@@ -6,7 +6,7 @@ export interface ViewportConfig {
 
 export type Mode = 'mobile-portrait' | 'mobile-landscape' | 'desktop' | 'reader' | 'social-share'
 
-export const modes: Record<Mode, ViewportConfig> = {
+export const modeToConfigMap: Record<Mode, ViewportConfig> = {
     'mobile-portrait': {
         isMobile: true
     },

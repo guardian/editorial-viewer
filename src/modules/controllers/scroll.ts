@@ -35,21 +35,29 @@ function addScrollListener(viewer: HTMLIFrameElement) {
     });
 };
 
+function addEventListenersToViewer(viewer: HTMLIFrameElement) {
+    addScrollListener(viewer);
+
+    viewer.addEventListener('load', () => {
+        addScrollListener(viewer);
+    });
+
+    viewer.addEventListener('mouseenter', () => {
+        activeViewer = viewer;
+    });
+
+    viewer.addEventListener('mouseleave', () => {
+        activeViewer = null;
+    });
+}
+
 export function init() {
     viewers = Array.from(document.getElementsByClassName('viewer')) as HTMLIFrameElement[];
-    viewers.forEach((viewer) => {
-        addScrollListener(viewer);
-
-        viewer.addEventListener('load', () => {
-            addScrollListener(viewer);
-        });
-
-        viewer.addEventListener('mouseenter', () => {
-            activeViewer = viewer;
-        });
-
-        viewer.addEventListener('mouseleave', () => {
-            activeViewer = null;
-        });
-    });
+    viewers.forEach((viewer) => addEventListenersToViewer(viewer));
 };
+
+export function updateViewers(updatedViewers: HTMLIFrameElement[]) {
+    const newViewers = updatedViewers.filter(uv => !viewers.includes(uv));
+    newViewers.forEach(newViewer => addEventListenersToViewer(newViewer))
+    viewers = [...updatedViewers];
+}

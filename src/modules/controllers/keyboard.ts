@@ -1,21 +1,21 @@
-import viewer from '../components/viewer';
+import viewers from '../components/viewers';
 import applicationController from './application'
 let alreadyRan = false;
 
 function onKeyPress(e: KeyboardEvent) {
 
     if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'U+0050')) {
-      viewer.printViewer();
+      viewers.printViewer();
       e.preventDefault();
     }
 
     if (e.key === 'ArrowUp' || e.key === "Up") {
-      viewer.scrollViewerUp();
+      viewers.scrollViewerUp();
       e.preventDefault();
     }
 
     if (e.key === 'ArrowDown' || e.key === "Down") {
-      viewer.scrollViewerDown();
+      viewers.scrollViewerDown();
       e.preventDefault();
     }
 

@@ -1,6 +1,7 @@
 .viewers {
     display: flex;
     align-items: center;
+    height: 100%;
 }
 
 .viewer {
@@ -41,6 +42,7 @@
     &.is-reader,
     &.is-social-share {
         border: none;
+        height: 100%;
     }
 
     &.is-animated {
