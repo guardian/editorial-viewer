@@ -86,30 +86,23 @@ $infobar-color: #DDEDF7;
 .top-toolbar {
     &__button,
     &__button--mobilecheck,
-    &__button--right,
     &__button--desktop,
     &__button--blockads {
         @extend %fs-data-3;
-
-        display: inline-block;
-        position: relative;
-
-        text-decoration: none;
         color: inherit;
+        font-size: inherit;
+        font-family: inherit;
 
         padding-top: 16px;
         padding-bottom: 16px;
         padding-left: 15px;
         padding-right: 15px;
 
+        border: none;
         border-top: 3px solid $c-bluegrey;
-        border-right: 1px solid $c-grey-400;
-
-        list-style: none;
+        background: none;
 
         cursor: pointer;
-
-
 
         &:hover {
             border-top: 3px solid #d0d0d0;
@@ -118,14 +111,6 @@ $infobar-color: #DDEDF7;
 
         &.is-selected {
             border-top: 3px solid #00a8ed;
-        }
-
-        &.is-hidden {
-            display: none;
-        }
-
-        &.is-hidden.is-always-visible {
-            display: inline-block;
         }
     }
 
@@ -141,30 +126,20 @@ $infobar-color: #DDEDF7;
         }
     }
 
-
-    &__button--right {
-
-        float: right;
-
-        border-left: 1px solid $c-grey-400;
-        border-right-width: 0;
-    }
-
-    &__container {
+    &__item, &__item--right {
         display: inline-block;
-
-        border-right: 1px solid $c-grey-400;
-
         list-style: none;
+        border-right: 1px solid #bdbdbd;
 
         .top-toolbar__button {
             border-right-width: 0;
         }
     }
 
-    &__container--right {
-        display: inline-block;
+    &__item--right {
         float: right;
+        border-left: 1px solid $c-grey-400;
+        border-right: none;
     }
 
     &__label {

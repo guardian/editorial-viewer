@@ -1,6 +1,7 @@
 .viewers {
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 100%;
 }
 
@@ -26,9 +27,7 @@
 
     &.is-social-share {
         width: 1024px;
-        height: 768px;
-        border-radius: 0px;
-        border-width: 0px;
+        margin: 20px;
     }
 
     &.is-desktop,
