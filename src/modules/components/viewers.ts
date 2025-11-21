@@ -30,6 +30,7 @@ function updateViewers(mode: Mode) {
             viewersContainer.removeChild(viewerEls[1]);
             viewerEls.pop();
             scrollController.updateViewers(viewerEls);
+            viewerEls[0].title = "Viewer";
         }
     } else {
         if (viewerEls.length === 1) {
@@ -40,6 +41,9 @@ function updateViewers(mode: Mode) {
             viewerEls.push(newViewer);
             scrollController.updateViewers(viewerEls);
         }
+
+        viewerEls[0].title = "Mobile viewer";
+        viewerEls[1].title = "Desktop viewer";
     }
 
     if (viewportConfig.isReader) {
