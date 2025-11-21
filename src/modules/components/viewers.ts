@@ -43,8 +43,16 @@ function updateViewers(mode: Mode) {
     }
 
     if (viewportConfig.isReader) {
-        enableReader();
-        preventRefresh = true;
+        if (currentViewPortConfig?.isSocial) {
+            updateUrl(currentViewerUrl)
+
+            // Hack to allow time for page to load before applying reader mode styling
+            setTimeout(() => {
+                enableReader();
+            }, 200);
+        } else {
+            enableReader();
+        }
     }
 
     if (viewportConfig.isSocial) {
@@ -64,7 +72,7 @@ function reloadiFrame() {
 }
 
 function generateUrl(baseUrl: string) {
-    return `${baseUrl}#${adBlockDisabled ? 'noads' : ''}`
+    return `${baseUrl}#${adBlockDisabled ? '' : 'noads'}`
 }
 
 function updateUrl(url: string) {
@@ -90,7 +98,6 @@ function printViewer() {
 }
 
 function enableReader() {
-    // TODO: need to render only one iframe
     const viewerEl = viewerEls[0];
 
     if (!viewerEl.contentDocument) {
@@ -118,7 +125,6 @@ function enableReader() {
 }
 
 function enableSocialShare() {
-    // TODO: need to render only one iframe
     const viewerEl = viewerEls[0];
 
     if (!viewerEl.contentDocument) {
@@ -166,8 +172,8 @@ function enableSocialShare() {
             '  <div class=\'author\'> theguardian.com | By ' + (author ? author.content : 'unknown')  + '</div>' +
             ' </div>';
 
-        viewerEl.contentDocument.body.appendChild(fbCard);
 
+        viewerEl.contentDocument.body.appendChild(fbCard);
 
          /* Twitter header */
         remove(viewerEl, 'twHeader');
@@ -205,6 +211,7 @@ function enableSocialShare() {
 
         viewerEl.contentDocument.body.appendChild(twCard);
 
+        Object.assign(viewerEl.contentDocument.body.style, { margin: '20px' });
     } catch (e) {
         console.log("Can't enable Social share mode: ", e);
     }
@@ -222,7 +229,6 @@ function remove(frame: HTMLIFrameElement, id: string) {
 }
 
 function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
-    // TODO: this should select the mobile viewer, is that the only one we need to restyle?
     const viewerEl = viewerEls[0];
 
     var transitionEndHandler = function() {
