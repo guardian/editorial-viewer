@@ -1,22 +1,12 @@
 $infobar-color: #DDEDF7;
 
-.show-reader-mode {
-    display: none !important;
+.reader-mode-info {
+    display: none;
 }
 
 .is-reader {
-    & .show-reader-mode {
-        display: inline-block !important;
-    }
-
-    & .hide-reader-mode {
-        display: none !important;
-    }
-}
-
-.desktop-enabled {
-    & .hide-desktop-enabled {
-        display: none !important;
+    & .reader-mode-info {
+        display: inline-block;
     }
 }
 
@@ -36,7 +26,6 @@ $infobar-color: #DDEDF7;
 }
 
 .top-toolbar {
-
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -54,6 +43,7 @@ $infobar-color: #DDEDF7;
 
     a {
       color: inherit;
+      display: inline-block;
     }
 }
 
@@ -85,8 +75,6 @@ $infobar-color: #DDEDF7;
 
 .top-toolbar {
     &__button,
-    &__button--mobilecheck,
-    &__button--desktop,
     &__button--blockads {
         @extend %fs-data-3;
         color: inherit;
@@ -111,18 +99,6 @@ $infobar-color: #DDEDF7;
 
         &.is-selected {
             border-top: 3px solid #00a8ed;
-        }
-    }
-
-    &__button--mobilecheck.is-selected {
-        border-top: 3px solid $c-bluegrey;
-    }
-
-    &__button--desktop {
-        display: none;
-
-        .desktop-enabled & {
-            display: inline-block;
         }
     }
 
@@ -159,21 +135,6 @@ $infobar-color: #DDEDF7;
         @extend %top-toolbar__status;
         background-color: $c-green;
         color: $c-white;
-    }
-}
-
-.top-toolbar__icon--desktop {
-    @extend %icon__desktop;
-
-    height: 17px;
-    margin-right: 7px;
-
-    .is-selected:hover & {
-        @extend %icon__refresh-desktop;
-        position: relative;
-        top: -1px;
-        height: 17px;
-
     }
 }
 
@@ -241,6 +202,23 @@ $infobar-color: #DDEDF7;
     }
 }
 
+.top-toolbar__icon--desktop {
+    @extend %icon__desktop;
+
+    .is-selected & {
+        /* Hack to get highlighted colour without needing to modify SVG */
+        filter: invert(44%) sepia(79%) saturate(2629%) hue-rotate(169deg) brightness(103%) contrast(102%);
+    }
+
+    .is-selected:hover & {
+        @extend %icon__refresh;
+
+        height: 16px;
+        width: 16px;
+        margin: 2px;
+    }
+}
+
 .top-toolbar__icon--checkbox {
     @extend %icon__checkbox;
 
@@ -248,12 +226,6 @@ $infobar-color: #DDEDF7;
     position: relative;
     top: -2px;
     margin-right: 7px;
-
-    .desktop-enabled .top-toolbar__button--mobilecheck & {
-        @extend %icon__checkbox--checked;
-
-        height: 18px;
-    }
 
     .ads-blocked .top-toolbar__button--blockads & {
         @extend %icon__checkbox--checked;

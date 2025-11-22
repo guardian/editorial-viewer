@@ -18,10 +18,17 @@
                         }
                     </li>
                     <li class="top-toolbar__item">
-                        <div class="top-toolbar__label">Mobile web</div>
+                        <div class="top-toolbar__label">Web</div>
                         <div class="viewer-orientation">
-                            <button class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait"><i class="top-toolbar__icon--mobile-portrait"></i></button>
-                            <button class="viewer-orientation__button" data-switchmode="mobile-landscape"><i class="top-toolbar__icon--mobile-landscape"></i></button>
+                            <button class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait" aria-label="Mobile web portrait">
+                                <i class="top-toolbar__icon--mobile-portrait"></i>
+                            </button>
+                            <button class="viewer-orientation__button" data-switchmode="mobile-landscape" aria-label="Mobile web landscape">
+                                <i class="top-toolbar__icon--mobile-landscape"></i>
+                            </button>
+                            <button class="viewer-orientation__button" data-switchmode="desktop" aria-label="Desktop web">
+                                <i class="top-toolbar__icon--desktop"></i>
+                            </button>
                         </div>
                     </li>
                     <li class="top-toolbar__item">
@@ -48,16 +55,6 @@
                             </button>
                         </li>
                         <li class="top-toolbar__item">
-                            <button class="top-toolbar__button--mobilecheck" data-toggledesktop>
-                                <i class="top-toolbar__icon--checkbox"></i>Mobile checked & verified
-                            </button>
-                        </li>
-                        <li class="top-toolbar__item">
-                            <button class="top-toolbar__button--desktop" data-switchmode="desktop">
-                                <i class="top-toolbar__icon--desktop"></i>Desktop
-                            </button>
-                        </li>
-                        <li class="top-toolbar__item">
                             <button class="top-toolbar__button--blockads" data-toggleads>
                                 <i class="top-toolbar__icon--checkbox"></i>Block ads
                             </button>
@@ -66,11 +63,6 @@
                         <li class="top-toolbar__item">
                             <button class="top-toolbar__button" data-switchmode="social-share">
                                 <i class="top-toolbar__icon--socialshare"></i>Social share
-                            </button>
-                        </li>
-                        <li class="top-toolbar__item">
-                            <button class="top-toolbar__button" data-switchmode="desktop">
-                                <i class="top-toolbar__icon--desktop"></i>Desktop
                             </button>
                         </li>
                         <li class="top-toolbar__item">
@@ -85,7 +77,7 @@
                 </ul>
             </div>
         </div>
-        <div class="info-bar show-reader-mode">Copy taste presents you with a distraction free view of the article content. If you have any feedback please email the <a href="mailto:digitalcms.dev@@guardian.co.uk">Digital CMS</a> team</div>
+        <div class="info-bar reader-mode-info">Copy taste presents you with a distraction free view of the article content. If you have any feedback please email the <a href="mailto:digitalcms.dev@@guardian.co.uk">Digital CMS</a> team</div>
         <div id="errorbar" class="error-bar"></div>
         <div id="messageBar" class="message-bar"></div>
     </header>

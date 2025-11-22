@@ -71,10 +71,6 @@ function updateViews() {
 function updateClasses() {
     var className = 'is-' + activeMode;
 
-    if (desktopEnabled) {
-        className += ' desktop-enabled';
-    }
-
     if (adsBlocked) {
         className += ' ads-blocked';
     }
@@ -83,10 +79,6 @@ function updateClasses() {
 }
 
 function setMode(newMode: Mode) {
-    if (newMode === 'desktop' && !desktopEnabled && window._previewEnv !== 'live') {
-        return;
-    }
-
     activeMode = newMode;
 
     updateViews();

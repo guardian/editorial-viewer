@@ -9,12 +9,14 @@ let currentViewerUrl = viewerEls[0].src;
 
 let currentViewPortConfig: ViewportConfig | null = null;
 let currentViewPortName = 'mobile-portrait';
+let mobileOrientation = 'portrait';
 let adBlockDisabled = false;
 
 function updateViewers(mode: Mode) {
     const viewportConfig = modeToConfigMap[mode];
     var isAnimated = false;
     var preventRefresh = false;
+    mobileOrientation = mode === 'mobile-landscape' ? 'landscape' : 'portrait';
 
     if (currentViewPortConfig && currentViewPortConfig !== viewportConfig) {
         // We have a change of viewport, test for special cases where we can animate
@@ -238,6 +240,7 @@ function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
     var transitionEndHandler = function() {
         viewerEl.removeEventListener('transitionend', transitionEndHandler);
         viewerEl.classList.remove('is-animated');
+        updateVisibleViewers();
 
         if (!preventRefresh) {
             reloadiFrame();
@@ -327,7 +330,9 @@ function updateVisibleViewers() {
             return;
         }
 
-        if (window.innerWidth < 1120) {
+        const threshold = mobileOrientation === 'portrait' ? 1120 : 1360;
+
+        if (window.innerWidth < threshold) {
             viewerEls[1].style.display = 'none';
         } else {
             viewerEls[1].style.display = '';
