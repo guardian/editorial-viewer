@@ -1,6 +1,7 @@
 import errorController from '../controllers/error';
 import * as scrollController from '../controllers/scroll';
 import type { Mode } from '../modes';
+import buttonUtil from '../utils/button';
 
 const viewersContainer = document.getElementsByClassName('viewers')[0];
 const viewerEls = [...document.getElementsByClassName('viewer')] as HTMLIFrameElement[];
@@ -321,17 +322,25 @@ function addBlankToLinks() {
 
 function updateVisibleViewers() {
     requestAnimationFrame(() => {
-        if (viewerEls.length === 1) {
+        if (viewerEls.length === 1 && currentMode !== 'desktop') {
             // No further action required
             return;
         }
 
         const threshold = currentMode === 'mobile-landscape' ? 1360 : 1120;
+        const desktopButton = document.querySelector('[data-switchmode="desktop"]') as HTMLElement;
 
         if (window.innerWidth < threshold) {
             viewerEls[1].style.display = 'none';
+            desktopButton.style.display = '';
         } else {
+            if (currentMode === 'desktop') {
+                updateViewers('mobile-portrait');
+                buttonUtil.markSelected('switchmode', 'mobile-portrait');
+            }
+
             viewerEls[1].style.display = '';
+            desktopButton.style.display = 'none';
         }
     });
 }
