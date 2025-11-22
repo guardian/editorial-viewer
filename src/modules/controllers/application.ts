@@ -52,7 +52,6 @@ function checkAdBlockStatus() {
 }
 
 function bindClicks() {
-    buttonUtil.bindClickToAttributeName('toggledesktop', toggleDesktop);
     buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
     buttonUtil.bindClickToModeUpdate('switchmode', setMode);
     buttonUtil.bindClickToAttributeName('redirect-preview', redirectToPreview);
@@ -86,21 +85,6 @@ function setMode(newMode: Mode) {
 
 function redirectToPreview() {
     window.location.href = `https://preview.gutools.co.uk/${window.location.href.split('/preview/')[1]}#noads`;
-}
-
-function toggleDesktop() {
-    if (desktopEnabled) {
-        if (activeMode === 'desktop') {
-            activeMode = defaultMode;
-        }
-        desktopEnabled = false;
-        localStorageUtil.removeEnabledHref(window.location.href);
-    } else {
-        desktopEnabled = true;
-        localStorageUtil.addEnabledHref(window.location.href);
-    }
-
-    updateClasses();
 }
 
 function toggleAds() {

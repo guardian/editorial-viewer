@@ -1,33 +1,30 @@
 import errorController from '../controllers/error';
 import * as scrollController from '../controllers/scroll';
-import type { Mode, ViewportConfig } from '../modes';
-import { modeToConfigMap } from '../modes';
+import type { Mode } from '../modes';
 
 const viewersContainer = document.getElementsByClassName('viewers')[0];
 const viewerEls = [...document.getElementsByClassName('viewer')] as HTMLIFrameElement[];
 let currentViewerUrl = viewerEls[0].src;
-
-let currentViewPortConfig: ViewportConfig | null = null;
-let currentViewPortName = 'mobile-portrait';
-let mobileOrientation = 'portrait';
+let currentMode: Mode = 'mobile-portrait';
 let adBlockDisabled = false;
+const mobileModeRegex = /mobile-/
 
 function updateViewers(mode: Mode) {
-    const viewportConfig = modeToConfigMap[mode];
     var isAnimated = false;
     var preventRefresh = false;
-    mobileOrientation = mode === 'mobile-landscape' ? 'landscape' : 'portrait';
 
-    if (currentViewPortConfig && currentViewPortConfig !== viewportConfig) {
-        // We have a change of viewport, test for special cases where we can animate
-        if (viewportConfig.isMobile && currentViewPortConfig.isMobile) {
+    if (currentMode !== mode) {
+        // We have a change of mode, test for special cases where we can animate
+        if (mobileModeRegex.test(mode) && mobileModeRegex.test(currentMode)) {
             isAnimated = true;
         }
     }
 
-    if (viewportConfig.isReader || viewportConfig.isSocial) {
+    if (['reader', 'social-share'].includes(mode)) {
         preventRefresh = true;
+    }
 
+    if (['desktop', 'reader', 'social-share'].includes(mode)) {
         if (viewerEls.length === 2) {
             viewersContainer.removeChild(viewerEls[1]);
             viewerEls.pop();
@@ -49,8 +46,8 @@ function updateViewers(mode: Mode) {
         viewerEls[1].title = "Desktop viewer";
     }
 
-    if (viewportConfig.isReader) {
-        if (currentViewPortConfig?.isSocial) {
+    if (mode === 'reader') {
+        if (currentMode === 'social-share') {
             updateUrl(currentViewerUrl)
 
             // Hack to allow time for page to load before applying reader mode styling
@@ -62,13 +59,12 @@ function updateViewers(mode: Mode) {
         }
     }
 
-    if (viewportConfig.isSocial) {
+    if (mode === 'social-share') {
         enableSocialShare();
         preventRefresh = true;
     }
 
-    currentViewPortConfig = viewportConfig;
-    currentViewPortName = mode;
+    currentMode = mode;
 
     restyleViewer(isAnimated, preventRefresh);
 }
@@ -247,7 +243,7 @@ function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
         }
     };
 
-    viewerEl.className = 'viewer is-' + currentViewPortName;
+    viewerEl.className = 'viewer is-' + currentMode;
 
     if (isAnimated) {
         viewerEl.classList.add('is-animated');
@@ -280,10 +276,10 @@ function onViewerLoad(e: Event) {
         addBlankToLinks();
     }
 
-    if (currentViewPortName === 'reader') {
+    if (currentMode === 'reader') {
         enableReader();
     }
-    if (currentViewPortName === 'social-share') {
+    if (currentMode === 'social-share') {
         enableSocialShare();
     }
 }
@@ -330,7 +326,7 @@ function updateVisibleViewers() {
             return;
         }
 
-        const threshold = mobileOrientation === 'portrait' ? 1120 : 1360;
+        const threshold = currentMode === 'mobile-landscape' ? 1360 : 1120;
 
         if (window.innerWidth < threshold) {
             viewerEls[1].style.display = 'none';
