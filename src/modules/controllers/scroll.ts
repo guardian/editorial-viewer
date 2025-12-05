@@ -49,11 +49,6 @@ function addEventListenersToViewer(viewer: HTMLIFrameElement) {
     });
 };
 
-export function init() {
-    viewers = Array.from(document.getElementsByClassName('viewer')) as HTMLIFrameElement[];
-    viewers.forEach((viewer) => addEventListenersToViewer(viewer));
-};
-
 export function updateViewers(updatedViewers: HTMLIFrameElement[]) {
     const newViewers = updatedViewers.filter(uv => !viewers.includes(uv));
     newViewers.forEach(newViewer => addEventListenersToViewer(newViewer))

@@ -5,10 +5,10 @@ import errorController from './error';
 export function init() {
     window.addEventListener('popstate', onPopState);
 
-    document.getElementById('viewer')?.addEventListener('load', function(e) {
+    document.getElementsByClassName('viewer')[0]?.addEventListener('load', function(e) {
 
         try {
-            // @ts-expect-error -- don't know how to event target as iframe
+            // @ts-expect-error -- don't know how to type event.target as iframe
             var iframeLocation = e.target.contentWindow.location;
             // @ts-expect-error -- same here
             e.target.contentWindow.location.href; //Requied to trigger Same origin warnings
