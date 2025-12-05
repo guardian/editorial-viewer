@@ -36,20 +36,18 @@ function addScrollListener(viewer: HTMLIFrameElement) {
 };
 
 function addEventListenersToViewer(viewer: HTMLIFrameElement) {
-    addScrollListener(viewer);
-
     viewer.addEventListener('load', () => {
         addScrollListener(viewer);
     });
 
-    viewer.addEventListener('mouseenter', () => {
-        activeViewer = viewer;
-    });
+    const onEnter = () => { activeViewer = viewer };
 
+    viewer.addEventListener('mouseenter', onEnter);
+    viewer.addEventListener('touchstart', onEnter);
     viewer.addEventListener('mouseleave', () => {
         activeViewer = null;
     });
-}
+};
 
 export function init() {
     viewers = Array.from(document.getElementsByClassName('viewer')) as HTMLIFrameElement[];
@@ -60,4 +58,4 @@ export function updateViewers(updatedViewers: HTMLIFrameElement[]) {
     const newViewers = updatedViewers.filter(uv => !viewers.includes(uv));
     newViewers.forEach(newViewer => addEventListenersToViewer(newViewer))
     viewers = [...updatedViewers];
-}
+};
