@@ -1,37 +1,12 @@
-$header-height: 90px;
-
 $infobar-color: #DDEDF7;
 
-body {
-    margin-top: $header-height;
-}
-
-.fixed-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-
-    z-index: 2;
-}
-
-.show-reader-mode {
-    display: none !important;
+.reader-mode-info {
+    display: none;
 }
 
 .is-reader {
-    & .show-reader-mode {
-        display: inline-block !important;
-    }
-
-    & .hide-reader-mode {
-        display: none !important;
-    }
-}
-
-.desktop-enabled {
-    & .hide-desktop-enabled {
-        display: none !important;
+    & .reader-mode-info {
+        display: inline-block;
     }
 }
 
@@ -51,7 +26,6 @@ body {
 }
 
 .top-toolbar {
-
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -69,6 +43,7 @@ body {
 
     a {
       color: inherit;
+      display: inline-block;
     }
 }
 
@@ -100,31 +75,22 @@ body {
 
 .top-toolbar {
     &__button,
-    &__button--mobilecheck,
-    &__button--right,
-    &__button--desktop,
     &__button--blockads {
         @extend %fs-data-3;
-
-        display: inline-block;
-        position: relative;
-
-        text-decoration: none;
         color: inherit;
+        font-size: inherit;
+        font-family: inherit;
 
         padding-top: 16px;
         padding-bottom: 16px;
         padding-left: 15px;
         padding-right: 15px;
 
+        border: none;
         border-top: 3px solid $c-bluegrey;
-        border-right: 1px solid $c-grey-400;
-
-        list-style: none;
+        background: none;
 
         cursor: pointer;
-
-
 
         &:hover {
             border-top: 3px solid #d0d0d0;
@@ -134,52 +100,22 @@ body {
         &.is-selected {
             border-top: 3px solid #00a8ed;
         }
-
-        &.is-hidden {
-            display: none;
-        }
-
-        &.is-hidden.is-always-visible {
-            display: inline-block;
-        }
     }
 
-    &__button--mobilecheck.is-selected {
-        border-top: 3px solid $c-bluegrey;
-    }
-
-    &__button--desktop {
-        display: none;
-
-        .desktop-enabled & {
-            display: inline-block;
-        }
-    }
-
-
-    &__button--right {
-
-        float: right;
-
-        border-left: 1px solid $c-grey-400;
-        border-right-width: 0;
-    }
-
-    &__container {
+    &__item, &__item--right {
         display: inline-block;
-
-        border-right: 1px solid $c-grey-400;
-
         list-style: none;
+        border-right: 1px solid #bdbdbd;
 
         .top-toolbar__button {
             border-right-width: 0;
         }
     }
 
-    &__container--right {
-        display: inline-block;
+    &__item--right {
         float: right;
+        border-left: 1px solid $c-grey-400;
+        border-right: none;
     }
 
     &__label {
@@ -199,21 +135,6 @@ body {
         @extend %top-toolbar__status;
         background-color: $c-green;
         color: $c-white;
-    }
-}
-
-.top-toolbar__icon--desktop {
-    @extend %icon__desktop;
-
-    height: 17px;
-    margin-right: 7px;
-
-    .is-selected:hover & {
-        @extend %icon__refresh-desktop;
-        position: relative;
-        top: -1px;
-        height: 17px;
-
     }
 }
 
@@ -281,6 +202,23 @@ body {
     }
 }
 
+.top-toolbar__icon--desktop {
+    @extend %icon__desktop;
+
+    .is-selected & {
+        /* Hack to get highlighted colour without needing to modify SVG */
+        filter: invert(44%) sepia(79%) saturate(2629%) hue-rotate(169deg) brightness(103%) contrast(102%);
+    }
+
+    .is-selected:hover & {
+        @extend %icon__refresh;
+
+        height: 16px;
+        width: 16px;
+        margin: 2px;
+    }
+}
+
 .top-toolbar__icon--checkbox {
     @extend %icon__checkbox;
 
@@ -288,12 +226,6 @@ body {
     position: relative;
     top: -2px;
     margin-right: 7px;
-
-    .desktop-enabled .top-toolbar__button--mobilecheck & {
-        @extend %icon__checkbox--checked;
-
-        height: 18px;
-    }
 
     .ads-blocked .top-toolbar__button--blockads & {
         @extend %icon__checkbox--checked;

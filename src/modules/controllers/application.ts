@@ -1,0 +1,123 @@
+import localStorageUtil from '../utils/localStorage';
+import buttonUtil from '../utils/button';
+import type { Mode } from '../modes';
+import viewers from '../components/viewers';
+import error from './error';
+import api from '../utils/api';
+import overlay from './overlay';
+
+const defaultMode = 'mobile-portrait';
+let activeMode: Mode = defaultMode;
+let adsBlocked = false;
+
+function init() {
+    activeMode = defaultMode;
+
+    viewers.init();
+
+    bindClicks();
+    updateViews();
+    checkAdBlockStatus();
+    checkDesktopEnabled();
+}
+
+function checkDesktopEnabled() {
+    localStorageUtil.getEnabledHrefs().then(function(hrefs) {
+        if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
+            viewers.enableDesktop();
+        }
+    });
+};
+
+function checkAdBlockStatus() {
+    localStorageUtil.getAdBlockStatus().then(function(adsBlockedDisabledUntil) {
+        if (adsBlockedDisabledUntil && Date.now() < +adsBlockedDisabledUntil) {
+            adsBlocked = false;
+            viewers.disableAdBlock();
+        } else {
+            adsBlocked = true;
+        }
+
+        updateClasses();
+    });
+};
+
+function bindClicks() {
+    buttonUtil.bindClickToAttributeName('toggle-ads', toggleAds);
+    buttonUtil.bindClickToAttributeName('enable-desktop', enableDesktop);
+    buttonUtil.bindClickToModeUpdate('switch-mode', setMode);
+    buttonUtil.bindClickToAttributeName('redirect-preview', redirectToPreview);
+    buttonUtil.bindClickToAttributeName('print', viewers.printViewer);
+    buttonUtil.bindClickToAttributeName('app-preview', appPreview);
+};
+
+
+function updateViews() {
+    updateClasses();
+
+    viewers.updateViewers(activeMode);
+    buttonUtil.markSelected('switch-mode', activeMode);
+};
+
+function updateClasses() {
+    var className = 'is-' + activeMode;
+
+    if (adsBlocked) {
+        className += ' ads-blocked';
+    }
+
+    document.body.className = className;
+};
+
+function setMode(newMode: Mode) {
+    activeMode = newMode;
+
+    updateViews();
+}
+
+function redirectToPreview() {
+    window.location.href = `https://preview.gutools.co.uk/${window.location.href.split('/preview/')[1]}#noads`;
+};
+
+function enableDesktop() {
+    localStorageUtil.addEnabledHref(window.location.href);
+    viewers.enableDesktop();
+};
+
+function toggleAds() {
+    if (adsBlocked) {
+        var tenHoursFromNow = Date.now() + (1000 * 60 * 60 * 10);
+        localStorageUtil.saveAdBlockDisabledUntil(tenHoursFromNow);
+
+
+        adsBlocked = false;
+        viewers.disableAdBlock();
+
+    } else {
+        viewers.enableAdBlock();
+        localStorageUtil.saveAdBlockDisabledUntil(false);
+        adsBlocked = true;
+    }
+
+    updateClasses();
+};
+
+async function appPreview() {
+    try {
+        const request = api.appPreviewRequest();
+        const response = await request;
+        if ([401, 419].includes(response.status)) {
+            error.showError('You are not authorised, try logging into composer.');
+        }
+    } catch {
+        error.showError('Error while sending preview email.');
+    }
+
+    overlay.showOverlay();
+};
+
+export default {
+    init,
+    checkDesktopEnabled,
+    setMode,
+};

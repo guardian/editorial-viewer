@@ -1,19 +1,20 @@
-var localforage = require('localforage');
+import localforage from 'localforage';
 
-var ENABLED_PAGES_MAX = 100;
-var ENABLED_PAGES_KEY = 'desktopEnabled';
-
-var ADBLOCK_DISABLED_UNTILL_KEY = 'adblockDisabled';
+const ENABLED_PAGES_MAX = 100;
+const ENABLED_PAGES_KEY = 'desktopEnabled';
+const ADBLOCK_DISABLED_UNTILL_KEY = 'adblockDisabled';
 
 function getEnabledHrefs() {
-    return localforage.getItem(ENABLED_PAGES_KEY);
+    return localforage.getItem(ENABLED_PAGES_KEY).then(hrefs => {
+        return Array.isArray(hrefs) ? hrefs : [];
+    });
 }
 
-function saveEnabledHrefs(hrefs) {
+function saveEnabledHrefs(hrefs: string[]) {
     return localforage.setItem(ENABLED_PAGES_KEY, hrefs);
 }
 
-function saveAdBlockStatus(status) {
+function saveAdBlockDisabledUntil(status: number | false) {
     return localforage.setItem(ADBLOCK_DISABLED_UNTILL_KEY, status);
 }
 
@@ -21,14 +22,9 @@ function getAdBlockStatus() {
     return localforage.getItem(ADBLOCK_DISABLED_UNTILL_KEY);
 }
 
-function addEnabledHref(href) {
+function addEnabledHref(href: string) {
 
     getEnabledHrefs().then(function(hrefs) {
-        //Needs to be an array
-        if (!Array.isArray(hrefs)) {
-            hrefs = [];
-        }
-
         //Already in there, just return
         if (hrefs.indexOf(href) !== -1) {
             return;
@@ -47,7 +43,7 @@ function addEnabledHref(href) {
     });
 }
 
-function removeEnabledHref(href) {
+function removeEnabledHref(href: string) {
 
     getEnabledHrefs().then(function(hrefs) {
 
@@ -61,10 +57,10 @@ function removeEnabledHref(href) {
     });
 }
 
-module.exports = {
-    addEnabledHref:           addEnabledHref,
-    removeEnabledHref:        removeEnabledHref,
-    getEnabledHrefs:          getEnabledHrefs,
-    saveAdBlockDisabledUntil: saveAdBlockStatus,
-    getAdBlockStatus:         getAdBlockStatus
+export default {
+    addEnabledHref,
+    removeEnabledHref,
+    getEnabledHrefs,
+    saveAdBlockDisabledUntil,
+    getAdBlockStatus,
 };

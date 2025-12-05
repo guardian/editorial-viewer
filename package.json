@@ -2,32 +2,23 @@
   "name": "editorial-viewer",
   "version": "1.0.0",
   "description": "Mobile first preview of Guardian content.",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install",
-    "webpack": "webpack --config webpack.config.js",
-    "sass": "sass ./public/styles/index.scss ./public/styles/index.css",
-    "watch": "sass ./public/styles/index.scss ./public/styles/index.css --watch ./public/styles/ & webpack --config webpack.dev.config.js",
-    "postinstall": "webpack --config webpack.config.js && npm run sass"
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "tsc && vite build",
+    "build:css": "sass ./public/styles/index.scss ./public/styles/index.css",
+    "watch": "sass ./public/styles/index.scss ./public/styles/index.css --watch & ./public/styles/ & vite build --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/guardian/editorial-viewer.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/guardian/editorial-viewer/issues"
-  },
-  "homepage": "https://github.com/guardian/editorial-viewer#readme",
   "devDependencies": {
-    "sass": "1.77.8",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "@types/node": "^24.7.1",
+    "sass": "^1.93.2",
+    "typescript": "~5.9.3",
+    "vite": "npm:rolldown-vite@7.1.14"
   },
   "dependencies": {
-    "localforage": "^1.10.0",
-    "reqwest": "^2.0.5"
+    "localforage": "^1.10.0"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.1.14"
   }
 }

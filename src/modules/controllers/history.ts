@@ -1,15 +1,16 @@
-var viewer = require('../components/viewer');
-var applicationController = require('./application.js');
+import viewers from '../components/viewers';
+import applicationController from './application';
+import errorController from './error';
 
-var errorController = require('./error');
-
-function init() {
+export function init() {
     window.addEventListener('popstate', onPopState);
 
-    document.getElementById('viewer').addEventListener('load', function(e) {
+    document.getElementsByClassName('viewer')[0]?.addEventListener('load', function(e) {
 
         try {
+            // @ts-expect-error -- don't know how to type event.target as iframe
             var iframeLocation = e.target.contentWindow.location;
+            // @ts-expect-error -- same here
             e.target.contentWindow.location.href; //Requied to trigger Same origin warnings
         } catch(e) {
 
@@ -29,16 +30,16 @@ function init() {
     });
 }
 
-function onPopState(e) {
+function onPopState(e: PopStateEvent) {
     if (e.state && e.state.viewerHref) {
-        viewer.updateUrl(e.state.viewerHref);
+        viewers.updateUrl(e.state.viewerHref);
     } else {
         var initialHref = window._proxyBase + window._originalPath;
-        viewer.updateUrl(initialHref);
+        viewers.updateUrl(initialHref);
     }
 }
 
-function replaceLocationHistory(iFrameLocation) {
+function replaceLocationHistory(iFrameLocation: Location) {
 
     //Check if it's a proxy URL (Although shouldn't get here with Same Origin)
     if (iFrameLocation.href.indexOf(window._proxyBase) === -1) {
@@ -56,8 +57,3 @@ function replaceLocationHistory(iFrameLocation) {
     }
 
 }
-
-module.exports = {
-    init:      init,
-    updateUrl: replaceLocationHistory
-};

@@ -1,9 +1,9 @@
-var errorEl = document.getElementById('errorbar');
+var errorEl = document.getElementById('errorbar') as HTMLElement;
 
 var visibleClass = "error-bar--active";
 var inVisibleClass = "error-bar";
 
-function showError(text) {
+function showError(text: string) {
     errorEl.innerText = text;
     errorEl.className = visibleClass;
 }
@@ -13,7 +13,7 @@ function hideError() {
     errorEl.className = inVisibleClass;
 }
 
-module.exports = {
-    showError: showError,
-    hideError: hideError
+export default {
+    showError,
+    hideError,
 };
