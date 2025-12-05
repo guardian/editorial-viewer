@@ -8,7 +8,7 @@ const viewerEls = [...document.querySelectorAll('iframe.viewer, .viewer > iframe
 let currentViewerUrl = viewerEls[0].src;
 let currentMode: Mode = 'mobile-portrait';
 let adBlockDisabled = false;
-// let desktopEnabled = false;
+let desktopEnabled = false;
 const mobileModeRegex = /mobile-/;
 
 function updateViewers(mode: Mode) {
@@ -28,19 +28,32 @@ function updateViewers(mode: Mode) {
 
     if (['desktop', 'reader', 'social-share'].includes(mode)) {
         if (viewerEls.length === 2) {
-            viewersContainer.removeChild(viewerEls[1]);
+            // Move overlay to hidden part of DOM so we don't have to recreate it
+            const overlay = document.getElementsByClassName('is-desktop__overlay')[0]!;
+            const overlayStorage = document.getElementById('desktop-overlay-storage-area')!;
+            overlayStorage.appendChild(overlay);
+
+            viewersContainer.removeChild(viewerEls[1].parentElement!);
             viewerEls.pop();
             scrollController.updateViewers(viewerEls);
             viewerEls[0].title = "Viewer";
         }
     } else {
         if (viewerEls.length === 1) {
-            const newViewer = window.document.createElement('iframe');
-            newViewer.className = 'viewer is-desktop';
+            const newViewerWrapper = document.createElement('div');
+            viewersContainer.appendChild(newViewerWrapper);
+            newViewerWrapper.className = 'viewer is-desktop';
+            const newViewer = document.createElement('iframe');
+            newViewerWrapper.appendChild(newViewer);
             newViewer.src = generateUrl(currentViewerUrl);
             newViewer.addEventListener('load', onViewerLoad);
-            viewersContainer.appendChild(newViewer);
             viewerEls.push(newViewer);
+
+            if(!desktopEnabled) {
+                const overlay = document.getElementsByClassName('is-desktop__overlay')[0]!;
+                newViewerWrapper.append(overlay);
+            }
+
             updateVisibleViewers();
             scrollController.updateViewers(viewerEls);
         }
@@ -310,7 +323,7 @@ function enableAdBlock() {
 };
 
 function enableDesktop() {
-    // desktopEnabled = true;
+    desktopEnabled = true;
 
     document.querySelector('.is-desktop__overlay')?.remove();
 };
