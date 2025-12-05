@@ -8,7 +8,7 @@ const viewerEls = [...document.getElementsByClassName('viewer')] as HTMLIFrameEl
 let currentViewerUrl = viewerEls[0].src;
 let currentMode: Mode = 'mobile-portrait';
 let adBlockDisabled = false;
-const mobileModeRegex = /mobile-/
+const mobileModeRegex = /mobile-/;
 
 function updateViewers(mode: Mode) {
     var isAnimated = false;
@@ -37,6 +37,7 @@ function updateViewers(mode: Mode) {
             const newViewer = window.document.createElement('iframe');
             newViewer.className = 'viewer is-desktop';
             newViewer.src = generateUrl(currentViewerUrl);
+            newViewer.addEventListener('load', onViewerLoad);
             viewersContainer.appendChild(newViewer);
             viewerEls.push(newViewer);
             updateVisibleViewers();
@@ -49,7 +50,7 @@ function updateViewers(mode: Mode) {
 
     if (mode === 'reader') {
         if (currentMode === 'social-share') {
-            updateUrl(currentViewerUrl)
+            updateUrl(currentViewerUrl);
 
             // Hack to allow time for page to load before applying reader mode styling
             setTimeout(() => {
@@ -68,16 +69,16 @@ function updateViewers(mode: Mode) {
     currentMode = mode;
 
     restyleViewer(isAnimated, preventRefresh);
-}
+};
 
 function reloadiFrame() {
     errorController.hideError();
     updateUrl(currentViewerUrl);
-}
+};
 
 function generateUrl(baseUrl: string) {
-    return `${baseUrl}#${adBlockDisabled ? '' : 'noads'}`
-}
+    return `${baseUrl}${adBlockDisabled ? '' : '#noads'}`;
+};
 
 function updateUrl(url: string) {
     currentViewerUrl = url;
@@ -90,8 +91,8 @@ function updateUrl(url: string) {
         setTimeout(function() {
             viewerEl.src = newiFrameUrl;
         }, 100);
-    })
-}
+    });
+};
 
 function printViewer() {
     try {
@@ -99,7 +100,7 @@ function printViewer() {
     } catch (e) {
         console.log("Can't communicate with iframe ", e);
     }
-}
+};
 
 function enableReader() {
     const viewerEl = viewerEls[0];
@@ -126,7 +127,7 @@ function enableReader() {
     } catch (e) {
         console.log("Can't enable Reader mode: ", e);
     }
-}
+};
 
 function enableSocialShare() {
     const viewerEl = viewerEls[0];
@@ -218,7 +219,7 @@ function enableSocialShare() {
     } catch (e) {
         console.log("Can't enable Social share mode: ", e);
     }
-}
+};
 
 function remove(frame: HTMLIFrameElement, id: string) {
     if (!frame.contentDocument) {
@@ -229,7 +230,7 @@ function remove(frame: HTMLIFrameElement, id: string) {
     if (previous) {
         previous.parentNode?.removeChild(previous);
     }
-}
+};
 
 function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
     const viewerEl = viewerEls[0];
@@ -254,27 +255,33 @@ function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
     if (!isAnimated && !preventRefresh) {
         reloadiFrame();
     }
-}
+};
 
 function scrollViewer(scrollByAmount: number) {
     viewerEls.forEach(viewerEl => {
         viewerEl.contentWindow?.scrollBy(0, scrollByAmount * viewerEl.clientHeight / 1.5);
     });
-}
+};
 
 function scrollViewerDown() {
     scrollViewer(1);
-}
+};
 
 function scrollViewerUp() {
     scrollViewer(-1);
-}
+};
 
 function onViewerLoad(e: Event) {
-    var iframeLocation = (e.target as HTMLIFrameElement).contentWindow?.location;
+    var iframe = (e.target as HTMLIFrameElement);
+    var iframeLocation = iframe.contentWindow?.location;
     if (iframeLocation && (iframeLocation.origin !== 'null' || iframeLocation.protocol.indexOf('http') !== -1)) {
         currentViewerUrl = iframeLocation.origin + iframeLocation.pathname;
-        addBlankToLinks();
+        addBlankToLinks(iframe);
+    }
+
+    // If we have mode than one viewer and this is not the first, skip the test
+    if (iframe !== viewerEls[0]) {
+        return;
     }
 
     if (currentMode === 'reader') {
@@ -283,7 +290,7 @@ function onViewerLoad(e: Event) {
     if (currentMode === 'social-share') {
         enableSocialShare();
     }
-}
+};
 
 function detectMobileAndRedirect() {
     if (window.screen && window.screen.width <= 768) {
@@ -293,32 +300,31 @@ function detectMobileAndRedirect() {
             window.location.href = viewerEls[0].src;
         }
     }
-}
+};
 
 function enableAdBlock() {
     adBlockDisabled = false;
 
     reloadiFrame();
-}
+};
 
 function disableAdBlock() {
     adBlockDisabled = true;
 
     reloadiFrame();
-}
+};
 
-function addBlankToLinks() {
-    var iframe = document.getElementById('viewer') as HTMLIFrameElement;
+function addBlankToLinks(iframe: HTMLIFrameElement) {
     var iframeDoc = iframe.contentDocument;
-    var ancs = iframeDoc?.querySelectorAll('.js-article__body a, .article-body-viewer-selector a') as NodeListOf<HTMLAnchorElement>;
-    for (var i = 0; i < ancs.length; i++) {
+    var anchors = iframeDoc?.querySelectorAll('.js-article__body a, .article-body-viewer-selector a') as NodeListOf<HTMLAnchorElement>;
+    anchors.forEach(anchor => {
         // If href doesn't contain gutools or theguardian (i.e: links to guardian pages) add blank
-        if (!/gutools|theguardian/.test(ancs[i].origin)) {
-            ancs[i].setAttribute('target', '_blank');
-            ancs[i].setAttribute('rel', 'noopener noreferrer');
+        if (!/gutools|theguardian/.test(anchor.origin)) {
+            anchor.setAttribute('target', '_blank');
+            anchor.setAttribute('rel', 'noopener noreferrer');
         }
-    }
-}
+    });
+};
 
 function updateVisibleViewers() {
     requestAnimationFrame(() => {
@@ -343,16 +349,16 @@ function updateVisibleViewers() {
             desktopButton.style.display = 'none';
         }
     });
-}
+};
 
 function init() {
     detectMobileAndRedirect();
-    viewerEls[0].addEventListener('load', onViewerLoad);
+    viewerEls.forEach(viewerEl => viewerEl.addEventListener('load', onViewerLoad));
     updateVisibleViewers();
     window.addEventListener('resize', () => {
         updateVisibleViewers();
     });
-}
+};
 
 export default {
     updateViewers,
