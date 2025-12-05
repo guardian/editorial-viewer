@@ -25,7 +25,7 @@ function bindClickToAttributeName(attributeName: string, fn: () => void) {
 function bindClickToModeUpdate(attributeName: string, fn: (mode: Mode) => void) {
     var els = document.querySelectorAll('[data-' + attributeName + ']') as NodeListOf<HTMLElement>;
     var bindClick = function(el: HTMLElement) {
-       var mode = el.dataset['switch-mode'] as Mode;
+       var mode = el.dataset.switchMode as Mode;
        el.addEventListener('click', function() {
            fn(mode);
        });
