@@ -22,19 +22,39 @@ function updateViewers(mode: Mode) {
         }
     }
 
+    if (mobileModeRegex.test(mode) && viewerEls.length === 1) {
+        const newViewer = document.createElement('iframe');
+        newViewer.src = generateUrl(currentViewerUrl);
+        newViewer.addEventListener('load', onViewerLoad);
+        viewersContainer.insertBefore(newViewer, viewersContainer.firstChild!);
+        viewerEls.unshift(newViewer);
+        updateVisibleViewers();
+        scrollController.updateViewers(viewerEls);
+
+        viewerEls[0].title = "Mobile viewer";
+        viewerEls[1].title = "Desktop viewer";
+    }
+
     if (['reader', 'social-share'].includes(mode)) {
         preventRefresh = true;
     }
 
     if (['desktop', 'reader', 'social-share'].includes(mode)) {
         if (viewerEls.length === 2) {
-            // Move overlay to hidden part of DOM so we don't have to recreate it
-            const overlay = document.getElementsByClassName('is-desktop__overlay')[0]!;
-            const overlayStorage = document.getElementById('desktop-overlay-storage-area')!;
-            overlayStorage.appendChild(overlay);
+            if (mode === 'desktop') {
+                viewersContainer.removeChild(viewerEls[0]);
+                viewerEls.shift();
+                viewerEls[0].parentElement!.style.display = '';
+            } else {
+                // Move overlay to hidden part of DOM so we don't have to recreate it
+                const overlay = document.getElementsByClassName('is-desktop__overlay')[0]!;
+                const overlayStorage = document.getElementById('desktop-overlay-storage-area')!;
+                overlayStorage.appendChild(overlay);
 
-            viewersContainer.removeChild(viewerEls[1].parentElement!);
-            viewerEls.pop();
+                viewersContainer.removeChild(viewerEls[1].parentElement!);
+                viewerEls.pop();
+            }
+
             scrollController.updateViewers(viewerEls);
             viewerEls[0].title = "Viewer";
         }
