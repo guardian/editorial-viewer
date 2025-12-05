@@ -6,7 +6,6 @@ import error from './error';
 import api from '../utils/api';
 import overlay from './overlay';
 
-let desktopEnabled = false
 const defaultMode = 'mobile-portrait';
 let activeMode: Mode = defaultMode;
 let adsBlocked = false;
@@ -18,25 +17,17 @@ function init() {
 
     bindClicks();
     updateViews();
-    checkDesktopEnabled();
     checkAdBlockStatus();
+    checkDesktopEnabled();
 }
 
 function checkDesktopEnabled() {
     localStorageUtil.getEnabledHrefs().then(function(hrefs) {
         if (Array.isArray(hrefs) && hrefs.indexOf(window.location.href) !== -1) {
-            desktopEnabled = true;
-        } else {
-            desktopEnabled = false;
+            viewers.enableDesktop();
         }
-
-        if (activeMode === 'desktop' && !desktopEnabled) {
-            activeMode = defaultMode;
-        }
-
-        updateClasses();
     });
-}
+};
 
 function checkAdBlockStatus() {
     localStorageUtil.getAdBlockStatus().then(function(adsBlockedDisabledUntil) {
@@ -49,23 +40,24 @@ function checkAdBlockStatus() {
 
         updateClasses();
     });
-}
+};
 
 function bindClicks() {
-    buttonUtil.bindClickToAttributeName('toggleads', toggleAds);
-    buttonUtil.bindClickToModeUpdate('switchmode', setMode);
+    buttonUtil.bindClickToAttributeName('toggle-ads', toggleAds);
+    buttonUtil.bindClickToAttributeName('enable-desktop', enableDesktop);
+    buttonUtil.bindClickToModeUpdate('switch-mode', setMode);
     buttonUtil.bindClickToAttributeName('redirect-preview', redirectToPreview);
     buttonUtil.bindClickToAttributeName('print', viewers.printViewer);
     buttonUtil.bindClickToAttributeName('app-preview', appPreview);
-}
+};
 
 
 function updateViews() {
     updateClasses();
 
     viewers.updateViewers(activeMode);
-    buttonUtil.markSelected('switchmode', activeMode);
-}
+    buttonUtil.markSelected('switch-mode', activeMode);
+};
 
 function updateClasses() {
     var className = 'is-' + activeMode;
@@ -75,7 +67,7 @@ function updateClasses() {
     }
 
     document.body.className = className;
-}
+};
 
 function setMode(newMode: Mode) {
     activeMode = newMode;
@@ -85,7 +77,12 @@ function setMode(newMode: Mode) {
 
 function redirectToPreview() {
     window.location.href = `https://preview.gutools.co.uk/${window.location.href.split('/preview/')[1]}#noads`;
-}
+};
+
+function enableDesktop() {
+    localStorageUtil.addEnabledHref(window.location.href);
+    viewers.enableDesktop();
+};
 
 function toggleAds() {
     if (adsBlocked) {
@@ -103,7 +100,7 @@ function toggleAds() {
     }
 
     updateClasses();
-}
+};
 
 async function appPreview() {
     try {
@@ -117,7 +114,7 @@ async function appPreview() {
     }
 
     overlay.showOverlay();
-}
+};
 
 export default {
     init,

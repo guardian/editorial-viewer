@@ -20,13 +20,13 @@
                     <li class="top-toolbar__item">
                         <div class="top-toolbar__label">Web</div>
                         <div class="viewer-orientation">
-                            <button class="viewer-orientation__button is-selected" data-switchmode="mobile-portrait" aria-label="Mobile web portrait">
+                            <button class="viewer-orientation__button is-selected" data-switch-mode="mobile-portrait" aria-label="Mobile web portrait">
                                 <i class="top-toolbar__icon--mobile-portrait"></i>
                             </button>
-                            <button class="viewer-orientation__button" data-switchmode="mobile-landscape" aria-label="Mobile web landscape">
+                            <button class="viewer-orientation__button" data-switch-mode="mobile-landscape" aria-label="Mobile web landscape">
                                 <i class="top-toolbar__icon--mobile-landscape"></i>
                             </button>
-                            <button class="viewer-orientation__button" data-switchmode="desktop" aria-label="Desktop web">
+                            <button class="viewer-orientation__button" data-switch-mode="desktop" aria-label="Desktop web">
                                 <i class="top-toolbar__icon--desktop"></i>
                             </button>
                         </div>
@@ -45,23 +45,23 @@
                             </button>
                         </li>
                         <li class="top-toolbar__item">
-                            <button class="top-toolbar__button" data-switchmode="social-share">
+                            <button class="top-toolbar__button" data-switch-mode="social-share">
                                 <i class="top-toolbar__icon--socialshare"></i>Social share
                             </button>
                         </li>
                         <li class="top-toolbar__item">
-                            <button class="top-toolbar__button" data-switchmode="reader">
+                            <button class="top-toolbar__button" data-switch-mode="reader">
                                 <i class="top-toolbar__icon--copycheck"></i>Copy taste
                             </button>
                         </li>
                         <li class="top-toolbar__item">
-                            <button class="top-toolbar__button--blockads" data-toggleads>
+                            <button class="top-toolbar__button--blockads" data-toggle-ads>
                                 <i class="top-toolbar__icon--checkbox"></i>Block ads
                             </button>
                         </li>
                     } else {
                         <li class="top-toolbar__item">
-                            <button class="top-toolbar__button" data-switchmode="social-share">
+                            <button class="top-toolbar__button" data-switch-mode="social-share">
                                 <i class="top-toolbar__icon--socialshare"></i>Social share
                             </button>
                         </li>
@@ -82,12 +82,16 @@
         <div id="messageBar" class="message-bar"></div>
     </header>
 
-
-
     <div class="content">
         <div class="viewers">
             <iframe class="viewer is-mobile-portrait" src="@viewerUrl#noads" title="Mobile viewer"></iframe>
-            <iframe class="viewer is-desktop" src="@viewerUrl#noads" title="Desktop viewer"></iframe>
+            <div class="viewer is-desktop">
+                <iframe src="@viewerUrl#noads" title="Desktop viewer"></iframe>
+                <div class="is-desktop__overlay">
+                    <p>To enable desktop preview you need to check and verify mobile first</p>
+                    <button data-enable-desktop>I have checked the mobile preview</button>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -4,10 +4,11 @@ import type { Mode } from '../modes';
 import buttonUtil from '../utils/button';
 
 const viewersContainer = document.getElementsByClassName('viewers')[0];
-const viewerEls = [...document.getElementsByClassName('viewer')] as HTMLIFrameElement[];
+const viewerEls = [...document.querySelectorAll('iframe.viewer, .viewer > iframe')] as HTMLIFrameElement[];
 let currentViewerUrl = viewerEls[0].src;
 let currentMode: Mode = 'mobile-portrait';
 let adBlockDisabled = false;
+// let desktopEnabled = false;
 const mobileModeRegex = /mobile-/;
 
 function updateViewers(mode: Mode) {
@@ -308,6 +309,12 @@ function enableAdBlock() {
     reloadiFrame();
 };
 
+function enableDesktop() {
+    // desktopEnabled = true;
+
+    document.querySelector('.is-desktop__overlay')?.remove();
+};
+
 function disableAdBlock() {
     adBlockDisabled = true;
 
@@ -334,18 +341,18 @@ function updateVisibleViewers() {
         }
 
         const threshold = currentMode === 'mobile-landscape' ? 1360 : 1120;
-        const desktopButton = document.querySelector('[data-switchmode="desktop"]') as HTMLElement;
+        const desktopButton = document.querySelector('[data-switch-mode="desktop"]') as HTMLElement;
 
         if (window.innerWidth < threshold) {
-            viewerEls[1].style.display = 'none';
+            viewerEls[1].parentElement!.style.display = 'none';
             desktopButton.style.display = '';
         } else {
             if (currentMode === 'desktop') {
                 updateViewers('mobile-portrait');
-                buttonUtil.markSelected('switchmode', 'mobile-portrait');
+                buttonUtil.markSelected('switch-mode', 'mobile-portrait');
             }
 
-            viewerEls[1].style.display = '';
+            viewerEls[1].parentElement!.style.display = '';
             desktopButton.style.display = 'none';
         }
     });
@@ -358,6 +365,7 @@ function init() {
     window.addEventListener('resize', () => {
         updateVisibleViewers();
     });
+    scrollController.updateViewers(viewerEls);
 };
 
 export default {
@@ -365,6 +373,7 @@ export default {
     updateUrl,
     disableAdBlock,
     enableAdBlock,
+    enableDesktop,
     printViewer,
     scrollViewerUp,
     scrollViewerDown,
