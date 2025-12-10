@@ -51,6 +51,8 @@ function replaceLocationHistory(iFrameLocation) {
     var newAppPath = window._baseAppUrl + '/' + resourcePath;
 
     if (newAppPath !== window.location.pathname) { //Check it's actually a different url;
+        const image = new Image();
+        image.src = `https://user-telemetry.${window._pandaDomain}/guardian-tool-accessed?app=viewer&path=${newAppPath}`;
         window.history.replaceState({viewerHref: viewerHref}, '', newAppPath);
         applicationController.checkDesktopEnabled();
     }

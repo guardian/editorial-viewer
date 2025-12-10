@@ -1,5 +1,5 @@
 @import play.filters.csrf.CSRF.Token
-@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, csrfToken: Option[Token])
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, csrfToken: Option[Token], pandaDomain: String)
 
 @main("Viewer") {
     <header class="fixed-header">
@@ -68,11 +68,18 @@
         window._actualUrl = "@actualUrl";
         window._proxyBase = "@proxyBase";
         window._originalPath = "@path";
+        window._pandaDomain = "@pandaDomain";
         @csrfToken.map { token =>
             window._csrfToken = {
                 name: "@token.name",
                 value: "@token.value"
             };
         }
+    </script>
+
+    <script type="module">
+        const path = location.pathname;
+        const image = new Image();
+        image.src = `https://user-telemetry.${window._pandaDomain}/guardian-tool-accessed?app=viewer&path=${path}`;
     </script>
 }
