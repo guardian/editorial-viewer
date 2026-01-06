@@ -23,7 +23,7 @@ lazy val root = (project in file("."))
      )
   )
 
-scalaVersion := "2.13.9"
+scalaVersion := "2.13.18"
 
 val awsVersion = "1.12.129"
 
@@ -48,4 +48,3 @@ packageSummary := "viewer"
 packageDescription := """wrapper over the preview mode to give different platform previews"""
 
 PlayKeys.devSettings += "play.server.pekko.max-header-size" -> "16k"
-
