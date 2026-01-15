@@ -9,6 +9,7 @@ declare global {
             name: string;
             value: string;
         };
+        _pandaDomain: string;
     }
 }
 
