@@ -1,53 +1,104 @@
 .viewers {
-    text-align: center;
+    display: flex;
+    justify-content: left;
+    height: 100%;
+    gap: 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+
+    // TODO: this is a hack to get feedback from users, change the actual markup if the response is positive
+    flex-direction: row-reverse;
 }
 
 .viewer {
-
-    margin: 20px;
-    vertical-align: top;
-
-    border-radius: 20px;
-    border-style: solid;
-    border-color: #F0F0F0;
+    &.is-mobile-portrait,
+    &.is-mobile-landscape {
+        margin: 0 auto;
+    }
 
     &.is-mobile-portrait {
-        border-width: 30px 20px 60px 20px;
         width: 335px;
-        height: 568px;
+        height: 100%;
     }
 
     &.is-mobile-landscape {
-        border-width: 20px 60px 30px 30px;
         width: 568px;
-        height: 320px;
+        height: 100%;
     }
 
     &.is-social-share {
         width: 1024px;
-        height: 768px;
-        border-radius: 0px;
-        border-width: 0px;
+        margin: 20px;
+    }
+
+    &.is-desktop {
+        position: relative;
+        width: 740px;
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        &--standalone {
+            width: 100%;
+        }
+    }
+
+    &.is-mobile-portrait,
+    &.is-mobile-landscape,
+    &.is-desktop iframe,
+    &.is-reader,
+    &.is-social-share {
+        border: none;
     }
 
     &.is-desktop,
-    &.is-reader {
-        position: fixed;
-        top: 51px;
-        left: 0;
-
-        width:100%;
-        min-width: 800px;
-        height: calc(100% - 51px);
-
-        margin: 0;
-        border-width: 0;
-        border-radius: 0;
-
+    &.is-reader,
+    &.is-social-share {
+        height: 100%;
     }
 
     &.is-animated {
         transition: 0.5s all;
     }
+}
 
+.is-desktop__overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    gap: 12px;
+    padding: 64px;
+
+    p {
+        color: #fff;
+        font-size: 24px;
+        text-align: center;
+    }
+
+    button {
+        border: none;
+        font-weight: 600;
+        padding: 18px 24px;
+        border-radius: 50vh;
+        background: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 4px 4px #333;
+
+        &:active {
+            box-shadow: none;
+            transform: translateY(4px);
+        }
+    }
 }
