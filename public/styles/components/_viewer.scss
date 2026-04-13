@@ -1,28 +1,29 @@
 .viewers {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    justify-content: left;
     height: 100%;
+    gap: 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+
+    // TODO: this is a hack to get feedback from users, change the actual markup if the response is positive
+    flex-direction: row-reverse;
 }
 
 .viewer {
-    &.is-mobile-portrait, &.is-mobile-landscape {
-        border-width: 20px;
-        border-radius: 20px;
-        border-style: solid;
-        border-color: #F0F0F0;
-        margin: 20px;
-        flex-shrink: 0;
+    &.is-mobile-portrait,
+    &.is-mobile-landscape {
+        margin: 0 auto;
     }
 
     &.is-mobile-portrait {
         width: 335px;
-        height: 568px;
+        height: 100%;
     }
 
     &.is-mobile-landscape {
         width: 568px;
-        height: 320px;
+        height: 100%;
     }
 
     &.is-social-share {
@@ -32,21 +33,21 @@
 
     &.is-desktop {
         position: relative;
-        max-width: 1300px;
+        width: 740px;
 
         iframe {
             width: 100%;
             height: 100%;
-            max-width: 1300px;
             position: absolute;
+        }
+
+        &--standalone {
+            width: 100%;
         }
     }
 
-    &.is-desktop,
-    &.is-reader {
-        flex-grow: 1;
-    }
-
+    &.is-mobile-portrait,
+    &.is-mobile-landscape,
     &.is-desktop iframe,
     &.is-reader,
     &.is-social-share {
@@ -74,7 +75,7 @@
     backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     gap: 12px;
     padding: 64px;

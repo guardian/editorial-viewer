@@ -1,8 +1,8 @@
 import applicationCtrl from "./modules/controllers/application";
 import * as historyCtrl from "./modules/controllers/history";
-import * as keyboardController from "./modules/controllers/keyboard";
+import * as inputController from "./modules/controllers/input";
 
 // Initialize Controllers
 applicationCtrl.init();
 historyCtrl.init();
-keyboardController.init();
+inputController.init();

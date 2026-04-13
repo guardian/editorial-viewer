@@ -45,6 +45,7 @@ function updateViewers(mode: Mode) {
                 viewersContainer.removeChild(viewerEls[0]);
                 viewerEls.shift();
                 viewerEls[0].parentElement!.style.display = '';
+                viewerEls[0].parentElement!.style.width = '100%';
             } else {
                 // Move overlay to hidden part of DOM so we don't have to recreate it
                 const overlay = document.getElementsByClassName('is-desktop__overlay')[0]!;
@@ -291,20 +292,6 @@ function restyleViewer(isAnimated: boolean, preventRefresh: boolean) {
     }
 };
 
-function scrollViewer(scrollByAmount: number) {
-    viewerEls.forEach(viewerEl => {
-        viewerEl.contentWindow?.scrollBy(0, scrollByAmount * viewerEl.clientHeight / 1.5);
-    });
-};
-
-function scrollViewerDown() {
-    scrollViewer(1);
-};
-
-function scrollViewerUp() {
-    scrollViewer(-1);
-};
-
 function onViewerLoad(e: Event) {
     var iframe = (e.target as HTMLIFrameElement);
     var iframeLocation = iframe.contentWindow?.location;
@@ -373,7 +360,7 @@ function updateVisibleViewers() {
             return;
         }
 
-        const threshold = currentMode === 'mobile-landscape' ? 1360 : 1120;
+        const threshold = currentMode === 'mobile-landscape' ? 1370 : 1136;
         const desktopButton = document.querySelector('[data-switch-mode="desktop"]') as HTMLElement;
 
         if (window.innerWidth < threshold) {
@@ -408,7 +395,5 @@ export default {
     enableAdBlock,
     enableDesktop,
     printViewer,
-    scrollViewerUp,
-    scrollViewerDown,
     init,
 };

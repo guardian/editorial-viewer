@@ -24,10 +24,14 @@ html {
     font-size: 10px;
     height: 100%;
 }
+
 body {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background: repeat repeating-conic-gradient(transparent 0% 25%, #f0f0f0 0% 50%);
+    background-size: 10px 10px;
+
     @extend %f-data;
     @extend %fs-data-4;
 }

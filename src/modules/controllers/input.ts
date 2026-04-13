@@ -1,22 +1,22 @@
 import viewers from '../components/viewers';
 import applicationController from './application'
+import * as scrollController from './scroll';
 let alreadyRan = false;
 
 function onKeyPress(e: KeyboardEvent) {
-
     if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'U+0050')) {
-      viewers.printViewer();
-      e.preventDefault();
+        viewers.printViewer();
+        e.preventDefault();
     }
 
-    if (e.key === 'ArrowUp' || e.key === "Up") {
-      viewers.scrollViewerUp();
-      e.preventDefault();
+    if (e.key === 'ArrowUp' || e.key === "Up" || (e.key === ' ' && e.shiftKey) ) {
+        scrollController.scrollViewerUp();
+        e.preventDefault();
     }
 
-    if (e.key === 'ArrowDown' || e.key === "Down") {
-      viewers.scrollViewerDown();
-      e.preventDefault();
+    if (e.key === 'ArrowDown' || e.key === "Down" || (e.key === ' ' && !e.shiftKey)) {
+        scrollController.scrollViewerDown();
+        e.preventDefault();
     }
 
     if (e.key === '1' || e.key === 'U+0031') {
@@ -43,7 +43,10 @@ function onKeyPress(e: KeyboardEvent) {
         applicationController.setMode('desktop');
         e.preventDefault();
     }
+}
 
+function onWheel (e: WheelEvent) {
+    scrollController.scrollPixels(e.deltaY)
 }
 
 export function init() {
@@ -53,6 +56,8 @@ export function init() {
     }
 
     document.addEventListener('keydown', onKeyPress);
+    const viewers = document.getElementsByClassName('viewers')[0] as HTMLElement;
+    viewers.addEventListener('wheel', onWheel);
 
     alreadyRan = true;
 }
