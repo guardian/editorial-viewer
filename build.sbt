@@ -25,13 +25,14 @@ lazy val root = (project in file("."))
 
 scalaVersion := "2.13.18"
 
-val awsVersion = "1.12.129"
+val awsVersion = "2.57.0"
 
 libraryDependencies ++= Seq(
-  "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-ec2" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-ses" % awsVersion,
-  "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
+  "software.amazon.awssdk" % "s3" % awsVersion,
+  "software.amazon.awssdk" % "ec2" % awsVersion,
+  "software.amazon.awssdk" % "ses" % awsVersion,
+  "software.amazon.awssdk" % "imds" % awsVersion,
+  "com.gu" %% "pan-domain-auth-play_3-0" % "22.2.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   ws,
   "com.google.guava" % "guava" % "27.0-jre"

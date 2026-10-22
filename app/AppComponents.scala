@@ -1,9 +1,3 @@
-import com.amazonaws.auth._
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.ec2.{AmazonEC2, AmazonEC2ClientBuilder}
-import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
-import com.amazonaws.services.simpleemail.{AmazonSimpleEmailService, AmazonSimpleEmailServiceClientBuilder}
 import com.gu.pandomainauth.{PanDomainAuthSettingsRefresher, S3BucketLoader}
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
@@ -18,6 +12,11 @@ import play.api.mvc.EssentialFilter
 import play.api.routing.Router
 import play.filters.csrf.CSRFComponents
 import router.Routes
+import software.amazon.awssdk.auth.credentials._
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.ec2.Ec2Client
+import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.ses.SesClient
 
 class AppComponents(context: Context)
   extends BuiltInComponentsFromContext(context)
@@ -25,19 +24,18 @@ class AppComponents(context: Context)
     with CSRFComponents
     with AhcWSComponents {
 
-  def creds: AWSCredentialsProvider = new AWSCredentialsProviderChain(
-    new EnvironmentVariableCredentialsProvider,
-    new SystemPropertiesCredentialsProvider,
-    new ProfileCredentialsProvider("composer"),
-    InstanceProfileCredentialsProvider.getInstance()
+  val creds: AwsCredentialsProvider = AwsCredentialsProviderChain.of(
+    EnvironmentVariableCredentialsProvider.create(),
+    SystemPropertyCredentialsProvider.create(),
+    ProfileCredentialsProvider.create("composer"),
+    InstanceProfileCredentialsProvider.create()
   )
 
-  val region: Regions = Regions.EU_WEST_1
+  val region: Region = Region.EU_WEST_1
 
-  val ec2Client: AmazonEC2 = AmazonEC2ClientBuilder.standard().withRegion(region).withCredentials(creds).build()
-  val s3Client: AmazonS3 = AmazonS3ClientBuilder.standard().withRegion(region).withCredentials(creds).build()
-  val emailClient: AmazonSimpleEmailService =
-    AmazonSimpleEmailServiceClientBuilder.standard().withRegion(region).withCredentials(creds).build()
+  val ec2Client: Ec2Client = Ec2Client.builder().region(region).credentialsProvider(creds).build()
+  val s3Client: S3Client = S3Client.builder().region(region).credentialsProvider(creds).build()
+  val emailClient: SesClient = SesClient.builder().region(region).credentialsProvider(creds).build()
 
   val tags = new AwsInstanceTags(ec2Client)
   val config = new AppConfig(tags, context.initialConfiguration)
@@ -45,7 +43,7 @@ class AppComponents(context: Context)
   val panDomainSettings: PanDomainAuthSettingsRefresher = PanDomainAuthSettingsRefresher(
     domain = config.pandaDomain,
     system = "viewer",
-    S3BucketLoader.forAwsSdkV1(s3Client, "pan-domain-auth-settings")
+    S3BucketLoader.forAwsSdkV2(s3Client, "pan-domain-auth-settings")
   )
 
   val requestLoggingFilter = new RequestLoggingFilter(materializer, panDomainSettings)

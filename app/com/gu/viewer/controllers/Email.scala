@@ -1,37 +1,34 @@
 package com.gu.viewer.controllers
 
-import com.amazonaws.services.simpleemail.model._
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.logging.Loggable
 import play.api.libs.ws.WSClient
 import play.api.mvc._
+import software.amazon.awssdk.services.ses.SesClient
+import software.amazon.awssdk.services.ses.model.{Body, Content, Destination, Message, SendEmailRequest}
 
 import scala.util.control.NonFatal
 
 class Email(
   val controllerComponents: ControllerComponents,
   val wsClient: WSClient,
-  emailClient: AmazonSimpleEmailService,
+  emailClient: SesClient,
   val config: AppConfig,
   val panDomainSettings: PanDomainAuthSettingsRefresher
 ) extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
 
   def sendEmail(path: String) = APIAuthAction { req =>
     val email = req.user.email
-    var emailList = new java.util.ArrayList[String]()
-    emailList.add(email)
-
     val from = "editorial.tools.dev@theguardian.com"
-    val to = new Destination(emailList)
+    val to = Destination.builder().toAddresses(email).build()
 
-    val message = new Message(
-      new Content(s"Preview URLs for '$path'"),
-      new Body(new Content(formatEmail(path)))
-    )
+    val message = Message.builder()
+      .subject(Content.builder().data(s"Preview URLs for '$path'").build())
+      .body(Body.builder().text(Content.builder().data(formatEmail(path)).build()).build())
+      .build()
 
-    val emailReq = new SendEmailRequest(from, to, message)
+    val emailReq = SendEmailRequest.builder().source(from).destination(to).message(message).build()
 
     try {
       emailClient.sendEmail(emailReq)

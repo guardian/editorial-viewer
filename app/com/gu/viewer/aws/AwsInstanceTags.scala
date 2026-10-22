@@ -1,26 +1,27 @@
 package com.gu.viewer.aws
 
-import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.ec2.{AmazonEC2, AmazonEC2Client}
-import com.amazonaws.services.ec2.model.{DescribeTagsRequest, Filter}
-import com.amazonaws.services.simpleemail._
-import com.amazonaws.util.EC2MetadataUtils
+import software.amazon.awssdk.imds.Ec2MetadataClient
+import software.amazon.awssdk.services.ec2.Ec2Client
+import software.amazon.awssdk.services.ec2.model.{DescribeTagsRequest, Filter}
 
 import scala.jdk.CollectionConverters._
+import scala.util.Using
 
-class AwsInstanceTags(ec2: AmazonEC2) {
-  lazy val instanceId = Option(EC2MetadataUtils.getInstanceId)
+class AwsInstanceTags(ec2: Ec2Client) {
+  lazy val instanceId: Option[String] = Using(Ec2MetadataClient.create()) { metadata =>
+    metadata.get("/latest/meta-data/instance-id").asString()
+  }.toOption
 
   def readTag(tagName: String) = {
     instanceId.flatMap { id =>
       val tagsResult = ec2.describeTags(
-        new DescribeTagsRequest().withFilters(
-          new Filter("resource-type").withValues("instance"),
-          new Filter("resource-id").withValues(id),
-          new Filter("key").withValues(tagName)
-        )
+        DescribeTagsRequest.builder().filters(
+          Filter.builder().name("resource-type").values("instance").build(),
+          Filter.builder().name("resource-id").values(id).build(),
+          Filter.builder().name("key").values(tagName).build()
+        ).build()
       )
-      tagsResult.getTags.asScala.find(_.getKey == tagName).map(_.getValue)
+      tagsResult.tags().asScala.find(_.key() == tagName).map(_.value())
     }
   }
 }
