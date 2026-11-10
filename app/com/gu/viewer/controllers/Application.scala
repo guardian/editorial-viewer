@@ -43,7 +43,8 @@ class Application(
     val viewerUrl = routes.Proxy.proxy(target, path).path()
     val proxyBase = routes.Proxy.proxy(target, "").absoluteURL()
     val composerUrl = config.composerReturn + "/" + path
+    val shortPath = request.getQueryString("shortPath")
 
-    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, CSRF.getToken, config.pandaDomain))
+    Ok(html.viewer(viewerUrl, actualUrl, previewEnv, composerUrl, proxyBase, path, shortPath, CSRF.getToken, config.pandaDomain))
   }
 }
