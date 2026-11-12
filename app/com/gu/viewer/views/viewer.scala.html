@@ -1,5 +1,5 @@
 @import play.filters.csrf.CSRF.Token
-@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, csrfToken: Option[Token], pandaDomain: String)
+@(viewerUrl: String, actualUrl: String, previewEnv: String, composerUrl: String, proxyBase: String, path: String, shortPath: Option[String], csrfToken: Option[Token], pandaDomain: String)
 
 @main("Viewer") {
     <header class="fixed-header">
@@ -68,6 +68,7 @@
         window._actualUrl = "@actualUrl";
         window._proxyBase = "@proxyBase";
         window._originalPath = "@path";
+        window._shortPath = "@shortPath.getOrElse("")";
         window._pandaDomain = "@pandaDomain";
         @csrfToken.map { token =>
             window._csrfToken = {

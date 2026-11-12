@@ -22,10 +22,11 @@ class Email(
     val email = req.user.email
     val from = "editorial.tools.dev@theguardian.com"
     val to = Destination.builder().toAddresses(email).build()
+    val shortPath = req.getQueryString("shortPath")
 
     val message = Message.builder()
       .subject(Content.builder().data(s"Preview URLs for '$path'").build())
-      .body(Body.builder().text(Content.builder().data(formatEmail(path)).build()).build())
+      .body(Body.builder().text(Content.builder().data(formatEmail(path, shortPath)).build()).build())
       .build()
 
     val emailReq = SendEmailRequest.builder().source(from).destination(to).message(message).build()
@@ -39,14 +40,28 @@ class Email(
     }
   }
 
-  private def formatEmail(path: String): String = {
-    s"""You requested App preview links whilst previewing an article.
-      |Click a link below from your phone to open the App in preview mode and view the article before it gets published.
-      |
-      |iOS: https://entry.mobile-apps.guardianapis.com/deeplink/items/$path
-      |Android: https://mobile-preview.guardianapis.com/items/$path
-      |
-      |
-      |If you were not expecting this email please contact: editorial.tools.dev@theguardian.com""".stripMargin
+  private def formatEmail(path: String, shortPath: Option[String]): String = {
+    val cleanShortPath = shortPath
+      .map(_.trim)
+      .filter(_.nonEmpty)
+      .map(_.stripPrefix("/"))
+
+    val iosLines = Seq(
+      "iOS:",
+      s"- Full path (subject to change): https://entry.mobile-apps.guardianapis.com/deeplink/items/$path"
+    ) ++ cleanShortPath.map(short => s"- Permalink: https://entry.mobile-apps.guardianapis.com/deeplink/items/$short")
+
+    val androidLines = Seq(
+      "Android:",
+      s"- Full path (subject to change): https://mobile-preview.guardianapis.com/items/$path"
+    ) ++ cleanShortPath.map(short => s"- Permalink: https://mobile-preview.guardianapis.com/items/$short")
+
+    val introLines = Seq(
+      "You requested App preview links whilst previewing an article.",
+      "Click the appropriate link below from your phone to open the App in preview mode and view the article before it gets published.",
+      ""
+    )
+
+    (introLines ++ iosLines ++ Seq("") ++ androidLines ++ Seq("", "", "If you were not expecting this email please contact: editorial.tools.dev@theguardian.com")).mkString("\n")
   }
 }
