@@ -70,6 +70,16 @@
         window._originalPath = "@path";
         window._shortPath = "@shortPath.getOrElse("")";
         window._pandaDomain = "@pandaDomain";
+        if (window.history && window.history.replaceState && window._shortPath) {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.has('shortPath')) {
+                params.delete('shortPath');
+                const query = params.toString();
+                const cleanUrl = window.location.pathname + (query ? '?' + query : '') + window.location.hash;
+                window.history.replaceState(null, '', cleanUrl);
+            }
+        }
         @csrfToken.map { token =>
             window._csrfToken = {
                 name: "@token.name",
