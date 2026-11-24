@@ -1,4 +1,5 @@
 import com.gu.pandomainauth.{PanDomainAuthSettingsRefresher, S3BucketLoader}
+import com.gu.contentapi.client.GuardianContentClient
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.{Application, Email, Management, Proxy}
@@ -53,10 +54,23 @@ class AppComponents(context: Context)
   val liveProxy = new LiveProxy(proxyClient, config)
   val previewProxy = new PreviewProxy(proxyClient, config)
 
+  val contentApiClient = for {
+    contentApiKey <- config.contentApiKey
+    previewContentApiUrl <- config.previewContentApiUrl
+  } yield new GuardianContentClient(contentApiKey) {
+    override val targetUrl: String = previewContentApiUrl
+  }
+  contentApiClient.foreach { client =>
+    applicationLifecycle.addStopHook(() => {
+      client.shutdown()
+      scala.concurrent.Future.successful(())
+    })
+  }
+
   val applicationController = new Application(controllerComponents, wsClient, config, panDomainSettings)
   val managementController = new Management(controllerComponents)
   val proxyController = new Proxy(controllerComponents, wsClient, previewProxy, liveProxy, config, panDomainSettings)
-  val emailController = new Email(controllerComponents, wsClient, emailClient, config, panDomainSettings)
+  val emailController = new Email(controllerComponents, wsClient, emailClient, contentApiClient, config, panDomainSettings)
 
   override def router: Router = new Routes(
     httpErrorHandler,

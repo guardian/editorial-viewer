@@ -1,5 +1,6 @@
 package com.gu.viewer.controllers
 
+import com.gu.contentapi.client.ContentApiClient
 import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.logging.Loggable
@@ -8,35 +9,69 @@ import play.api.mvc._
 import software.amazon.awssdk.services.ses.SesClient
 import software.amazon.awssdk.services.ses.model.{Body, Content, Destination, Message, SendEmailRequest}
 
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 import scala.util.control.NonFatal
 
 class Email(
   val controllerComponents: ControllerComponents,
   val wsClient: WSClient,
   emailClient: SesClient,
+  contentApiClient: Option[ContentApiClient],
   val config: AppConfig,
   val panDomainSettings: PanDomainAuthSettingsRefresher
 ) extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
 
-  def sendEmail(path: String) = APIAuthAction { req =>
+  private implicit val ec: ExecutionContext = controllerComponents.executionContext
+
+  def sendEmail(path: String) = APIAuthAction.async { req =>
     val email = req.user.email
     val from = "editorial.tools.dev@theguardian.com"
     val to = Destination.builder().toAddresses(email).build()
-    val shortPath = req.getQueryString("shortPath")
 
-    val message = Message.builder()
-      .subject(Content.builder().data(s"Preview URLs for '$path'").build())
-      .body(Body.builder().text(Content.builder().data(formatEmail(path, shortPath)).build()).build())
-      .build()
+    getShortPath(path).map { shortPath =>
+      val message = Message.builder()
+        .subject(Content.builder().data(s"Preview URLs for '$path'").build())
+        .body(Body.builder().text(Content.builder().data(formatEmail(path, shortPath)).build()).build())
+        .build()
+      val emailReq = SendEmailRequest.builder().source(from).destination(to).message(message).build()
+      try {
+        emailClient.sendEmail(emailReq)
+        Ok
+      } catch {
+        case NonFatal(_) => InternalServerError
+      }
+    }
+  }
 
-    val emailReq = SendEmailRequest.builder().source(from).destination(to).message(message).build()
+  private def getShortPath(path: String): Future[Option[String]] =
+    contentApiClient match {
+      case Some(client) =>
+        log.info("[EMAIL] Fetching short URL for path: " + path)
+        client
+          .getResponse(ContentApiClient.item(path).showFields("shortUrl"))
+          .map(
+            _.content
+              .flatMap(_.fields)
+              .flatMap(_.shortUrl)
+              .flatMap(normaliseShortPath)
+          )
+          .recover { case NonFatal(_) => None }
+      case None =>
+        Future.successful(None)
+    }
 
-    try {
-      emailClient.sendEmail(emailReq)
-      Ok
-    } catch {
-      case NonFatal(e) =>
-        InternalServerError
+  private def normaliseShortPath(shortUrl: String): Option[String] = {
+    val trimmed = shortUrl.trim
+    if (trimmed.isEmpty) {
+      None
+    } else {
+      val pathOnly = Try(new java.net.URI(trimmed))
+        .toOption
+        .flatMap(uri => Option(uri.getPath))
+        .getOrElse(trimmed)
+      val normalised = pathOnly.trim.stripPrefix("/")
+      Option.when(normalised.nonEmpty)(normalised)
     }
   }
 

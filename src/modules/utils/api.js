@@ -5,10 +5,6 @@ function appPreviewRequest() {
     const csrfParam = token.name + '=' + token.value;
     var url = 'https://' + window.location.hostname + '/send-email?path=' + encodeURIComponent(window._originalPath);
 
-    if (window._shortPath) {
-        url += '&shortPath=' + encodeURIComponent(window._shortPath);
-    }
-
     url += '&' + csrfParam;
 
     return Reqwest({

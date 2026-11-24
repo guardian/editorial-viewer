@@ -32,6 +32,7 @@ libraryDependencies ++= Seq(
   "software.amazon.awssdk" % "ec2" % awsVersion,
   "software.amazon.awssdk" % "ses" % awsVersion,
   "software.amazon.awssdk" % "imds" % awsVersion,
+  "com.gu" %% "content-api-client-default" % "52.0.1",
   "com.gu" %% "pan-domain-auth-play_3-0" % "22.2.0",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   ws,

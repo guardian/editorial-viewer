@@ -21,6 +21,9 @@ class AppConfig(tags: AwsInstanceTags, config: Configuration) {
   val previewHostForceHTTP = config.getOptional[Boolean](s"previewHostForceHTTP.$stage").getOrElse(false)
   val composerReturn = getConfigString(s"composerReturnUri.$stage")
 
+  val contentApiKey = config.getOptional[String](s"contentApiKey.$stage").map(_.trim).filter(_.nonEmpty)
+  val previewContentApiUrl = config.getOptional[String](s"previewContentApiUrl.$stage").map(_.trim).filter(_.nonEmpty)
+
   val pandaBucket = "pan-domain-auth-settings"
   val pandaSettingsFileKey = s"$pandaDomain.settings"
 
