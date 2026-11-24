@@ -20,7 +20,7 @@ class Email(
   contentApiClient: Option[ContentApiClient],
   val config: AppConfig,
   val panDomainSettings: PanDomainAuthSettingsRefresher
-) extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
+) extends BaseControllerHelpers with PanDomainAuthActions {
 
   private implicit val ec: ExecutionContext = controllerComponents.executionContext
 
@@ -47,7 +47,6 @@ class Email(
   private def getShortPath(path: String): Future[Option[String]] =
     contentApiClient match {
       case Some(client) =>
-        log.info("[EMAIL] Fetching short URL for path: " + path)
         client
           .getResponse(ContentApiClient.item(path).showFields("shortUrl"))
           .map(

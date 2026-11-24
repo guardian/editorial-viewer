@@ -1,9 +1,10 @@
+import com.gu.contentapi.client.model.HttpResponse
 import com.gu.pandomainauth.{PanDomainAuthSettingsRefresher, S3BucketLoader}
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.{Application, Email, Management, Proxy}
-import com.gu.viewer.logging.RequestLoggingFilter
+import com.gu.viewer.logging.{Loggable, RequestLoggingFilter}
 import com.gu.viewer.proxy.{LiveProxy, PreviewProxy, ProxyClient}
 import controllers.AssetsComponents
 import play.api.{BuiltInComponentsFromContext, Mode}
@@ -23,12 +24,16 @@ import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest
 
 import java.net.URI
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
+import scala.util.control.NonFatal
 
 class AppComponents(context: Context)
   extends BuiltInComponentsFromContext(context)
     with AssetsComponents
     with CSRFComponents
-    with AhcWSComponents {
+    with AhcWSComponents
+    with Loggable {
 
   val creds: AwsCredentialsProvider = AwsCredentialsProviderChain.of(
     EnvironmentVariableCredentialsProvider.create(),
@@ -59,7 +64,7 @@ class AppComponents(context: Context)
   val liveProxy = new LiveProxy(proxyClient, config)
   val previewProxy = new PreviewProxy(proxyClient, config)
 
-  val contentApiClient = for {
+  val contentApiClient: Option[(GuardianContentClient, StsClient)] = (for {
     contentApiKey <- config.contentApiKey
     previewContentApiUrl <- config.previewContentApiUrl
     previewContentApiRole <- config.previewContentApiRole
@@ -90,14 +95,27 @@ class AppComponents(context: Context)
       override val targetUrl: String = previewContentApiUrl
 
       override def get(url: String, headers: Map[String, String])(implicit
-          context: scala.concurrent.ExecutionContext
-      ): scala.concurrent.Future[com.gu.contentapi.client.model.HttpResponse] = {
-        val signedHeaders = signer.addIAMHeaders(headers, URI.create(url))
-        super.get(url, signedHeaders)(context)
+          context: ExecutionContext
+      ): Future[HttpResponse] = {
+        Try(signer.addIAMHeaders(headers, URI.create(url))) match {
+          case Success(signedHeaders) =>
+            super.get(url, signedHeaders)(context)
+          case Failure(error) =>
+            Future.failed(error)
+        }
       }
     }
-    (client, stsClient)
-  }
+    try {
+      previewCredentials.resolveCredentials()
+      Some((client, stsClient))
+    } catch {
+      case NonFatal(error) =>
+        client.shutdown()
+        stsClient.close()
+        log.warn("Disabling preview CAPI short-path lookup because IAM credentials are unavailable", error)
+        None
+    }
+  }).flatten
 
   contentApiClient.foreach { case (client, stsClient) =>
     applicationLifecycle.addStopHook(() => {
