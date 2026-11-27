@@ -20,7 +20,7 @@ class Email(
   contentApiClient: Option[ContentApiClient],
   val config: AppConfig,
   val panDomainSettings: PanDomainAuthSettingsRefresher
-) extends BaseControllerHelpers with PanDomainAuthActions {
+) extends BaseControllerHelpers with Loggable with PanDomainAuthActions {
 
   private implicit val ec: ExecutionContext = controllerComponents.executionContext
 
@@ -55,7 +55,10 @@ class Email(
               .flatMap(_.shortUrl)
               .flatMap(normaliseShortPath)
           )
-          .recover { case NonFatal(_) => None }
+          .recover { case NonFatal(e) =>
+            log.warn(s"Failed to fetch shortUrl from preview CAPI for '$path'", e)
+            None
+          }
       case None =>
         Future.successful(None)
     }
