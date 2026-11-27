@@ -1,8 +1,10 @@
+import com.gu.contentapi.client.model.HttpResponse
 import com.gu.pandomainauth.{PanDomainAuthSettingsRefresher, S3BucketLoader}
+import com.gu.contentapi.client.{GuardianContentClient, IAMSigner}
 import com.gu.viewer.aws.AwsInstanceTags
 import com.gu.viewer.config.AppConfig
 import com.gu.viewer.controllers.{Application, Email, Management, Proxy}
-import com.gu.viewer.logging.RequestLoggingFilter
+import com.gu.viewer.logging.{Loggable, RequestLoggingFilter}
 import com.gu.viewer.proxy.{LiveProxy, PreviewProxy, ProxyClient}
 import controllers.AssetsComponents
 import play.api.{BuiltInComponentsFromContext, Mode}
@@ -17,12 +19,21 @@ import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.ec2.Ec2Client
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.ses.SesClient
+import software.amazon.awssdk.services.sts.StsClient
+import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
+import software.amazon.awssdk.services.sts.model.AssumeRoleRequest
+
+import java.net.URI
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
+import scala.util.control.NonFatal
 
 class AppComponents(context: Context)
   extends BuiltInComponentsFromContext(context)
     with AssetsComponents
     with CSRFComponents
-    with AhcWSComponents {
+    with AhcWSComponents
+    with Loggable {
 
   val creds: AwsCredentialsProvider = AwsCredentialsProviderChain.of(
     EnvironmentVariableCredentialsProvider.create(),
@@ -53,10 +64,71 @@ class AppComponents(context: Context)
   val liveProxy = new LiveProxy(proxyClient, config)
   val previewProxy = new PreviewProxy(proxyClient, config)
 
+  val contentApiClient: Option[(GuardianContentClient, StsClient)] = (for {
+    contentApiKey <- config.contentApiKey
+    previewContentApiUrl <- config.previewContentApiUrl
+    previewContentApiRole <- config.previewContentApiRole
+  } yield {
+    val stsClient = StsClient.builder()
+      .region(region)
+      .credentialsProvider(creds)
+      .build()
+
+    val assumeRoleRequest = AssumeRoleRequest.builder()
+      .roleSessionName("viewer-capi")
+      .roleArn(previewContentApiRole)
+      .build()
+
+    val previewCredentials = AwsCredentialsProviderChain.builder()
+      .credentialsProviders(
+        ProfileCredentialsProvider.builder().profileName("capi").build(),
+        StsAssumeRoleCredentialsProvider.builder()
+          .stsClient(stsClient)
+          .refreshRequest(assumeRoleRequest)
+          .build()
+      )
+      .build()
+
+    val signer = new IAMSigner(previewCredentials, region.id())
+
+    val client = new GuardianContentClient(contentApiKey) {
+      override val targetUrl: String = previewContentApiUrl
+
+      override def get(url: String, headers: Map[String, String])(implicit
+          context: ExecutionContext
+      ): Future[HttpResponse] = {
+        Try(signer.addIAMHeaders(headers, URI.create(url))) match {
+          case Success(signedHeaders) =>
+            super.get(url, signedHeaders)(context)
+          case Failure(error) =>
+            Future.failed(error)
+        }
+      }
+    }
+    try {
+      previewCredentials.resolveCredentials()
+      Some((client, stsClient))
+    } catch {
+      case NonFatal(error) =>
+        client.shutdown()
+        stsClient.close()
+        log.warn("Disabling preview CAPI short-path lookup because IAM credentials are unavailable", error)
+        None
+    }
+  }).flatten
+
+  contentApiClient.foreach { case (client, stsClient) =>
+    applicationLifecycle.addStopHook(() => {
+      client.shutdown()
+      stsClient.close()
+      scala.concurrent.Future.successful(())
+    })
+  }
+
   val applicationController = new Application(controllerComponents, wsClient, config, panDomainSettings)
   val managementController = new Management(controllerComponents)
   val proxyController = new Proxy(controllerComponents, wsClient, previewProxy, liveProxy, config, panDomainSettings)
-  val emailController = new Email(controllerComponents, wsClient, emailClient, config, panDomainSettings)
+  val emailController = new Email(controllerComponents, wsClient, emailClient, contentApiClient.map(_._1), config, panDomainSettings)
 
   override def router: Router = new Routes(
     httpErrorHandler,
